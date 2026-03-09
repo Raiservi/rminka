@@ -1,39 +1,62 @@
-    # .codecov.yml
-    # Configuración básica para un proyecto de R con Codecov
+# Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
+# Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
+on:
+  push:
+    branches: [main, master]
+  pull_request:
 
-    # Indica el tipo de reporte que estás subiendo.
-    # Si estás subiendo 'cobertura.xml', Codecov lo detectará.
-    # Este 'defaults' es más bien para el tipo de procesado del lado de Codecov.
-    codecov:
-      notify:
-        require_ci_to_pass: yes # Solo notificar si la CI ha pasado
+name: test-coverage.yaml
 
-    # Definir la rama de base.
-    # Esto es crucial para que Codecov compare la cobertura de PRs con la principal.
-    # Ajusta 'main' o 'master' según cuál sea tu rama principal.
-    coverage:
-      status:
-        project:
-          default:
-            target: auto
-            threshold: 1% # Tolerancia para que la cobertura no baje demasiado en PRs
-        patch:
-          default:
-            target: auto
-            threshold: 1% # Asegurar que los cambios en PR no reduzcan la cobertura
+permissions: read-all
 
-    # Opciones de ignorado (ajusta según tus necesidades)
-    # paths:
-    #   ignore:
-    #     - "R/funciones_internas.R" # Ejemplo: ignorar ciertos archivos
-    #     - "inst/"
-    #     - "man/"
-    #     - "vignettes/"
-    #     - "data/"
-    #     - "tests/" # Si no quieres reportar la cobertura de los propios tests
-    #     - ".github/"
+jobs:
+  test-coverage:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
-    comment: # Configuración de los comentarios en Pull Requests
-      layout: "diff, files"
-      behavior: default
-      require_changes: no # Si no hay cambios en la cobertura, no comentar
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::covr, any::xml2
+          needs: coverage
+
+      - name: Test coverage
+        run: |
+          cov <- covr::package_coverage(
+            quiet = FALSE,
+            clean = FALSE,
+            install_path = file.path(normalizePath(Sys.getenv("RUNNER_TEMP"), winslash = "/"), "package")
+          )
+          print(cov)
+          covr::to_cobertura(cov)
+        shell: Rscript {0}
+
+      - uses: codecov/codecov-action@v5
+        with:
+          # Fail if error if not on PR, or if on PR and token is given
+          fail_ci_if_error: ${{ github.event_name != 'pull_request' || secrets.CODECOV_TOKEN }}
+          files: ./cobertura.xml
+          plugins: noop
+          disable_search: true
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Show testthat output
+        if: always()
+        run: |
+          ## --------------------------------------------------------------------
+          find '${{ runner.temp }}/package' -name 'testthat.Rout*' -exec cat '{}' \; || true
+        shell: bash
+
+      - name: Upload test results
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-test-failures
+          path: ${{ runner.temp }}/package
