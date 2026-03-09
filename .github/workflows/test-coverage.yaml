@@ -1,3 +1,4 @@
+# .github/workflows/test-cov.yaml
 # Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
 on:
@@ -5,9 +6,11 @@ on:
     branches: [main, master]
   pull_request:
 
-name: test-coverage.yaml
+name: R Package Coverage # <-- Nombre más descriptivo para el workflow
 
-permissions: read-all
+permissions:
+  contents: read # Solo leer el contenido del repositorio
+  pull-requests: write # Permite a codecov-action comentar en PRs (opcional, si no quieres, quita "write")
 
 jobs:
   test-coverage:
@@ -17,6 +20,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # ¡Crucial para que covr tenga el historial completo!
 
       - uses: r-lib/actions/setup-r@v2
         with:
@@ -24,33 +29,40 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::covr, any::xml2
+          extra-packages: any::covr, any::xml2, any::devtools, any::testthat # <-- Asegúrate de tener devtools y testthat para ejecutar tests
           needs: coverage
 
-      - name: Test coverage
+      - name: Calculate and generate coverage report # <-- Nombre del paso
         run: |
+          # 1. Asegurarse de que el paquete está cargado en el entorno adecuado
+          # devtools::load_all() puede ser útil si quieres testear el paquete cargado en memoria
+
+          # 2. Ejecutar los tests para generar la cobertura
+          devtools::test(pkg = ".", stop_on_failure = TRUE) # Ejecuta tus tests. Asegúrate de que testthat esté configurado en tu paquete.
+
+          # 3. Calcular la cobertura del paquete basándose en la ejecución de los tests
           cov <- covr::package_coverage(
             quiet = FALSE,
-            clean = FALSE,
-            install_path = file.path(normalizePath(Sys.getenv("RUNNER_TEMP"), winslash = "/"), "package")
+            clean = FALSE # No es necesario limpiar, covr ya sabe dónde mirar
           )
-          print(cov)
-          covr::to_cobertura(cov)
-        shell: Rscript {0}
+          print(cov) # Muestra el resumen de cobertura en los logs de GH Actions
+
+          # 4. Convertir el reporte de cobertura a formato Cobertura XML
+          covr::to_cobertura(cov, filename = "cobertura.xml")
+        shell: Rscript {0} # Usar Rscript para ejecutar el bloque
 
       - uses: codecov/codecov-action@v5
         with:
-          # Fail if error if not on PR, or if on PR and token is given
           fail_ci_if_error: ${{ github.event_name != 'pull_request' || secrets.CODECOV_TOKEN }}
-          files: ./cobertura.xml
-          plugins: noop
-          disable_search: true
-          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./cobertura.xml # Archivo generado en el paso anterior
+          # plugins: noop # Esto es si no quieres usar plugins específicos de Codecov (como gcov)
+          # disable_search: true # Esto es para evitar que Codecov busque archivos de cobertura, ya le damos uno
+          token: ${{ secrets.CODECOV_TOKEN }} # Pasa el token de forma segura
 
+      # Los pasos para mostrar la salida de testthat y subir artefactos están bien si los quieres mantener.
       - name: Show testthat output
         if: always()
         run: |
-          ## --------------------------------------------------------------------
           find '${{ runner.temp }}/package' -name 'testthat.Rout*' -exec cat '{}' \; || true
         shell: bash
 
