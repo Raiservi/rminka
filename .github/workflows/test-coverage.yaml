@@ -1,41 +1,62 @@
-name: R-CMD-check
-
+# Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
+# Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
 on:
   push:
-    branches: [ main, master ] # Asegúrate de que coincida con tu rama principal
+    branches: [main, master]
   pull_request:
-    branches: [ main, master ] # Asegúrate de que coincida con tu rama principal
+
+name: test-coverage.yaml
+
+permissions: read-all
 
 jobs:
-  R-CMD-check:
+  test-coverage:
     runs-on: ubuntu-latest
     env:
-      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }} # Útil para instalar dependencias de GitHub
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # ¡Crucial para que la cobertura se calcule correctamente!
 
       - uses: r-lib/actions/setup-r@v2
         with:
-          r-version: '4.x' # O la versión de R que uses, por ejemplo 'release'
+          use-public-rspm: true
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: covr # Asegúrate de que covr esté instalado para el cálculo de cobertura
-          needs: "check" # Instala las dependencias necesarias para el check
+          extra-packages: any::covr, any::xml2
+          needs: coverage
 
-      - name: Run R CMD check
+      - name: Test coverage
         run: |
-          R CMD check . || true # Ejecuta el check. El '|| true' permite que el workflow continúe si hay warnings.
+          cov <- covr::package_coverage(
+            quiet = FALSE,
+            clean = FALSE,
+            install_path = file.path(normalizePath(Sys.getenv("RUNNER_TEMP"), winslash = "/"), "package")
+          )
+          print(cov)
+          covr::to_cobertura(cov)
+        shell: Rscript {0}
 
-      # --- NUEVO PASO PARA LA COBERTURA CON CODECOV ---
-      - name: Calculate coverage with covr and upload to Codecov
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main' # Solo en pushes a la rama principal
+      - uses: codecov/codecov-action@v5
+        with:
+          # Fail if error if not on PR, or if on PR and token is given
+          fail_ci_if_error: ${{ github.event_name != 'pull_request' || secrets.CODECOV_TOKEN }}
+          files: ./cobertura.xml
+          plugins: noop
+          disable_search: true
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Show testthat output
+        if: always()
         run: |
-          Rscript -e 'covr::codecov(type = "all")' # Calcula y sube la cobertura
-        env:
-          # Si tu repo es público, este token puede ser opcional.
-          # Si es privado, DEBE estar configurado en los secrets de GitHub.
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+          ## --------------------------------------------------------------------
+          find '${{ runner.temp }}/package' -name 'testthat.Rout*' -exec cat '{}' \; || true
+        shell: bash
+
+      - name: Upload test results
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-test-failures
+          path: ${{ runner.temp }}/package
