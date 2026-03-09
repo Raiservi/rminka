@@ -7,6 +7,17 @@
 
 [![R-CMD-check](https://github.com/Raiservi/rminka/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Raiservi/rminka/actions/workflows/R-CMD-check.yaml)
 [![codecov](https://codecov.io/gh/Raiservi/rminka/branch/main/graph/badge.svg)](https://codecov.io/gh/Raiservi/rminka)
+[![License: GPL
+v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![GitHub last
+commit](https://img.shields.io/github/last-commit/Raiservi/rminka)](https://github.com/Raiservi/rminka/commits/main)
+<br> [![GitHub package
+version](https://img.shields.io/github/r-package/v/Raiservi/rminka)](https://github.com/Raiservi/rminka/blob/main/DESCRIPTION)
+[![GitHub
+contributors](https://img.shields.io/github/contributors/Raiservi/rminka)](https://github.com/Raiservi/rminka/graphs/contributors)
+[![Contributor
+Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](https://github.com/Raiservi/rminka/blob/main/inst/CODE_OF_CONDUCT.md)
+
 <!-- badges: end -->
 
 ## Usage
