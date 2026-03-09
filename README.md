@@ -16,7 +16,7 @@ version](https://img.shields.io/github/r-package/v/Raiservi/rminka)](https://git
 [![GitHub
 contributors](https://img.shields.io/github/contributors/Raiservi/rminka)](https://github.com/Raiservi/rminka/graphs/contributors)
 [![Contributor
-Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](https://github.com/Raiservi/rminka/blob/main/CODE_OF_CONDUCT.md)
+Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](https://github.com/Raiservi/rminka/blob/master/inst/CODE_OF_CONDUCT.md)
 <!-- badges: end -->
 
 ## Usage
