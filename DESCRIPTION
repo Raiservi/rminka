@@ -26,6 +26,6 @@ Suggests:
     rmarkdown,
     mockery,
     httptest,
-URL: https://@github.com/Raiservi/rminka
+URL: https://raiservi.github.io/rminka/
 BugReports: https://@github.com/Raiservi/rminka/issues
 Config/testthat/edition: 3
