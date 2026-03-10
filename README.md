@@ -5,7 +5,6 @@
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/Raiservi/rminka/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Raiservi/rminka/actions/workflows/R-CMD-check.yaml)
 [![codecov](https://codecov.io/gh/Raiservi/rminka/graph/badge.svg?token=PB3K1RMR9Y)](https://codecov.io/gh/Raiservi/rminka)
 [![Development
 Status](https://img.shields.io/badge/development%20status-In%20Development-blue)](https://github.com/raiservi/rminka)
