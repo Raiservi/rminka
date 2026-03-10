@@ -1,7 +1,4 @@
 url: https://raiservi.github.io/rminka/
 template:
   bootstrap: 5
-  home:
-    mode: article
-    contents:
-      - rminka_intro
+
