@@ -15,6 +15,7 @@ knitr::opts_chunk$set(
 # rminka <a href="https://dplyr.tidyverse.org"><img src="man/figures/logo1.png" alt="Logo de rminka" align="right" height="138" /></a>
 
 <!-- badges: start -->
+[![test-coverage.yaml](https://github.com/Raiservi/rminka/actions/workflows/test-coverage.yaml/badge.svg)](https://github.com/Raiservi/rminka/actions/workflows/test-coverage.yaml)
 [![codecov](https://codecov.io/gh/Raiservi/rminka/graph/badge.svg?token=PB3K1RMR9Y)](https://codecov.io/gh/Raiservi/rminka)
 [![Development Status](https://img.shields.io/badge/development%20status-In%20Development-blue)](https://github.com/raiservi/rminka)
 [![GitHub last commit](https://img.shields.io/github/last-commit/Raiservi/rminka)](https://github.com/Raiservi/rminka/commits/main)
