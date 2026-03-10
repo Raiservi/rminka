@@ -1,4 +1,4 @@
  # _pkgdown.yml
-        url: https://raiservi.github.io/rminka/
-        template:
-          bootstrap: 5
+url: https://raiservi.github.io/rminka/
+template:
+  bootstrap: 5
