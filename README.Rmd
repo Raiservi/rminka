@@ -12,8 +12,7 @@ knitr::opts_chunk$set(
   out.width = "100%"
 )
 ```
-
-# rminka <a href="https://dplyr.tidyverse.org"><img src="man/figures/logo1.png" align="right" height="138" /></a>
+# rminka <a href="https://dplyr.tidyverse.org"><img src="man/figures/logo1.png" alt="Logo de rminka" align="right" height="138" /></a>
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/Raiservi/rminka/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Raiservi/rminka/actions/workflows/R-CMD-check.yaml)
@@ -89,6 +88,7 @@ If you are new to `rminka` you are better off starting with a starting web page 
 1. The main page directions is [rminka website](https://Raiservi.github.io/rminkav/)
 
 1. The starting web page is [rminka starting](https://development-biomarine.github.io/rminkav3/articles/rminkav3.html)
+
 
 
 ## Getting help

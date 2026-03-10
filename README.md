@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# rminka <a href="https://dplyr.tidyverse.org"><img src="man/figures/logo1.png" align="right" height="138" /></a>
+# rminka <a href="https://dplyr.tidyverse.org"><img src="man/figures/logo1.png" alt="Logo de rminka" align="right" height="138" /></a>
 
 <!-- badges: start -->
 
