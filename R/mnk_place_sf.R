@@ -6,9 +6,6 @@
 #' This id_place number is unique for each Minka place.
 #' @return A tibble with the sf geometry place.
 #' @examples \dontrun{
-#' sant_feliu_id <-mnk_places_byname ("area marina sant feliu")
-#' sf_sant_feliu <- mnk_place_sf(id= sf_sant_feliu$place_id[1,1])
-#' If the id_place is known, the function can be used directly.
 #' sf_sant_feliu <- mnk_place_sf(id= 265)
 #' }
 #' @importFrom utils read.csv
