@@ -9,16 +9,13 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
-library(rminka)
-```
-```{r carga, include=FALSE}
+```{r setup, include=FALSE}
 library(dplyr)
 library(jsonlite)
 library(httr)
 library(leaflet)
 library(magick)
-library(rminkav3)
+library(rminka)
 ```
 
 <style>
