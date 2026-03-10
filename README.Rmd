@@ -17,28 +17,31 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/Raiservi/rminka/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Raiservi/rminka/actions/workflows/R-CMD-check.yaml)
 [![codecov](https://codecov.io/gh/Raiservi/rminka/graph/badge.svg?token=PB3K1RMR9Y)](https://codecov.io/gh/Raiservi/rminka)
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![Development Status](https://img.shields.io/badge/development%20status-In%20Development-blue)](https://github.com/raiservi/rminka)
 [![GitHub last commit](https://img.shields.io/github/last-commit/Raiservi/rminka)](https://github.com/Raiservi/rminka/commits/main)
 <br>
 [![GitHub package version](https://img.shields.io/github/r-package/v/Raiservi/rminka)](https://github.com/Raiservi/rminka/blob/main/DESCRIPTION)
 [![GitHub contributors](https://img.shields.io/github/contributors/Raiservi/rminka)](https://github.com/Raiservi/rminka/graphs/contributors)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](https://github.com/Raiservi/rminka/blob/master/inst/CODE_OF_CONDUCT.md)
 <!-- badges: end -->
 
 ## Usage
 
-Minka is a citizen science app built for recording, organizing and sharing naturalistic observations of animals and plants. It allows anyone to become a researcher and that the observations we make serve for scientific use. Minka also allows users to create their own projects. The link to access Minka's website is [https://minka-sdg.org/](https://minka-sdg.org/)
+Minka is a citizen science platform created by the research group [EMBIMOS](https://www.icm.csic.es/en/research-group/embimos) of the [Institut de Cienciès del Mar (ICM-CSIC)](https://icm.csic.es/en). The platform is open for all users to create their projects, collaborate on others, help the community with identifications or simply upload observations that will be validated with the help of the community and that can be used, in the future, to contribute openly to science and the improvement of the environment.
+<br>
+The link to access Minka's website is [https://minka-sdg.org/](https://minka-sdg.org/)
 
 The goals of the `rminka`  package are:
 
-1. Directly access the data stored in Minka to be able to process them with R through the API.
+1. Directly access the data stored in the Minka platform  to be able to process them with R through the API.
 
 1. Treat the data to be able to use them directly with other packages such as `vegan` or `dismo`.
 
 
 ## Overview
 
-`` is a toolkit for interacting with the Minka API, providing a consistent set of functions to help you query and retrieve biodiversity data. The package's functions are grouped by the type of data they return:
+`rminka` is a toolkit for interacting with the [Minka API](https://api.minka-sdg.org/v1/docs/), providing a consistent set of functions to help you query and retrieve biodiversity data. The package's functions are grouped by the type of data they return:
 
 **a) Project Queries:** A set of complementary functions to find projects and their associated observations.
 
