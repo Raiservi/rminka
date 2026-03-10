@@ -1,9 +1,10 @@
-# Archivo: .github/workflows/deploy-pkgdown.yaml
+## Archivo: .github/workflows/deploy-pkgdown.yaml
 
 on:
   push:
     branches:
-      - master
+      - master  # ¡IMPORTANTE! Asegúrate de que esta sea tu rama principal (o 'main')
+                # Si tu rama principal se llama 'main', cámbialo aquí a 'main'
 
 name: Deploy pkgdown site
 
@@ -21,13 +22,14 @@ jobs:
 
       - uses: r-lib/actions/setup-r@v2
         with:
-          r-version: '4.3.0'
+          r-version: 'release' # Puedes especificar una versión como '4.3.0' si lo necesitas
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           packages: |
             pkgdown
-             sf
+            # Aquí añade cualquier otra dependencia de tu paquete que pkgdown necesite
+            # Por ejemplo, si tu paquete usa data.table, ponlo aquí
           extra-packages: |
             remotes
 
@@ -40,12 +42,19 @@ jobs:
         run: |
           R -e 'pkgdown::build_site()'
 
-      - name: List files in workspace for debugging
+
+      - name: Simplified listing for debugging
         run: |
-          echo "Listing contents of /github/workspace:"
-          ls -R /github/workspace
-          echo "Listing contents of /github/workspace/docs:"
-          ls -R /github/workspace/docs || echo "docs directory not found or empty."
+          echo "Current directory: $(pwd)"
+          echo "Contents of current directory:"
+          ls -F
+          echo "Checking for 'docs' directory:"
+          if [ -d "docs" ]; then
+            echo "Directory 'docs' found. Contents:"
+            ls -F docs
+          else
+            echo "Directory 'docs' NOT found."
+          fi
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -53,7 +62,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'docs'
+          path: 'docs' # Asegúrate de que esta sea la carpeta donde pkgdown genera el sitio
 
       - name: Deploy to GitHub Pages
         id: deployment
