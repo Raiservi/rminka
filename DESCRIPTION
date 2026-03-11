@@ -1,31 +1,32 @@
 Package: rminka
 Type: Package
-Title: GET DIRECT ACCES TO MINKA DATA
-Version: 0.1.0
-Author: Ramon Servitje
-Maintainer: Ramon Servitje <rservitje25@gmail.com>
-Description: Get direct access to the data stored in Minka, 
-    allowing you to process them with R through the API.
+Title: Get Direct Access to Minka Data
+Version: 0.0.9000
+Authors@R: person("Ramon", "Servitje", 
+            email = "rservitje25@gmail.com", 
+            role = c("aut", "cre"))
+Description: Access data stored in the digital platform through its API, 
+    providing tools for efficient processing and analysis within the R environment.
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
 Imports: 
+    dplyr,
     httr,
     jsonlite,
-    purrr,
-    dplyr,
-    stringr,
-    sf,
-    tibble,
     magrittr,
-    rlang
+    purrr,
+    rlang,
+    sf,
+    stringr,
+    tibble
 RoxygenNote: 7.3.2
 Suggests:
-    testthat (>= 3.0.0),
-    knitr,
-    rmarkdown,
-    mockery,
     httptest,
+    knitr,
+    mockery,
+    rmarkdown,
+    testthat (>= 3.0.0)
 URL: https://raiservi.github.io/rminka/
-BugReports: https://@github.com/Raiservi/rminka/issues
+BugReports: https://github.com/Raiservi/rminka/issues
 Config/testthat/edition: 3
