@@ -1,5 +1,5 @@
-## rminka 0.1.0 (2026-03-11) # <-- Usar siempre '##' para la versión
-### Nuevas funcionalidades # <-- Sub-secciones con '###' o '####'
+## rminka 0.1.0 (2026-03-11)  
+### Nuevas funcionalidades 
 *   Se añadió la función `load_marine_data()` para cargar datos de sensores.
 *   Implementada la función `analyze_species()` para análisis de diversidad.
 ### Cambios importantes
