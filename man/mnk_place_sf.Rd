@@ -7,16 +7,16 @@
 mnk_place_sf(id)
 }
 \arguments{
-\item{id}{A single integer number id for a Minka place.
-This id_place number is unique for each Minka place.}
+\item{id}{A single integer number id for a Minka place
+This id_place number is unique for each Minka place}
 }
 \value{
-A tibble with the sf geometry place.
+A tibble with the sf geometry place
 }
 \description{
 Gets the geometry in sf format of a Minka
 place given its id_place.The CRS of the resulting geometry is
-CRS = 4326 (WGS84).
+CRS = 4326 (WGS84)
 }
 \examples{
 \dontrun{

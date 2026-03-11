@@ -1,14 +1,13 @@
 #' @title Get the sf geometry of a Minka place
 #' @description Gets the geometry in sf format of a Minka
 #' place given its id_place.The CRS of the resulting geometry is
-#' CRS = 4326 (WGS84).
-#' @param id A single integer number id for a Minka place.
-#' This id_place number is unique for each Minka place.
-#' @return A tibble with the sf geometry place.
+#' CRS = 4326 (WGS84)
+#' @param id A single integer number id for a Minka place
+#' This id_place number is unique for each Minka place
+#' @return A tibble with the sf geometry place
 #' @examples \dontrun{
 #' sf_sant_feliu <- mnk_place_sf(id= 265)
 #' }
-#' @importFrom utils read.csv
 #' @export
 
 

@@ -13,3 +13,5 @@
 ^CONTRIBUTING\.md$
 ^\.gitignore$
 ^\.Rhistory$
+^\.RData$
+^rminka\.Rproj$
