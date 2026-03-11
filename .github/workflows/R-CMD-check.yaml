@@ -4,12 +4,10 @@ on:
   push:
     branches: [main, master]
   pull_request:
-    branches: [main, master]
 
-name: R-CMD-check
+name: R-CMD-check.yaml
 
-permissions:
-  contents: read # Solo necesita leer el contenido del repositorio
+permissions: read-all
 
 jobs:
   R-CMD-check:
@@ -21,13 +19,11 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          # Para macos y windows, r-build-args es una cadena vacía
-          - {os: macos-latest,   r: 'release', r-build-args: ''}
-          - {os: windows-latest, r: 'release', r-build-args: ''}
-          # Para ubuntu, usamos los argumentos para compactar viñetas
-          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release', r-build-args: '--no-manual --compact-vignettes=gs+qpdf'}
-          - {os: ubuntu-latest,   r: 'release', http-user-agent: 'release', r-build-args: '--no-manual --compact-vignettes=gs+qpdf'}
-          - {os: ubuntu-latest,   r: 'oldrel-1', http-user-agent: 'release', r-build-args: '--no-manual --compact-vignettes=gs+qpdf'}
+          - {os: macos-latest,   r: 'release'}
+          - {os: windows-latest, r: 'release'}
+          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
+          - {os: ubuntu-latest,   r: 'release'}
+          - {os: ubuntu-latest,   r: 'oldrel-1'}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -52,8 +48,4 @@ jobs:
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true
-          # Lógica condicional para `build_args`:
-          # Si `r-build-args` NO está vacío, usa su valor.
-          # Si `r-build-args` SÍ está vacío, lo pasa como 'character(0)' que R entiende como un vector vacío.
-          build_args: ${{ matrix.config.r-build-args != '' && matrix.config.r-build-args || 'character(0)' }}
-          # Puedes añadir --as-cran aquí si quieres que el check sea más estricto
+          build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
