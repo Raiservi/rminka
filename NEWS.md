@@ -1,6 +1,5 @@
-# News
-
-### rminka 0.1.0 (2026-03-11)
+## rminka 0.1.0 (2026-03-11)
+### Added new features
 *   Added the `load_marine_data()` function to load sensor data.
 *   Implemented the `analyze_species()` function for diversity analysis.
 
@@ -11,4 +10,5 @@
 *   Fixed an error in `calculate_depth()` that caused negative values.
 
 ## rminka 0.0.1 (2026-02-28)
+### Initial release
 *   Initial package version
