@@ -1,7 +1,7 @@
 Package: rminka
 Type: Package
 Title: Get Direct Access to Minka Data
-Version: 0.1.0
+Version: 0.1.0.9000
 Authors@R: person("Ramon", "Servitje", 
             email = "rservitje25@gmail.com", 
             role = c("aut", "cre"))

@@ -1,3 +1,5 @@
+# rminka (development version)
+
 # rminka 0.1.0
 
 ## rminka 0.2.0 (2026-03-21)
@@ -9,7 +11,7 @@
 *   Migration from `minkarv5` of all the functions.
 
 ### Bug fixes
-*   Fixed test errors in istalation `httptest` and `mockery` creating WARNINGS in test and check.
+*   Fixed test errors in instalation `httptest` and `mockery` creating WARNINGS in test and check.
 
 ## rminka 0.0.1 (2026-02-28)
 ### Initial release
