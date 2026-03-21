@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# rminka <a href="https://dplyr.tidyverse.org"><img src="man/figures/logo1.png" alt="Logo de rminka" align="right" height="138" /></a>
+# rminka <a href="https://raiservi.github.io/rminka/"><img src="man/figures/logo1.png" alt="Logo de rminka" align="right" height="138" /></a>
 
 <!-- badges: start -->
 
@@ -91,11 +91,11 @@ data based on different parameters.
 that complement Minka’s observational data and help in processing them
 when used in other R packages (dismo, vegan,..).
 
-- `get_wrm_tax()`: Retrieves the complete taxonomy and additional
-  information (terrestrial/marine…) of a species given its scientific
-  name.
+- `get_wrm_tax()`: Retrieves the complete taxonomy and additional data
+  (e.g., marine or terrestrial ) from
+  [WoRMS](https://www.marinespecies.org/) for a given scientific name.
 - `shrt_name()`: Returns the CEP name (abbreviated scientific name) with
-  separation point, given the scientific name.
+  separation point, given a scientific name.
 
 These functions are designed to be used together. For queries that span
 multiple years, you can easily loop through the years of interest, run
