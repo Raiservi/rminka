@@ -1,8 +1,8 @@
 # rminka (development version)
 
-# rminka 0.1.0
+# rminka 0.1.0.9000
 
-## rminka 0.2.0 (2026-03-21)
+## rminka 0.1.0.9000 (2026-03-21)
 ### Added new features
 *   Added the `get_wrm_tax()` function to get taxonomy from WORMS.
 *   Implemented the `analyze_species()` function for diversity analysis.
