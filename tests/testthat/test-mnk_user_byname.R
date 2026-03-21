@@ -1,15 +1,14 @@
+
+skip_if_not_installed("mockery")
+
 library(testthat)
-library(mockery)
 library(httr)
 library(jsonlite)
 library(dplyr)
 library(tibble)
 
-# Asegúrate de que tu función esté cargada.
-# source("R/mnk_user_byname.R")
-
 test_that("mnk_user_byname procesa correctamente una respuesta de API simulada", {
-  # Mock del contenido que devolverá httr::content
+
   mock_content_success <- list(
     total_results = 2, page = 1, per_page = 2,
     results = list(
@@ -18,12 +17,11 @@ test_that("mnk_user_byname procesa correctamente una respuesta de API simulada",
     )
   )
 
-  # Mock de httr::GET que solo devuelve una respuesta exitosa vacía
+
   mock_GET_generic_success <- function(url, path, query) {
     return(structure(list(status_code = 200L), class = c("response", "handle")))
   }
 
-  # Suplantamos GET (para que no falle) y content (para devolver los datos)
   local_mocked_bindings(
     GET = mock_GET_generic_success,
     content = function(x, as) mock_content_success,
@@ -38,7 +36,7 @@ test_that("mnk_user_byname procesa correctamente una respuesta de API simulada",
 })
 
 test_that("mnk_user_byname maneja un error de API correctamente", {
-  # Mock de httr::GET que devuelve un error HTTP
+
   mock_GET_error <- function(url, path, query) {
     return(structure(list(status_code = 500L), class = c("response", "handle")))
   }
@@ -51,20 +49,20 @@ test_that("mnk_user_byname maneja un error de API correctamente", {
   }
 })
 
-# Test CORREGIDO para respuesta sin 'results'
+
 test_that("mnk_user_byname handles API response without 'results' field", {
-  # Contenido que queremos que devuelva httr::content
+
   mock_content_no_results <- list(message = "This is not the data you are looking for")
 
-  # Mock de httr::GET que solo devuelve una respuesta exitosa vacía
+
   mock_GET_generic_success <- function(url, path, query) {
     return(structure(list(status_code = 200L), class = c("response", "handle")))
   }
 
-  # Suplantamos GET y, crucialmente, content
+
   local_mocked_bindings(
     GET = mock_GET_generic_success,
-    content = function(x, as) mock_content_no_results, # Forzamos el contenido sin 'results'
+    content = function(x, as) mock_content_no_results,
     .package = "httr")
   {
     expect_message(

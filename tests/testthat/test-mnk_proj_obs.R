@@ -1,6 +1,8 @@
 
+
+skip_if_not_installed("mockery")
+
 library(testthat)
-library(mockery)
 library(httr)
 library(jsonlite)
 library(dplyr)
@@ -8,7 +10,7 @@ library(purrr)
 library(tibble)
 library(stringr)
 
-# --- MOCKS JSON GLOBALES ---
+
 mock_json_single_observation_record_content <- '{
   "id": 12345, "observed_on": "2025-01-15",
   "observed_on_details": {"year": 2025, "month": 1, "week":3, "day":15, "hour":10},
@@ -19,7 +21,7 @@ mock_json_single_observation_record_content <- '{
   "quality_grade": "research", "species_guess": "Guess", "user": {"id":1, "login":"user1"}
 }'
 
-# --- MOCK PRINCIPAL PARA HTTR::GET ---
+
 mock_httr_GET_pings <- function(url = NULL, path = NULL, query = NULL,...) {
   pid <- query$project_id
   yr <- query$year
@@ -54,7 +56,7 @@ mock_httr_GET_pings <- function(url = NULL, path = NULL, query = NULL,...) {
   return(structure(list(url=url, status_code=status_code, headers=list('Content-Type'="application/json; charset=utf-8"), content=charToRaw(response_content)), class=c("response","handle")))
 }
 
-# --- TEST SET ---
+
 test_that("mnk_proj_obs handles invalid input", {
   expect_error(mnk_proj_obs(project_id = NULL, year = 2025), "You must provide 'project_id' and 'year'")
   expect_error(mnk_proj_obs(project_id = 123, year = NULL), "You must provide 'project_id' and 'year'")
@@ -258,7 +260,7 @@ test_that("process_minka_results correctly transforms list with missing data", {
   expect_equal(result$longitude[2], 3.0)
 })
 
-# NUEVO TEST para cubrir la línea 199 de get_minka_obs
+
 test_that("get_minka_obs handles zero or null total_results from ping", {
   mock_GET_no_results_ping <- function(url, path, query,...) {
     if (!is.null(query$per_page) && query$per_page == 1) {
@@ -273,11 +275,11 @@ test_that("get_minka_obs handles zero or null total_results from ping", {
   }
 
   with_mocked_bindings(GET = mock_GET_no_results_ping,.package = "httr", {
-    # Prueba del caso 1: total_results = 0
+
     result_zero <- get_minka_obs(params = list(project_id = "zero_results"))
     expect_s3_class(result_zero, "tbl_df"); expect_equal(nrow(result_zero), 0)
 
-    # Prueba del caso 2: total_results = NULL
+
     result_null <- get_minka_obs(params = list(project_id = "null_results"))
     expect_s3_class(result_null, "tbl_df"); expect_equal(nrow(result_null), 0)
   })

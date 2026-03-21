@@ -1,29 +1,28 @@
 library(testthat)
-library() # Tu paquete
 library(httr)
 library(jsonlite)
-library(stringr) # Necesario para str_replace_all en la función
-library(tibble)  # Útil si fromJSON devuelve tibbles, aunque tu función usa data.frame
+library(stringr)
+library(tibble)
 
-# --- Test para argumentos inválidos ---
+
 test_that("mnk_proj_byname throws error for invalid query", {
-  # Mensajes actualizados para reflejar la validación de la función
+
   expect_error(mnk_proj_byname(NULL), "You must provide a single, non-empty, non-NA character 'query' for the project search.")
   expect_error(mnk_proj_byname(NA_character_), "You must provide a single, non-empty, non-NA character 'query' for the project search.")
   expect_error(mnk_proj_byname(""), "You must provide a single, non-empty, non-NA character 'query' for the project search.")
   expect_error(mnk_proj_byname("   "), "You must provide a single, non-empty, non-NA character 'query' for the project search.")
-  # CAMBIO AQUÍ: Ahora esperamos el mensaje de error específico si hay más de un query
+
   expect_error(mnk_proj_byname(c("query1", "query2")), "You must provide a single query string. Only one query is accepted.")
 })
 
-# --- Test para API devuelve error HTTP ---
+
 test_that("mnk_proj_byname handles API HTTP errors", {
   mock_httr_GET <- function(url = NULL, ..., path = NULL, as) {
     full_url <- if (!is.null(url) && !is.null(path)) paste0(url, path) else url
     if (grepl("q=error_query", full_url)) {
       response_obj <- list(
         url = full_url,
-        status_code = 500L, # Código de error HTTP
+        status_code = 500L,
         headers = list(`Content-Type` = "application/json"),
         content = charToRaw('{"error": "Internal server error"}')
       )
@@ -44,7 +43,7 @@ test_that("mnk_proj_byname handles API HTTP errors", {
   )
 })
 
-# --- Test para API devuelve respuesta vacía o 'null' ---
+
 test_that("mnk_proj_byname handles empty or null API response", {
   mock_httr_GET <- function(url = NULL, ..., path = NULL, as) {
     full_url <- if (!is.null(url) && !is.null(path)) paste0(url, path) else url
@@ -53,7 +52,7 @@ test_that("mnk_proj_byname handles empty or null API response", {
         url = full_url,
         status_code = 200L,
         headers = list(`Content-Type` = "application/json"),
-        content = charToRaw('') # Respuesta vacía
+        content = charToRaw('')
       )
       class(response_obj) <- c("response", "handle")
       return(response_obj)
@@ -62,12 +61,12 @@ test_that("mnk_proj_byname handles empty or null API response", {
         url = full_url,
         status_code = 200L,
         headers = list(`Content-Type` = "application/json"),
-        content = charToRaw('null') # Respuesta JSON 'null'
+        content = charToRaw('null')
       )
       class(response_obj) <- c("response", "handle")
       return(response_obj)
     } else {
-      stop("Mock no configurado para esta URL en el test de respuesta vacía/nula: ", full_url)
+      stop("Mock no configurado URL test respuesta vacía/nula: ", full_url)
     }
   }
 
@@ -84,7 +83,7 @@ test_that("mnk_proj_byname handles empty or null API response", {
   )
 })
 
-# --- Test para API devuelve JSON sin resultados (projects: []) ---
+
 test_that("mnk_proj_byname handles JSON with no projects found", {
   mock_response_json <- '{"results": []}'
 
@@ -100,7 +99,7 @@ test_that("mnk_proj_byname handles JSON with no projects found", {
       class(response_obj) <- c("response", "handle")
       return(response_obj)
     } else {
-      stop("Mock no configurado para esta URL en el test de no proyectos: ", full_url)
+      stop("Mock no configurado esta URL  test de no proyectos: ", full_url)
     }
   }
 

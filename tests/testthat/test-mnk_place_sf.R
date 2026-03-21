@@ -1,5 +1,6 @@
+
+skip_if_not_installed("mockery")
 library(testthat)
-library(mockery) # Para with_mocked_bindings
 library(httr)
 library(jsonlite)
 library(sf)

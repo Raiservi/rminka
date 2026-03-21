@@ -1,14 +1,12 @@
+
+skip_if_not_installed("mockery")
+
 library(testthat)
-library(mockery)
 library(httr)
 library(jsonlite)
 library(dplyr)
 library(tibble)
 
-# Asegúrate de que tu función esté cargada.
-# source("R/mnk_proj_info.R")
-
-# --- TEST SET ---
 
 test_that("mnk_proj_info handles invalid input", {
   expect_error(mnk_proj_info(project_id = NULL, grpid = NULL), "You must provide either 'project_id' or 'grpid'")
@@ -116,9 +114,9 @@ test_that("mnk_proj_info handles null or empty 'results' field", {
   }
 })
 
-# NUEVO TEST: 'admins' no es nulo
+
 test_that("mnk_proj_info processes 'admins' field correctly", {
-  # Mock con un campo 'admins' que contiene datos
+
   mock_response_with_admins <- '{
     "results": [
       {

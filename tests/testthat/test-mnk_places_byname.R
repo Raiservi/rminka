@@ -1,5 +1,7 @@
+
+skip_if_not_installed("mockery")
+
 library(testthat)
-library(mockery)
 library(httr)
 library(jsonlite)
 library(purrr)
@@ -7,10 +9,8 @@ library(dplyr)
 library(tibble)
 library(stringr)
 
-# Asegúrate de que tu función mnk_places_byname esté cargada.
-# source("R/mnk_places_byname.R") # ¡Descomenta si tu paquete no está instalado o cargado!
 
-# --- DEFINICIONES DE MOCKS JSON GLOBALES ---
+
 mock_response_json_success_multiple <- '{
   "results": [
     {"id":"123", "slug":"area-marina-sant-feliu", "name":"Area marina Sant Feliu", "display_name":"Area marina Sant Feliu de Guíxols", "location":"41.7597741479,3.0226481505", "bbox_area":0.005301438053870476},
@@ -26,7 +26,7 @@ mock_response_json_malformed_for_parsing <- '{"error": "bad json", "results": ['
 mock_response_json_no_results_key <- '{"some_other_key": "some_value"}'
 mock_response_json_empty_results <- '{"results": []}'
 
-# --- Tests ---
+
 test_that("mnk_places_byname throws error for invalid query", {
   expect_error(mnk_places_byname(NULL), "You must provide a non-empty 'query' string.")
   expect_error(mnk_places_byname(""), "You must provide a non-empty 'query' string.")
@@ -103,14 +103,14 @@ test_that("mnk_places_byname handles malformed JSON or missing 'results' key", {
   }
 
   with_mocked_bindings(GET = mock_httr_GET,.package = "httr", {
-    # Captura cualquier error de parseo de jsonlite
+
     expect_error(mnk_places_byname("Malformed JSON"))
 
-    # Cubre el if (is.null(parsed_json$results) ... )
+
     expect_message(result <- mnk_places_byname("No results key"), "No places found for your query.")
     expect_null(result)
 
-    # Cubre el stop() para location mal formada, suprimiendo las advertencias de as.numeric
+
     expect_error(suppressWarnings(mnk_places_byname("Malformed location")), "Invalid 'location' format")
     expect_error(suppressWarnings(mnk_places_byname("Location no numeric")), "Invalid 'location' format")
   })
