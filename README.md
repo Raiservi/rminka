@@ -118,7 +118,7 @@ If you are new to `rminka` you are better off starting with a starting
 web page of `rminka` in the github page of the project.
 
 1.  The main page directions is [rminka
-    website](https://Raiservi.github.io/rminkav/)
+    website](https://raiservi.github.io/rminka/)
 
 2.  The starting web page is [rminka
     starting](https://development-biomarine.github.io/rminkav3/articles/rminkav3.html)
