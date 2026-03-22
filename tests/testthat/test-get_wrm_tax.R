@@ -19,7 +19,7 @@ test_that("get_wrm_tax handles API HTTP errors (e.g., 404, 500)", {
     ), class = "response")
   }
 
-  with_mocked_bindings(
+  with_mocked_bindings (
     GET = mock_httr_GET_error,
     .package = "httr",
     {
