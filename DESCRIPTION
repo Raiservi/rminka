@@ -27,7 +27,7 @@ Suggests:
     mockery,
     rmarkdown,
     testthat (>= 3.0.0)
-URL: ttps://github.com/Raiservi/rminka, https://raiservi.github.io/rminka/
+URL: https://github.com/Raiservi/rminka, https://raiservi.github.io/rminka/
 BugReports: https://github.com/Raiservi/rminka/issues
 Config/testthat/edition: 3
 VignetteBuilder: knitr
