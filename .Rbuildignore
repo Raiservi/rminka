@@ -8,7 +8,6 @@
 ^pkgdown$
 ^CODE_OF_CONDUCT.md$
 ^codecov.yml$
-^vignettes/articles$
 ^NEWS\.md$
 ^CONTRIBUTING\.md$
 ^\.gitignore$

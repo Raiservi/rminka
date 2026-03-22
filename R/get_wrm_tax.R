@@ -13,10 +13,6 @@
 #' print(diplodus_genus_df)
 #' }
 
-library(jsonlite)
-library(httr)
-library(tibble)
-
 get_wrm_tax <- function(scientific_name) {
 
   # Definir el operador %||% dentro de la función para que sea autónoma

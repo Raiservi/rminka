@@ -30,3 +30,4 @@ Suggests:
 URL: https://raiservi.github.io/rminka/
 BugReports: https://github.com/Raiservi/rminka/issues
 Config/testthat/edition: 3
+VignetteBuilder: knitr
