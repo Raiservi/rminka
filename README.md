@@ -19,6 +19,7 @@ contributors](https://img.shields.io/github/contributors/Raiservi/rminka)](https
 v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Contributor
 Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](https://github.com/Raiservi/rminka/blob/master/inst/CODE_OF_CONDUCT.md)
+[![DOI](https://zenodo.org/badge/1176742961.svg)](https://doi.org/10.5281/zenodo.19183801)
 <!-- badges: end -->
 
 ## Usage
