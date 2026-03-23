@@ -1,4 +1,4 @@
-# rminka 1.0.0
+# rminka 1.0.0 (2026-03-23)
 
 ### Added new features
 * Added `shrt_name()` function for to get the CEP name.
@@ -15,9 +15,8 @@
 ### Bug fixes
 *   Fixed test errors in instalation `httptest` and `mockery` creating WARNINGS in test and check.
 
-# rminka 0.0.0.9000
+# rminka 0.0.0.9000 (2026-02-28)
 
-## rminka 0.0.0.9000 (2026-02-28)
 ### Initial release
 *   Initial package version.
 *   Migration from `minkarv5` of all the functions.
