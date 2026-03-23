@@ -1,14 +1,13 @@
-#' @title Information on a specific observation
-#' @description
+#' Information on a specific observation
+
 #' Get information on a specific observation by observation id.
 #' @param id A single integer number for a Minka observation record.
 #' @param meta Downloand metadata.
 #' @return A dataframe with all details on a given record
 #' @examples \dontrun{
-#' m_obs <- mnk_obs(query="Boops boops")
-#' get_minka_obs_id(m_obs$id[1])
+#' m_obs <- mnk_prj_obs(420, year = 2025)
+#' mnk_obs_id(m_obs$id[1])
 #' }
-#' @importFrom utils read.csv
 #' @export
 #'
 #'

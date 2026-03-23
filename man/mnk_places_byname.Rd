@@ -2,7 +2,8 @@
 % Please edit documentation in R/mnk_places_byname.R
 \name{mnk_places_byname}
 \alias{mnk_places_byname}
-\title{Information about Minka place by name}
+\title{Information about Minka Place by Name
+Get information about Minka place by part of the place name.}
 \usage{
 mnk_places_byname(query)
 }
@@ -14,10 +15,11 @@ A tibble with all the Minka places that contain the string with
 some details of those projects.
 }
 \description{
+Information about Minka Place by Name
 Get information about Minka place by part of the place name.
 }
 \examples{
 \dontrun{
-sant_feliu <- mnk_places_byname(query="Sant Feliu")
+sant_feliu <- mnk_places_byname(query = "Sant Feliu")
 }
 }

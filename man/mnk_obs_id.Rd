@@ -2,7 +2,8 @@
 % Please edit documentation in R/mnk_obs_id.R
 \name{mnk_obs_id}
 \alias{mnk_obs_id}
-\title{Information on a specific observation}
+\title{Information on a specific observation
+Get information on a specific observation by observation id.}
 \usage{
 mnk_obs_id(id, meta = FALSE)
 }
@@ -15,11 +16,12 @@ mnk_obs_id(id, meta = FALSE)
 A dataframe with all details on a given record
 }
 \description{
+Information on a specific observation
 Get information on a specific observation by observation id.
 }
 \examples{
 \dontrun{
-m_obs <- mnk_obs(query="Boops boops")
-get_minka_obs_id(m_obs$id[1])
+m_obs <- mnk_prj_obs(420, year = 2025)
+mnk_obs_id(m_obs$id[1])
 }
 }
