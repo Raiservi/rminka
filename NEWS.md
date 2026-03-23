@@ -20,5 +20,3 @@
 ### Initial release
 *   Initial package version.
 *   Migration from `minkarv5` of all the functions.
-
-
