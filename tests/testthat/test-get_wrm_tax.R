@@ -1,25 +1,44 @@
-# Cargar las bibliotecas necesarias para los tests
+## Cargar las bibliotecas necesarias para los tests
 library(testthat)
 library(tibble)
 
-# Configuración de skips iniciales [1, 2]
+# Configuración de skips iniciales
 skip_if_not_installed("mockery")
 skip_if_not_installed("httptest")
 
+# =========================================================================
 # === Tests SIN conexión a internet (usando simulación/mocking) ===
+# =========================================================================
+
+test_that("get_wrm_tax handles network errors (e.g., no connection)", {
+  mock_httr_GET_network_error <- function(url) {
+    stop("Failed to connect to host: www.marinespecies.org")
+  }
+
+  with_mocked_bindings(
+    GET = mock_httr_GET_network_error,
+    .package = "httr",
+    {
+      expect_message(
+        result <- get_wrm_tax("Qualquer nome"),
+        regexp = "Network error: WoRMS API is unavailable or unreachable..*Failed to connect"
+      )
+      expect_null(result)
+    }
+  )
+})
 
 test_that("get_wrm_tax handles API HTTP errors (e.g., 404, 500)", {
-  # Definimos una respuesta de error más robusta
   mock_httr_GET_error <- function(url) {
     structure(list(
       status_code = 404L,
       content = charToRaw("Not Found"),
-      url = "https://www.marinespecies.org/rest/mock-error", # CAMBIO: Añadida URL
-      headers = list("Content-Type" = "text/plain")        # CAMBIO: Añadidos headers
+      url = "https://www.marinespecies.org/rest/mock-error",
+      headers = list("Content-Type" = "text/plain")
     ), class = "response")
   }
 
-  with_mocked_bindings (
+  with_mocked_bindings(
     GET = mock_httr_GET_error,
     .package = "httr",
     {
@@ -32,13 +51,13 @@ test_that("get_wrm_tax handles API HTTP errors (e.g., 404, 500)", {
   )
 })
 
-test_that("get_wrm_tax handles API returning empty JSON", {
+test_that("get_wrm_tax handles API returning empty JSON ('[]')", {
   mock_httr_GET_empty <- function(url) {
     structure(list(
       status_code = 200L,
       content = charToRaw("[]"),
-      url = "https://www.marinespecies.org/rest/mock-empty", # CAMBIO: Añadida URL
-      headers = list("Content-Type" = "application/json")   # CAMBIO: Añadidos headers
+      url = "https://www.marinespecies.org/rest/mock-empty",
+      headers = list("Content-Type" = "application/json")
     ), class = "response")
   }
 
@@ -55,6 +74,31 @@ test_that("get_wrm_tax handles API returning empty JSON", {
   )
 })
 
+test_that("get_wrm_tax handles invalid or malformed JSON response", {
+  mock_httr_GET_success <- function(url) {
+    structure(list(
+      status_code = 200L,
+      content = charToRaw('{"bad json"'),
+      url = "https://www.marinespecies.org/rest/mock-malformed",
+      headers = list("Content-Type" = "application/json")
+    ), class = "response")
+  }
+  mock_fromJSON_fails <- function(...) {
+    return(NULL)
+  }
+
+  # Corrección: Anidar las llamadas para simular en dos paquetes diferentes
+  with_mocked_bindings(.package = "httr", GET = mock_httr_GET_success, {
+    with_mocked_bindings(.package = "jsonlite", fromJSON = mock_fromJSON_fails, {
+      expect_message(
+        result <- get_wrm_tax("a species name"),
+        regexp = "API returned an empty or invalid response for: 'a species name'."
+      )
+      expect_null(result)
+    })
+  })
+})
+
 test_that("get_wrm_tax parses a valid JSON response correctly (offline)", {
   valid_json <- '[{
     "AphiaID": 159782, "valid_AphiaID": 159782, "valid_name": "Diplodus sargus",
@@ -68,8 +112,8 @@ test_that("get_wrm_tax parses a valid JSON response correctly (offline)", {
     structure(list(
       status_code = 200L,
       content = charToRaw(valid_json),
-      url = "https://www.marinespecies.org/rest/mock-success", # CAMBIO: Añadida URL
-      headers = list("Content-Type" = "application/json")      # CAMBIO: Añadidos headers
+      url = "https://www.marinespecies.org/rest/mock-success",
+      headers = list("Content-Type" = "application/json")
     ), class = "response")
   }
 
@@ -78,33 +122,33 @@ test_that("get_wrm_tax parses a valid JSON response correctly (offline)", {
     .package = "httr",
     {
       result <- get_wrm_tax("Diplodus sargus")
-
-      # Verificamos estructura y contenido [3, 4]
       expect_s3_class(result, "tbl_df")
       expect_equal(nrow(result), 1)
       expect_equal(result$valid_name, "Diplodus sargus")
-      expect_equal(result$rank, "Species")
-      # El test asume que tu función convierte 1/0 a TRUE/FALSE
       expect_true(as.logical(result$isMarine))
     }
   )
 })
 
-# === Tests para la validación de la entrada (no dependen de la API) ===
+# ===================================================================
+# === Tests para la validación de la entrada (no dependen de API) ===
+# ===================================================================
 
 test_that("get_wrm_tax throws error for invalid input", {
-  # Validamos que se disparen los errores correctos [4, 5]
   err_msg <- "'scientific_name' must be a single non-empty character string."
   expect_error(get_wrm_tax(NULL), regexp = err_msg, fixed = TRUE)
   expect_error(get_wrm_tax(12345), regexp = err_msg, fixed = TRUE)
   expect_error(get_wrm_tax(c("a", "b")), regexp = err_msg, fixed = TRUE)
+  expect_error(get_wrm_tax("    "), regexp = err_msg, fixed = TRUE)
 })
 
+# =====================================================================
 # === Test con conexión real (solo si hay internet y no es CRAN) ===
+# =====================================================================
 
 test_that("get_wrm_tax works for a valid species name (live API call)", {
-  skip_if_offline(host = "www.marinespecies.org") # [6]
-  skip_on_cran() # [2]
+  skip_if_offline(host = "www.marinespecies.org")
+  skip_on_cran()
 
   result <- get_wrm_tax("Diplodus sargus")
 

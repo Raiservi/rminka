@@ -39,7 +39,7 @@ The goals of the `rminka` package are:
     process them with R through the API.
 
 2.  Treat the data to be able to use them directly with other packages
-    such as `vegan` or `dismo`.
+    such as `vegan`, `dismo`, `labdsv` or others.
 
 ## Overview
 
@@ -89,7 +89,7 @@ data based on different parameters.
 
 **e) Auxiliary functions:** a set of functions with different utilities
 that complement Minka’s observational data and help in processing them
-when used in other R packages (dismo, vegan,..).
+when used in other R packages (`vegan`, `dismo`, `labdsv` or others).
 
 - `get_wrm_tax()`: Retrieves the complete taxonomy and additional data
   (e.g., marine or terrestrial ) from

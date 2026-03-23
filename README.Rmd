@@ -36,7 +36,7 @@ The goals of the `rminka`  package are:
 
 1. Directly access the data stored in the Minka platform  to be able to process them with R through the API.
 
-1. Treat the data to be able to use them directly with other packages such as `vegan` or `dismo`.
+1. Treat the data to be able to use them directly with other packages such as `vegan`, `dismo`, `labdsv` or others.
 
 
 ## Overview
@@ -66,7 +66,7 @@ The goals of the `rminka`  package are:
 *   `mnk_obs()`: Fetches observations based on various parameters for a full year, a specific month, or a single day.
 *   `mnk_obs_bydays()`: Retrieves all observations within a date range in the same year.
 
-**e) Auxiliary functions:**  a set of functions with different utilities that complement Minka's observational data and help in processing them when used in other R packages (dismo, vegan,..).
+**e) Auxiliary functions:**  a set of functions with different utilities that complement Minka's observational data and help in processing them when used in other R packages (`vegan`, `dismo`, `labdsv` or others).
 
 *   `get_wrm_tax()`: Retrieves the complete taxonomy and additional data (e.g., marine or terrestrial ) from  [WoRMS](https://www.marinespecies.org/) for a given scientific name.
 *   `shrt_name()`: Returns the CEP name (abbreviated scientific name) with separation point, given a scientific name.

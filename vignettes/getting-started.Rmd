@@ -46,10 +46,10 @@ library(tibble)
 
 ## Installation
 
-The easiest way to get `rminka` is to install from github repository: 
+The easiest way to get `rminka` is to install from github repository with `pak`: 
 
 ```{r install, eval = FALSE, echo= TRUE}
-devtools::install_github("Raiservi/rminka")
+pak::pak("Raiservi/rminka")
 ```
 
 ## Quickstart guide
