@@ -9,7 +9,6 @@
 ^CONTRIBUTING\.md$
 ^LICENSE\.md$
 ^README\.Rmd$
-^vignettes$
 ^NEWS\.md$
 ^\.RData$
 ^\.Renviron$
