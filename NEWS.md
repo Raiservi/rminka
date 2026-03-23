@@ -1,4 +1,4 @@
-# rminka (development version)
+# rminka 1.0.0
 
 # rminka 0.1.0.9000 (2026-03-21)
 
