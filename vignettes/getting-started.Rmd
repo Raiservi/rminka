@@ -24,19 +24,6 @@ library(rminka)
 library(tibble)
 ```
 
-<style>
-.leaflet {
-    margin: auto;
-}
-</style>
-
-
-
-<style>
-.picture {
-    margin: auto;
-}
-</style>
 
 # rminka <a href="https://raiservi.github.io/rminka/"><img src="./figures/logo1.png" alt="Logo de rminka" align="right" height="138" /></a>
 
@@ -69,7 +56,7 @@ You can search for observations by either common or scientific name. It will sea
 ```{r search0, include = TRUE , echo=TRUE}
 user <- mnk_user_proj(6)
 
-unique(user$user_id)
+unique(user[,1:2])
 ```
 
 
