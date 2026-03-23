@@ -15,3 +15,4 @@
 ^\.RData$
 ^rminka\.Rproj$
 ^vignettes$
+^CITATION$
