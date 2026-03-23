@@ -14,3 +14,4 @@
 ^\.Rhistory$
 ^\.RData$
 ^rminka\.Rproj$
+^vignettes$
