@@ -6,7 +6,6 @@
 #' mnk_obs <- mnk_proj_byname(query="Biomarato 2025")
 #' mnk_obs_id(m_obs$id[1])
 #' }
-#' @importFrom utils read.csv
 #' @export
 #'
 mnk_proj_byname <- function(query) {
