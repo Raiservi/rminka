@@ -1,12 +1,14 @@
 citHeader("To cite rminka in publications use:")
 
 bibentry(
-  bibtype  = "Misc",
-  title    = "rMinka Get Direct Access to Minka Data",
-  author   = person("Ramon", "Servitje", email = "rservitje25@gmail.com",
-              role = c("aut", "cre"),comment = c(ORCID = "0009-0001-8701-8953")),
+  bibtype  = "Manual",
+  title    = "rminka: Get Direct Access to Minka Data",
+  author   = person("Ramon", "Servitje",
+                    email = "rservitje25@gmail.com",
+                    role = c("aut", "cre"),
+                    comment = c(ORCID = "0009-0001-8701-8953")),
   year     = 2026,
-  url   = "https://github.com/raiservi/rminka",
-  note   = "R package version 1.0.0",
+  note     = "R package version 1.0.0",
+  url      = "https://raiservi.github.io/rminka/",
   doi      = "10.5281/zenodo.19183802"
 )
