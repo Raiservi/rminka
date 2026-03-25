@@ -39,27 +39,90 @@ pak::pak("Raiservi/rminka")
 
 ## Quickstart guide
 
-### Get user projects
+These functions are designed to be used together. For queries that span multiple years, you can easily loop through the years of interest, run the appropriate function, and then combine the resulting tibbles with `dplyr::bind_rows()`.
+> It is recommended to set the `quality` argument to `"research"` in order to 
+get more reliable data that has been validated by several contributors.
+
+### Project Queries
+
+A set of complementary functions to find projects and their associated observations.
+
+**- mnk_proj_byname ** 
+   `mnk_proj_byname()`Finds a project's ID using an approximate project name.
+
+**- mnk_proj_info **
+   `mnk_proj_info()`: Retrieves detailed project information using its known ID.
+  
+**- mnk_proj_obs **
+   `mnk_proj_obs()`: Fetches all observations for a specific year within that project.
+
+### User Queries
+
+Functions to find users and their contributed observations.
+
+**- mnk_user_byname ** 
+    `mnk_user_byname()`: Finds a user's ID from their approximate login name.
+    
+```{r search1, include = TRUE , echo=TRUE}
+
+name <- mnk_user_byname("ramon")
+
+unique(name[,1:4])
+```
+
+
+**- mnk_user_proj **
+    `mnk_user_proj()`: Find the projects to which a user has explicitly subscribed    based on their user_ID. You need to known previously the user_id using teh function `mnk_user_byname` 
+    
+```{r name, include = TRUE , echo=TRUE}
+user <- mnk_user_proj(6)
+
+unique(user[,1:2])
+```
+
+    
+**- mnk_user_obs **
+    `mnk_user_obs()`: Retrieves all observations contributed by that user for a given year ( all the year or only a specific month) from their id_user.
+
+### Place Queries
+
+Functions to find places and retrieve their spatial data.
+
+**- mnk_places_byname ** 
+   `mnk_places_byname()`: Finds the ID for a location using an approximate place name.
+   
+**- mnk_places_sf **  
+   `mnk_place_sf()`: Returns the `sf` geometry for a place, ready for plotting with packages like `ggplot2` or `leaflet`.
+
+**d) Observation Queries:** A variety of functions to fetch observation data based on different parameters.
+
+*   `mnk_obs_id()`: Retrieves a single observation's complete data using its unique ID.
+*   `mnk_obs()`: Fetches observations based on various parameters for a full year, a specific month, or a single day.
+*   `mnk_obs_bydays()`: Retrieves all observations within a date range in the same year.
+
+**e) Auxiliary functions:**  a set of functions with different utilities that complement Minka's observational data and help in processing them when used in other R packages (`vegan`, `dismo`, `labdsv` or others).
+
+*   `get_wrm_tax()`: Retrieves the complete taxonomy and additional data (e.g., marine or terrestrial ) from  [WoRMS](https://www.marinespecies.org/) for a given scientific name.
+*   `shrt_name()`: Returns the CEP name (abbreviated scientific name) with separation point, given a scientific name.
+
+
+
+
 
 `mnk_user_proj` This function retrieves observations from Minka. The text or taxon search can be refined by observation date, record quality and location.
 
-> It is recommended to set the `quality` argument to `"research"` in order to get more reliable data that has been validated by several contributors.
+
 
 #### Get user id
 
 You can search for observations by either common or scientific name. It will search the entire  database, so the search below will return entries that _mention_ seabream fishes , not just seabream observations.
 
 
-```{r search0, include = TRUE , echo=TRUE}
-user <- mnk_user_proj(6)
-
-unique(user[,1:2])
-```
 
 
 > Note that `get_minka_obs()` will return 500 observations by default. This can be controlled with the `maxresults` argument.
 
-```{r search1, include = TRUE , echo=TRUE}
+```{r searchrrr, include = TRUE , echo=TRUE}
 
 # sard_max_results <- get_minka_obs(projectyear = 2021, maxresults = 10)
 # 
