@@ -5,7 +5,7 @@ template:
 reference:
 - title: Project Queries
   desc: >
-    set of complementary functions to find projects and their associated
+    Set of complementary functions to find projects and their associated.
     observations
   contents:
   - mnk_proj_byname
@@ -26,7 +26,7 @@ reference:
 - title: Observation Queries
   desc: >
     A variety of functions to fetch observation data based on different
-    parameters
+    parameters.
   contents:
   - mnk_obs_id
 - title: Auxiliary functions
