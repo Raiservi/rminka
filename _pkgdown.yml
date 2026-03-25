@@ -5,8 +5,8 @@ template:
 reference:
 - title: Project Queries
   desc: >
-     set of complementary functions to find projects and their associated
-     observations
+    set of complementary functions to find projects and their associated
+    observations
   contents:
   - mnk_proj_byname
   - mnk_proj_info
@@ -17,7 +17,6 @@ reference:
   contents:
   - mnk_user_byname
   - mnk_user_proj
-  - mnk_user_obs
 - title: Place Querie
   desc: >
     Functions to find places and retrieve their spatial data.
@@ -30,8 +29,6 @@ reference:
     parameters
   contents:
   - mnk_obs_id
-  - mnk_obs
-  - mnk_obs_bydays
 - title: Auxiliary functions
   desc: >
     A set of functions with different utilities that complement Minka's
