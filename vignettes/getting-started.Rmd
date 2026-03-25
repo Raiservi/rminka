@@ -24,9 +24,6 @@ library(rminka)
 library(tibble)
 ```
 
-
- #<a href="https://raiservi.github.io/rminka/"><img src="./figures/logo1.png"   #alt="Logo de rminka" align="right" height="138" /></a>
-
 ## About
 
 `rminka` is a wrapper for Minka APIs for accessing the observations.
