@@ -8,6 +8,8 @@ navbar:
       href: articles/getting-started.html
     - text: "Reference"
       href: reference/index.html
+    - text: "Changelog"
+      href: news/index.html
     - text: "Articles"
       href: articles/index.html
   right:
