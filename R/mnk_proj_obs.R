@@ -22,7 +22,6 @@
 #'   obs_june_2025 <- mnk_proj_obs( projects$project_id[1], year=2025, month=6)
 #'   obs_2025 <- mnk_proj_obs( projects$project_id[1], year=2025, month=NULL)
 #' }
-#' @importFrom utils read.csv
 #' @export
 
 #Main function; download only a month or a full year calling function download_month_data()
