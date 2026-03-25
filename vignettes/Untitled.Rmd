@@ -1,5 +1,5 @@
 ---
-title: "Introduction to rminka"
+title: "Get Started"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{getting-started}
@@ -25,7 +25,7 @@ library(tibble)
 ```
 
 
- #<a href="https://raiservi.github.io/rminka/"><img src="./figures/logo1.png"   #alt="Logo de rminka" align="right" height="138" /></a>
+# <a href="https://raiservi.github.io/rminka/"><img src="./figures/logo1.png" alt="Logo de rminka" align="right" height="138" /></a>
 
 ## About
 
@@ -195,4 +195,5 @@ If you just want all the observations by a user you can download all their obser
 # # Show the image
 # print(image)
 ```
+
 

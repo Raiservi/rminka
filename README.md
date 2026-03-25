@@ -1,8 +1,6 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# rminka <a href="https://raiservi.github.io/rminka/"><img src="man/figures/logo1.png" alt="Logo de rminka" align="right" height="138" /></a>
-
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/raiservi/rminka/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/raiservi/rminka/actions/workflows/R-CMD-check.yaml)
