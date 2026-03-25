@@ -2,6 +2,15 @@ url: https://raiservi.github.io/rminka/
 template:
   bootstrap: 5
 
+navbar:
+  left:
+    - text: "Get Started"
+      href: articles/get-started.html
+    - text: "Reference"
+      href: reference/index.html
+    - text: "Articles"
+      href: articles/index.html
+
 reference:
 - title: Project Queries
   desc: >
