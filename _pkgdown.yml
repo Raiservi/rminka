@@ -7,6 +7,8 @@ url: https://raiservi.github.io/rminka/
 template:
   bootstrap: 5
   bootswatch: sandstone
+  figures:
+    logo: vignettes/figures/logo1.png
 
 # Barra de navegación simplificada para evitar errores de sintaxis
 navbar:
