@@ -2,38 +2,48 @@
 % Please edit documentation in R/mnk_proj_info.R
 \name{mnk_proj_info}
 \alias{mnk_proj_info}
-\title{Information about a specific Minka project}
+\title{Get Information About a Specific Minka Project}
 \usage{
-mnk_proj_info(project_id = NULL, grpid = NULL)
+mnk_proj_info(project_id = NULL, grpid = NULL, users = FALSE)
 }
 \arguments{
-\item{project_id}{A single id for a Minka project.}
+\item{project_id}{A single character string or number representing the unique
+Minka project ID.}
 
-\item{grpid}{Name of the group as an Minka slug or group ID.
-returns the raw output of parsed JSON for that project. Otherwise just some
-basic information is returned as a list.}
+\item{grpid}{The group identifier (slug) or ID for the project.}
+
+\item{users}{A logical value (`TRUE` or `FALSE`). If `TRUE`, the function
+returns a tibble containing only the IDs of users subscribed to the project.
+If `FALSE` (the default), it returns a list with the main project information.}
 }
 \value{
-A list containing project details similar to what you can find on a
-project's page.
+By default, a list containing key details about the project.
+If `users = TRUE`, it returns a `tibble` with a single column `id_users`
+containing the numeric IDs of subscribed users.
+If the project is not found or a network error occurs, it returns `NULL`
+and prints a message.
 }
 \description{
-This function download complete information from a specific Minka
-project. It can be used to get either information from a project by complete
-project name or ID.
+This function downloads information for a specific Minka project using either
+its unique `project_id` or its group identifier (`grpid`).
 }
 \details{
-Before using this function, you need to know the \code{project_id} or
-the project slug name.If the ID or the slug name is unknown, you can first use
-the function \code{\link{mnk_proj_byname}}to find it based on the project's name.
- A Minka slug is usually the project name as a single string with words separated
-by hyphens. For instance, the project "biomarato-2022-girona" has a slug of
-"world-oceans-week-2022", which you can find by searching projects on Minka and
-looking at the \href{https://minka-sdg.org/}{project's page's URL}.
+You must provide either a `project_id` or a `grpid`. If you don't know the
+ID, you can use the `mnk_proj_byname()` function to find it.
+
+A Minka `grpid` or slug is typically the project name formatted as a single
+string with words separated by hyphens (e.g., 'biomarato-barcelona-2025').
+You can find it in the URL of the project's page on the Minka website.
 }
 \examples{
 \dontrun{
- mnk_proj_byname("Biomarato Barcelona 2025")
- mnk_minka_proj_info("420")
+# First, find a project ID
+mnk_proj_byname("Biomarato Barcelona 2025")
+
+# Get main information for project ID '420'
+mnk_proj_info(project_id = "420")
+
+# Get only the subscriber IDs for the same project
+mnk_proj_info(project_id = "420", users = TRUE)
 }
 }

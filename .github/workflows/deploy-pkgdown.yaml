@@ -3,7 +3,7 @@
 on:
   push:
     branches:
-      - master
+      - master # o main, si esa es tu rama principal
 
 name: Deploy pkgdown site
 
@@ -23,36 +23,19 @@ jobs:
         with:
           r-version: 'release'
 
+      # Este paso instala pkgdown, las dependencias de tu archivo DESCRIPTION
+      # y cualquier otra dependencia del sistema que necesiten. Es todo en uno.
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           packages: |
-            pkgdown
-          extra-packages: |
-            remotes
+            any::pkgdown
 
-      - name: Install dependencies from DESCRIPTION
-        run: |
-          R -e 'install.packages("remotes")'
-          R -e 'remotes::install_deps(dependencies = TRUE)'
-
+      # Este comando es más moderno y robusto para GitHub Pages.
+      # Automáticamente lee tu _pkgdown.yml y construye el sitio.
       - name: Build pkgdown site
-        run: |
-          R -e 'pkgdown::build_site()'
+        run: R -e 'pkgdown::build_site_github_pages()'
 
-
-      - name: Simplified listing for debugging
-        run: |
-          echo "Current directory: $(pwd)"
-          echo "Contents of current directory:"
-          ls -F
-          echo "Checking for 'docs' directory:"
-          if [ -d "docs" ]; then
-            echo "Directory 'docs' found. Contents:"
-            ls -F docs
-          else
-            echo "Directory 'docs' NOT found."
-          fi
-
+      # El resto del archivo es para el despliegue y está correcto.
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
