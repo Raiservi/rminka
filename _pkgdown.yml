@@ -5,7 +5,7 @@ url: https://raiservi.github.io/rminka/
 template:
   bootstrap: 5
   bootswatch: sandstone
-figures:
+  figures:
     logo: man/figures/logo.png
 
 navbar:
