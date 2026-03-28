@@ -10,27 +10,37 @@ template:
     logo: man/figures/logo.png
 
 navbar:
-  # Define el orden de los elementos
+  # Define el orden de los elementos en la barra de navegación
   structure:
-    left: [logo, search, user]
-    right: [github]
+    left: [intro, reference, articles, changelog]
+    right: [search, github]
 
-  # Define qué es cada elemento
+  # Define el contenido de cada elemento
   components:
-    logo:
-      image: man/figures/logo.png
-      href: index.html
-      text: "rminka"
+    # Botón para la página de inicio (el README)
+    intro:
+      text: "Get Started"
+      href: articles/introduction-to-rminka.html
 
-    # 'user' es el nombre estándar para tus enlaces principales
-    user:
-      text: "Menú"
+    # Botón para la referencia de funciones
+    reference:
+      text: "Reference"
+      href: reference/index.html
+
+    # Botón para las viñetas (si tienes más en el futuro)
+    articles:
+      text: "Articles"
+      href: articles/index.html
+
+    changelog:
+      text: "Changelog"
       menu:
-        - text: "Get Started"
-          href: articles/introduccion-a-rminka.html
-        - text: "Function Reference"
-          href: reference/index.html
+        - text: "News (Changelog)"
+          href: news/index.html
+        - text: "Releases"
+          href: https://github.com/raiservi/rminka/releases
 
+    # El icono de GitHub a la derecha
     github:
       icon: fa-github
       href: https://github.com/raiservi/rminka/

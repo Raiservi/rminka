@@ -1,5 +1,3 @@
-    # Workflow para construir y desplegar un sitio de pkgdown
-    # Este es el workflow moderno, compatible con la opción "GitHub Actions" en Settings > Pages.
 
     on:
       push:
@@ -11,7 +9,6 @@
     jobs:
       pkgdown:
         runs-on: ubuntu-latest
-        # Necesita permisos para escribir en la sección de Pages
         permissions:
           contents: read
           pages: write
