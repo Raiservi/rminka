@@ -9,8 +9,9 @@ template:
     logo: man/figures/logo.png
 
 navbar:
-  right:
-    - icon: fa-github
-      href: https://github.com/raiservi/rminka/
-      aria-label: "Repositorio en GitHub"
-  left: [logo, search, user]
+   structure:
+      right:
+        - icon: fa-github
+          href: https://github.com/raiservi/rminka/
+          aria-label: "Repositorio en GitHub"
+      left: [logo, search, user]
