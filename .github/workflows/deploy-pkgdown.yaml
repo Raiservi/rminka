@@ -29,16 +29,15 @@ jobs:
             pkgdown
           extra-packages: |
             remotes
+            tidytemplate   # <-- CORRECCIÓN APLICADA AQUÍ
 
       - name: Install dependencies from DESCRIPTION
         run: |
-          R -e 'install.packages("remotes")'
           R -e 'remotes::install_deps(dependencies = TRUE)'
 
       - name: Build pkgdown site
         run: |
           R -e 'pkgdown::build_site()'
-
 
       - name: Simplified listing for debugging
         run: |
