@@ -7,6 +7,10 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+
+```{r setup}
+library(rminka)
+```
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -14,6 +18,82 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+```{r carga, include=FALSE}
+library(dplyr)
+library(jsonlite)
+library(httr)
+#library(leaflet)
+#library(magick)
 library(rminka)
+library(tibble)
+library(knitr)
 ```
+
+## About
+
+`rminka` is a wrapper for Minka APIs for accessing the observations.
+
+
+## Installation
+
+The easiest way to get `rminka` is to install from github repository with `pak`: 
+
+```{r install, eval = FALSE, echo= TRUE}
+pak::pak("Raiservi/rminka")
+```
+
+## Quickstart guide
+
+These functions are designed to be used together. For queries that span multiple years, you can easily loop through the years of interest, run the appropriate function, and then combine the resulting tibbles with `dplyr::bind_rows()`.
+> It is recommended to set the `quality` argument to `"research"` in order to 
+get more reliable data that has been validated by several contributors.
+
+### Project Queries
+
+A set of complementary  functions to find projects and their associated observations.
+
+
+*   mnk_proj_byname *
+=======
+**- mnk_proj_byname ** 
+
+
+   `mnk_proj_byname()`Finds a project's ID using an approximate project name.
+    
+```{r project1, include = TRUE , echo=TRUE}
+
+
+prj_names <- mnk_proj_byname("biomarato")
+prj_names 
+
+```
+
+*  mnk_proj_info **
+
+```{r project_name, include = TRUE , echo=TRUE}
+
+prj_names <- mnk_proj_byname("2025")
+
+prj_names[,c(1:5)]
+
+```
+
+**- mnk_proj_info **
+
+
+   `mnk_proj_info()`: Retrieves detailed project information using its known ID.
+  
+  
+```{r project_info, include = TRUE , echo=TRUE}
+
+prj_info <- mnk_proj_info(420)
+
+kable(as.data.frame(prj_info))
+
+```
+It´s posible to known the users subscrived in this projects chnging de parameter 'user = TRUE'  and the function gives a list of the id users.
+
+
+  
+**- mnk_proj_obs **
+   `mnk_proj_obs()`: Fetches all observations for a specific year within that project.
