@@ -9,7 +9,7 @@ template:
 navbar:
   left:
     - text: "Get Started"
-      href: articles/getting-started.html
+      href: articles/Getting Started with rminka.html
     - text: "Reference"
       href: reference/index.html
     - text: "News"
