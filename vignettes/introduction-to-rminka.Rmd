@@ -1,11 +1,14 @@
 ---
-title: "Introduction to rminka <img src='man/figures/logo1.png' align='right' height='138' />"
+title: "Introduction to rminka"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Introduction to rminka}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+<div style="display: flex; justify-content: space-between; align-items: center;">
+  <img src="man/figures/logo1.png" align="right" height="138" />
+</div>
 
 
 ```{r setup}

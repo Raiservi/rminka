@@ -5,10 +5,10 @@ url: https://raiservi.github.io/rminka/
 template:
   bootstrap: 5
   bootswatch: sandstone
-  # 'figures' va DENTRO de 'template'
-  figures:
-    logo: man/figures/logo.png
-
+  logo:
+    src: man/figures/logo1.png
+    alt: "Logo de rminka"
+    height: 40 # Puedes ajustar la altura como quieras
 navbar:
   # Define el orden de los elementos en la barra de navegación
   structure:
