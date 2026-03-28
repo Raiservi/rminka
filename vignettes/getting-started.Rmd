@@ -46,7 +46,7 @@ get more reliable data that has been validated by several contributors.
 
 ### Project Queries
 
-A set of complementary functions to find projects and their associated observations.
+A set of complementary  functions to find projects and their associated observations.
 
 **- mnk_proj_byname ** 
 
