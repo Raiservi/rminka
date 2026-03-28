@@ -122,7 +122,7 @@ web page of `rminka` in the github page of the project.
     website](https://raiservi.github.io/rminka/)
 
 2.  The starting web page is [rminka
-    starting](https://raiservi.github.io/rminka/articles/getting-started.html)
+    starting](https://raiservi.github.io/rminka/articles/introduction-to-rminka.html)
 
 ## Getting help
 
