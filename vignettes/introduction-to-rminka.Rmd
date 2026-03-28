@@ -1,8 +1,8 @@
 ---
-title: "introduction-to-rminka"
+title: "Introduction to rminka"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{introduction-to-rminka}
+  %\VignetteIndexEntry{Introduction to rminka}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
