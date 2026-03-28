@@ -1,17 +1,18 @@
+
+
 library(testthat)
 library(httr)
 library(jsonlite)
 library(stringr)
 library(tibble)
+library(purrr)
 
 
 test_that("mnk_proj_byname throws error for invalid query", {
-
   expect_error(mnk_proj_byname(NULL), "You must provide a single, non-empty, non-NA character 'query' for the project search.")
   expect_error(mnk_proj_byname(NA_character_), "You must provide a single, non-empty, non-NA character 'query' for the project search.")
   expect_error(mnk_proj_byname(""), "You must provide a single, non-empty, non-NA character 'query' for the project search.")
   expect_error(mnk_proj_byname("   "), "You must provide a single, non-empty, non-NA character 'query' for the project search.")
-
   expect_error(mnk_proj_byname(c("query1", "query2")), "You must provide a single query string. Only one query is accepted.")
 })
 
@@ -48,6 +49,7 @@ test_that("mnk_proj_byname handles empty or null API response", {
   mock_httr_GET <- function(url = NULL, ..., path = NULL, as) {
     full_url <- if (!is.null(url) && !is.null(path)) paste0(url, path) else url
     if (grepl("q=empty_response", full_url)) {
+      # Simula una respuesta con cuerpo vacío
       response_obj <- list(
         url = full_url,
         status_code = 200L,
@@ -57,6 +59,7 @@ test_that("mnk_proj_byname handles empty or null API response", {
       class(response_obj) <- c("response", "handle")
       return(response_obj)
     } else if (grepl("q=null_response", full_url)) {
+      # Simula una respuesta cuyo cuerpo es el JSON 'null'
       response_obj <- list(
         url = full_url,
         status_code = 200L,
@@ -85,10 +88,11 @@ test_that("mnk_proj_byname handles empty or null API response", {
 
 
 test_that("mnk_proj_byname handles JSON with no projects found", {
+  # Simula una respuesta con una lista de resultados vacía
   mock_response_json <- '{"results": []}'
 
   mock_httr_GET <- function(url = NULL, ..., path = NULL, as) {
-    full_url <- if (!is.null(url) && !is.null(path)) paste0(url, path) else full_url <- url
+    full_url <- if (!is.null(url) && !is.null(path)) paste0(url, path) else url
     if (grepl("q=no_projects", full_url)) {
       response_obj <- list(
         url = full_url,
@@ -99,7 +103,7 @@ test_that("mnk_proj_byname handles JSON with no projects found", {
       class(response_obj) <- c("response", "handle")
       return(response_obj)
     } else {
-      stop("Mock no configurado esta URL  test de no proyectos: ", full_url)
+      stop("Mock no configurado esta URL test de no proyectos: ", full_url)
     }
   }
 
@@ -108,34 +112,42 @@ test_that("mnk_proj_byname handles JSON with no projects found", {
     .package = "httr",
     {
       expect_message(result <- mnk_proj_byname("no_projects"), regexp = "No projects found for query 'no_projects'.")
-      expect_s3_class(result, "data.frame") # Devuelve un data.frame vacío
+      expect_s3_class(result, "data.frame") # Devuelve un tibble/data.frame vacío
       expect_equal(nrow(result), 0)
     }
   )
 })
 
-# --- Test para API devuelve datos válidos ---
-test_that("mnk_proj_byname returns a data frame for valid query", {
+
+# --- Test para API devuelve datos válidos (VERSIÓN CORREGIDA PARA TU FUNCIÓN) ---
+test_that("mnk_proj_byname returns a tibble with specific columns for a valid query", {
+  # El JSON de prueba ahora usa las columnas que la función busca ('title', 'slug', etc.)
+  # También añadimos una columna extra para asegurarnos de que la función la ignora.
+  # El segundo objeto JSON no tiene todos los campos para probar la asignación de NA.
   mock_response_json <- '{
     "results": [
       {
-        "id": "proj1",
-        "name": "Proyecto A",
+        "id": 101,
+        "title": "Proyecto Test A",
+        "place_id": 901,
+        "slug": "proyecto-test-a",
+        "created_at": "2023-01-01T12:00:00Z",
+        "updated_at": "2023-01-02T12:00:00Z",
+        "project_type": "collection",
         "description": "Descripción del Proyecto A",
-        "status": "active"
+        "columna_extra_a_ignorar": "valor extra"
       },
       {
-        "id": "proj2",
-        "name": "Proyecto B",
-        "description": "Descripción del Proyecto B",
-        "status": "pending"
+        "id": 102,
+        "title": "Proyecto Test B",
+        "slug": "proyecto-test-b"
       }
     ]
   }'
 
   mock_httr_GET <- function(url = NULL, ..., path = NULL, as) {
     full_url <- if (!is.null(url) && !is.null(path)) paste0(url, path) else url
-    if (grepl("q=Proyecto%20A", full_url)) {
+    if (grepl("q=Proyecto%20Test", full_url)) {
       response_obj <- list(
         url = full_url,
         status_code = 200L,
@@ -153,13 +165,26 @@ test_that("mnk_proj_byname returns a data frame for valid query", {
     GET = mock_httr_GET,
     .package = "httr",
     {
-      result <- mnk_proj_byname("Proyecto A")
+      result <- mnk_proj_byname("Proyecto Test")
 
-      expect_s3_class(result, "data.frame")
+      # 1. Comprobamos que el resultado es un tibble con 2 filas
+      expect_s3_class(result, "tbl_df")
       expect_equal(nrow(result), 2)
-      expect_true(all(c("id", "name", "description", "status") %in% names(result))) # Las columnas de 'results'
-      expect_equal(result$id, c("proj1", "proj2"))
-      expect_equal(result$name, c("Proyecto A", "Proyecto B"))
+
+      # 2. Comprobamos que el resultado TIENE EXACTAMENTE las columnas deseadas
+      columnas_esperadas <- c("id", "title", "place_id", "slug", "created_at",
+                              "updated_at", "project_type", "description")
+      expect_equal(sort(names(result)), sort(columnas_esperadas))
+
+      # 3. Comprobamos los valores, incluyendo los NA para campos ausentes
+      expect_equal(result$title, c("Proyecto Test A", "Proyecto Test B"))
+      expect_equal(result$id, c(101, 102))
+
+      # El segundo proyecto no tenía 'place_id', así que debe ser NA_integer_
+      expect_equal(result$place_id, c(901, NA_integer_))
+
+      # El segundo proyecto no tenía 'description', así que debe ser NA_character_
+      expect_equal(result$description, c("Descripción del Proyecto A", NA_character_))
     }
   )
 })
