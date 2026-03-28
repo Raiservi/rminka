@@ -22,6 +22,7 @@ library(httr)
 #library(magick)
 library(rminka)
 library(tibble)
+library(knitr)
 ```
 
 ## About
@@ -47,10 +48,18 @@ get more reliable data that has been validated by several contributors.
 
 A set of complementary functions to find projects and their associated observations.
 
-**- mnk_proj_byname ** 
+*   mnk_proj_byname *
    `mnk_proj_byname()`Finds a project's ID using an approximate project name.
+    
+```{r project1, include = TRUE , echo=TRUE}
 
-**- mnk_proj_info **
+prj_names <- mnk_proj_byname("biomarato")
+prj_names <- prj_names %>% arrange(id)
+kable(prj_names[,c(2,5,6,8)])
+
+```
+
+*  mnk_proj_info **
    `mnk_proj_info()`: Retrieves detailed project information using its known ID.
   
 **- mnk_proj_obs **
@@ -66,8 +75,9 @@ Functions to find users and their contributed observations.
 ```{r search1, include = TRUE , echo=TRUE}
 
 name <- mnk_user_byname("ramon")
+name <- name %>% arrange(id)
+kable(name[,c(1:5)])
 
-unique(name[,1:4])
 ```
 
 
@@ -75,9 +85,9 @@ unique(name[,1:4])
     `mnk_user_proj()`: Find the projects to which a user has explicitly subscribed    based on their user_ID. You need to known previously the user_id using teh function `mnk_user_byname` 
     
 ```{r name, include = TRUE , echo=TRUE}
-user <- mnk_user_proj(6)
-
-unique(user[,1:2])
+projects <- mnk_user_proj(6)
+projects <- projects %>% arrange(id)
+kable(unique(projects[1:7,c(1,2,4,6,7)]))
 ```
 
     
