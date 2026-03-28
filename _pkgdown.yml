@@ -1,6 +1,6 @@
 # Archivo: _pkgdown.yml
 
-url: https://raiservi.github.io/rminka/ ,
+url: https://raiservi.github.io/rminka/
 
 template:
   bootstrap: 5
