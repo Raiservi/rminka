@@ -1,17 +1,37 @@
-# Archivo: _pkgdown.yml
+## Archivo: _pkgdown.yml (Versión corregida y completa)
 
 url: https://raiservi.github.io/rminka/
 
 template:
   bootstrap: 5
   bootswatch: sandstone
+  # 'figures' va DENTRO de 'template'
   figures:
     logo: man/figures/logo.png
 
 navbar:
-   structure:
-      right:
-        - icon: fa-github
-          href: https://github.com/raiservi/rminka/
-          aria-label: "Repositorio en GitHub"
-      left: [logo, search, user]
+  # Define el orden de los elementos
+  structure:
+    left: [logo, search, user]
+    right: [github]
+
+  # Define qué es cada elemento
+  components:
+    logo:
+      image: man/figures/logo.png
+      href: index.html
+      text: "rminka"
+
+    # 'user' es el nombre estándar para tus enlaces principales
+    user:
+      text: "Menú"
+      menu:
+        - text: "Get Started"
+          href: articles/introduccion-a-rminka.html
+        - text: "Function Reference"
+          href: reference/index.html
+
+    github:
+      icon: fa-github
+      href: https://github.com/raiservi/rminka/
+      aria-label: "Repositorio en GitHub"
