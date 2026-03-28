@@ -8,10 +8,9 @@ template:
 figures:
     logo: man/figures/logo.png
 
-# pkgdown detectará automáticamente la viñeta y la referencia
 navbar:
   right:
     - icon: fa-github
       href: https://github.com/raiservi/rminka/
       aria-label: "Repositorio en GitHub"
-  left: [logo, search, user] # Muestra el logo, una barra de búsqueda y los enlaces de usuario a la izquierda.
+  left: [logo, search, user]
