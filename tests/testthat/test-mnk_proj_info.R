@@ -6,7 +6,7 @@ library(httr)
 library(jsonlite)
 library(tibble)
 
-# --- TESTS DE VALIDACIÓN DE ENTRADA (Sin cambios) ---
+# --- TESTS DE VALIDACIÓN DE ENTRADA (Sin cambios)
 test_that("mnk_proj_info handles invalid input", {
   expect_error(mnk_proj_info(project_id = NULL, grpid = NULL), "You must provide either 'project_id' or 'grpid'")
   expect_error(mnk_proj_info(project_id = c("1", "2")), "'project_id' must be a single character string or number.")
