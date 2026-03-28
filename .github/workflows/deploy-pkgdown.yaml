@@ -1,4 +1,3 @@
-## Archivo: .github/workflows/deploy-pkgdown.yaml
 
 on:
   push:
@@ -29,7 +28,7 @@ jobs:
             pkgdown
           extra-packages: |
             remotes
-            tidytemplate   # <-- CORRECCIÓN APLICADA AQUÍ
+            tidytemplate
 
       - name: Install dependencies from DESCRIPTION
         run: |
