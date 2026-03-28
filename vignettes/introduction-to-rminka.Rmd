@@ -1,5 +1,5 @@
 ---
-title: "Introduction to rminka"
+title: "Introduction to rminka <img src='man/figures/logo1.png' align='right' height='138' />"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Introduction to rminka}
