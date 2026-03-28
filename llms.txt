@@ -1,0 +1,163 @@
+# rminka [![Logo de rminka](reference/figures/logo1.png)](https://raiservi.github.io/rminka/)
+
+## Usage
+
+Minka is a citizen science platform created by the research group
+[EMBIMOS](https://www.icm.csic.es/en/research-group/embimos) of the
+[Institut de Cienciès del Mar (ICM-CSIC)](https://icm.csic.es/en). The
+platform is open for all users to create their projects, collaborate on
+others, help the community with identifications or simply upload
+observations that will be validated with the help of the community and
+that can be used, in the future, to contribute openly to science and the
+improvement of the environment.  
+The link to access Minka’s website is <https://minka-sdg.org/>
+
+The goals of the `rminka` package are:
+
+1.  Directly access the data stored in the Minka platform to be able to
+    process them with R through the API.
+
+2.  Treat the data to be able to use them directly with other packages
+    such as `vegan`, `dismo`, `labdsv` or others.
+
+## Overview
+
+`rminka` is a toolkit for interacting with the [Minka
+API](https://api.minka-sdg.org/v1/docs/), providing a consistent set of
+functions to help you query and retrieve biodiversity data. The
+package’s functions are grouped by the type of data they return:
+
+**a) Project Queries:** A set of complementary functions to find
+projects and their associated observations.
+
+- [`mnk_proj_byname()`](https://raiservi.github.io/rminka/reference/mnk_proj_byname.md):
+  Finds a project’s ID using an approximate project name.
+- [`mnk_proj_info()`](https://raiservi.github.io/rminka/reference/mnk_proj_info.md):
+  Retrieves detailed project information using its known ID.
+- [`mnk_proj_obs()`](https://raiservi.github.io/rminka/reference/mnk_proj_obs.md):
+  Fetches all observations for a specific year within that project.
+
+**b) User Queries:** Functions to find users and their contributed
+observations.
+
+- [`mnk_user_byname()`](https://raiservi.github.io/rminka/reference/mnk_user_byname.md):
+  Finds a user’s ID from their approximate login name.
+- [`mnk_user_proj()`](https://raiservi.github.io/rminka/reference/mnk_user_proj.md):
+  Find the projects to which a user has explicitly subscribed based on
+  their user_ID.
+- `mnk_user_obs()`: Retrieves all observations contributed by that user
+  for a given year ( all the year or only a specific month) from their
+  id_user.
+
+**c) Place Queries:** Functions to find places and retrieve their
+spatial data.
+
+- [`mnk_places_byname()`](https://raiservi.github.io/rminka/reference/mnk_places_byname.md):
+  Finds the ID for a location using an approximate place name.
+- [`mnk_place_sf()`](https://raiservi.github.io/rminka/reference/mnk_place_sf.md):
+  Returns the `sf` geometry for a place, ready for plotting with
+  packages like `ggplot2` or `leaflet`.
+
+**d) Observation Queries:** A variety of functions to fetch observation
+data based on different parameters.
+
+- [`mnk_obs_id()`](https://raiservi.github.io/rminka/reference/mnk_obs_id.md):
+  Retrieves a single observation’s complete data using its unique ID.
+- `mnk_obs()`: Fetches observations based on various parameters for a
+  full year, a specific month, or a single day.
+- `mnk_obs_bydays()`: Retrieves all observations within a date range in
+  the same year.
+
+**e) Auxiliary functions:** a set of functions with different utilities
+that complement Minka’s observational data and help in processing them
+when used in other R packages (`vegan`, `dismo`, `labdsv` or others).
+
+- [`get_wrm_tax()`](https://raiservi.github.io/rminka/reference/get_wrm_tax.md):
+  Retrieves the complete taxonomy and additional data (e.g., marine or
+  terrestrial ) from [WoRMS](https://www.marinespecies.org/) for a given
+  scientific name.
+- [`shrt_name()`](https://raiservi.github.io/rminka/reference/shrt_name.md):
+  Returns the CEP name (abbreviated scientific name) with separation
+  point, given a scientific name.
+
+These functions are designed to be used together. For queries that span
+multiple years, you can easily loop through the years of interest, run
+the appropriate function, and then combine the resulting tibbles with
+[`dplyr::bind_rows()`](https://dplyr.tidyverse.org/reference/bind_rows.html).
+
+## Installation
+
+You can install the development version of rminka from
+[GitHub](https://github.com/) with:
+
+``` r
+# install.packages("pak")
+pak::pak("Raiservi/rminka")
+```
+
+## Using rminka
+
+If you are new to `rminka` you are better off starting with a starting
+web page of `rminka` in the github page of the project.
+
+1.  The main page directions is [rminka
+    website](https://raiservi.github.io/rminka/)
+
+2.  The starting web page is [rminka
+    starting](https://raiservi.github.io/rminka/articles/getting-started.html)
+
+## Getting help
+
+There are two main places to get help with `rminka`:
+
+1.  The [RStudio community](https://forum.posit.co/) is a friendly place
+    to ask any questions about R.
+
+2.  [Stack Overflow](https://stackoverflow.com/) is a great source of
+    answers to common R questions. It is also a great place to get help,
+    once you have created a reproducible example that illustrates your
+    problem.
+
+If you encounter a clear bug, please file an issue with a minimal
+reproducible example on
+[GitHub](https://github.com/tidyverse/dplyr/issues).
+
+## Code of conduct
+
+Please note that this project is released following a [Code of
+Conduct](https://raiservi.github.io/rminka/CODE_OF_CONDUCT.md). By
+participating in this project you agree to abide by its terms.
+
+# Package index
+
+## All functions
+
+- [`get_wrm_tax()`](https://raiservi.github.io/rminka/reference/get_wrm_tax.md)
+  : Get complete taxonomy from WoRMS as a flat tibble
+- [`mnk_obs_id()`](https://raiservi.github.io/rminka/reference/mnk_obs_id.md)
+  : Information on a specific observation Get information on a specific
+  observation by observation id.
+- [`mnk_place_sf()`](https://raiservi.github.io/rminka/reference/mnk_place_sf.md)
+  : Get the sf geometry of a Minka place
+- [`mnk_places_byname()`](https://raiservi.github.io/rminka/reference/mnk_places_byname.md)
+  : Information about Minka Place by Name Get information about Minka
+  place by part of the place name.
+- [`mnk_proj_byname()`](https://raiservi.github.io/rminka/reference/mnk_proj_byname.md)
+  : Information on Minka projects
+- [`mnk_proj_info()`](https://raiservi.github.io/rminka/reference/mnk_proj_info.md)
+  : Get Information About a Specific Minka Project
+- [`mnk_proj_obs()`](https://raiservi.github.io/rminka/reference/mnk_proj_obs.md)
+  : Observations from a Minka project
+- [`mnk_user_byname()`](https://raiservi.github.io/rminka/reference/mnk_user_byname.md)
+  : Search Minka user by part of login name
+- [`mnk_user_proj()`](https://raiservi.github.io/rminka/reference/mnk_user_proj.md)
+  : Projects subscribed by a Minka user
+- [`shrt_name()`](https://raiservi.github.io/rminka/reference/shrt_name.md)
+  : Generate a Short Name from a Scientific Name
+
+# Articles
+
+### All vignettes
+
+- [Introduction to
+  rminka](https://raiservi.github.io/rminka/articles/introduction-to-rminka.md):
