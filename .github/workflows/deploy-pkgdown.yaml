@@ -28,7 +28,7 @@ jobs:
             pkgdown
           extra-packages: |
             any::remotes
-            github::tidylab/tidytemplate
+            github::tidyverse/tidytemplate
 
       - name: Install dependencies from DESCRIPTION
         run: |
