@@ -6,7 +6,7 @@ template:
   bootstrap: 5
   bootswatch: sandstone
   logo:
-    src: man/figures/logo1.png
+    src: pkgdown/logo1.png
     alt: "Logo de rminka"
     height: 40 # Puedes ajustar la altura como quieras
 navbar:
