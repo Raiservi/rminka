@@ -1,62 +1,72 @@
+# Archivo: _pkgdown.yml
+
+# URL donde se publicará el sitio
 url: https://raiservi.github.io/rminka/
+
+# --- SECCIÓN MODIFICADA ---
+# Se elimina la dependencia del paquete 'tidytemplate' y se especifica el tema 'sandstone'
 template:
-  package: tidytemplate
   bootstrap: 5
+  bootswatch: sandstone # <- Este es el nuevo tema
   figures:
     logo: vignettes/figures/logo1.png
   includes:
 
+# --- SECCIONES MANTENIDAS (con una pequeña corrección en el enlace) ---
 navbar:
   left:
-    - text: "Get Started"
-      href: articles/Getting Started with rminka.html
-    - text: "Reference"
+        - text: "Get Started"
+      # Corregido: los nombres de archivo HTML generados por RMarkdown suelen ser
+      # en minúsculas y usan guiones en lugar de espacios.
+      href: articles/getting-started-with-rminka.html
+        - text: "Reference"
       href: reference/index.html
-    - text: "News"
+        - text: "News"
       menu:
-        - text: "Releases"
+                - text: "Releases"
           href: https://github.com/raiservi/rminka/releases
-        - text: "Changelog"
+                - text: "Changelog"
           href: news/index.html
-    - text: "Articles"
+        - text: "Articles"
       href: articles/index.html
   right:
-    - icon: fa-github fa-lg
+        - icon: fa-github fa-lg
       href: https://github.com/raiservi/rminka/
       aria-label: GitHub repository rminka
 
+# Se mantiene tu organización personalizada de la página de Referencia
 reference:
 - title: Project Queries
   desc: >
     Set of complementary functions to find projects and their associated.
     observations
   contents:
-  - mnk_proj_byname
-  - mnk_proj_info
-  - mnk_proj_obs
+    - mnk_proj_byname
+    - mnk_proj_info
+    - mnk_proj_obs
 - title: User Queries
   desc: >
     Functions to find users and their contributed observations.
   contents:
-  - mnk_user_byname
-  - mnk_user_proj
+    - mnk_user_byname
+    - mnk_user_proj
 - title: Place Querie
   desc: >
     Functions to find places and retrieve their spatial data.
   contents:
-  - mnk_places_byname
-  - mnk_place_sf
+    - mnk_places_byname
+    - mnk_place_sf
 - title: Observation Queries
   desc: >
     A variety of functions to fetch observation data based on different
     parameters.
   contents:
-  - mnk_obs_id
+    - mnk_obs_id
 - title: Auxiliary functions
   desc: >
     A set of functions with different utilities that complement Minka's
     observational data and help in processing them when used in other
     R packages (`vegan`, `dismo`, `labdsv` or others).
   contents:
-  - get_wrm_tax
-  - shrt_name
+    - get_wrm_tax
+    - shrt_name
