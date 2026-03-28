@@ -12,7 +12,7 @@ template:
 navbar:
   # Define el orden de los elementos en la barra de navegación
   structure:
-    left: [intro, reference, articles, changelog]
+    left: [intro, reference, changelog]
     right: [search, github]
 
   # Define el contenido de cada elemento
@@ -30,7 +30,6 @@ navbar:
     # Botón para las viñetas (si tienes más en el futuro)
     articles:
       text: "Articles"
-      href: articles/index.html
 
     changelog:
       text: "Changelog"
