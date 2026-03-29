@@ -81,7 +81,7 @@ It´s posible to known the users subscrived in this projects chnging de paramete
 
 ```{r project_info_users, include = TRUE , echo=TRUE}
 
-prj_info_us <- mnk_proj_info(420, users = TRUE)
+prj_info_us <- mnk_proj_info(419, users = TRUE)
 
 prj_info_us
 
