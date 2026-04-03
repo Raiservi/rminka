@@ -56,42 +56,19 @@ test_that("mnk_obs annual mode correctly calls monthly downloads", {
 })
 
 test_that("download_month_data subdivides by day when monthly_total > 10000", {
-  download_month_data_local <- function(base_params, year, current_month, quiet = FALSE, remaining_limit = 10000) {
-    monthly_params <- c(base_params, list(year = year, month = current_month, per_page = 1))
-    ping <- httr::GET(url = "https://api.minka-sdg.org", path = "/v1/observations", query = monthly_params)
-    total_monthly <- jsonlite::fromJSON(httr::content(ping, "text", encoding = "UTF-8"))$total_results %||% 0
-
-    if (total_monthly > 10000) {
-      if (current_month == 12) {
-        first_day_next_month <- as.Date(paste(year + 1, 1, "01", sep = "-"))
-      } else {
-        first_day_next_month <- as.Date(paste(year, current_month + 1, "01", sep = "-"))
-      }
-      last_day_current_month <- first_day_next_month - 1
-      days_in_month <- as.integer(format(last_day_current_month, "%d"))
-
-      daily_results <- purrr::map(1:days_in_month, function(day) {
-        day_params <- c(base_params, list(year = year, month = current_month, day = day))
-        download_paginated_data(day_params, quiet = quiet, numeric_limit = remaining_limit)
-      })
-      all_data <- dplyr::bind_rows(purrr::map(daily_results, "data"))
-      return(list(data = all_data, count = nrow(all_data)))
-    } else {
-      month_params <- c(base_params, list(year = year, month = current_month))
-      return(download_paginated_data(month_params, total_res = total_monthly, quiet = quiet, numeric_limit = remaining_limit))
-    }
-  }
+  download_month_data_local <- rminka:::download_month_data # Usamos la función real del paquete
 
   daily_calls <- 0
   mock_dpd_daily <- function(...) {
     daily_calls <<- daily_calls + 1
     return(list(data = tibble(id = 1:100), count = 100))
   }
+  # Reemplazamos la función de descarga por día
   stub(download_month_data_local, 'download_paginated_data', mock_dpd_daily)
 
-  # === LA ÚNICA CORRECCIÓN ESTÁ AQUÍ ===
-  # Simulamos la respuesta de httr::GET para que incluya el encabezado 'Content-Type'.
-  # Esto soluciona el error en GitHub sin afectar a nada más.
+  # LA ÚNICA CORRECCIÓN ESTÁ AQUÍ:
+  # Creamos una respuesta simulada completa, incluyendo el encabezado Content-Type.
+  # Esto soluciona el error en GitHub Actions.
   stub(download_month_data_local, 'httr::GET', function(...) {
     structure(
       list(
@@ -110,14 +87,8 @@ test_that("download_month_data subdivides by day when monthly_total > 10000", {
 })
 
 test_that("process_minka_results correctly transforms list with missing data", {
-  process_minka_results_local <- function(all_results) {
-    if (length(all_results) == 0) return(tibble::tibble())
-    processed_list <- purrr::map(all_results, ~tibble::tibble(
-      id =.x$id %||% NA_integer_,
-      photo_url_square =.x$taxon$default_photo$square_url %||% NA_character_
-    ))
-    dplyr::bind_rows(processed_list)
-  }
+  process_minka_results_local <- rminka:::process_minka_results
+
   mock_data_list <- list(
     jsonlite::fromJSON(mock_json_single_observation_record_content, simplifyVector = FALSE),
     list(id = 2, taxon = list(default_photo = NULL))
