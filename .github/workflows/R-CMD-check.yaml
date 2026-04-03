@@ -5,6 +5,9 @@ on:
     branches: [main, master]
   pull_request:
 
+sudo apt-get update
+    sudo apt-get install -y libgdal-dev libproj-dev libgeos-c1v5 libudunits2-dev
+
 name: R-CMD-check.yaml
 
 permissions: read-all
