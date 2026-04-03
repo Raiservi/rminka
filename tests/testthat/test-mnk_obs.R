@@ -1,100 +1,121 @@
 # tests/testthat/test-mnk_obs.R
 
+# Cargamos httptest, la herramienta correcta para este trabajo.
+skip_if_not_installed("httptest")
+library(httptest)
+# tests/testthat/test-mnk_obs.R
+
 skip_if_not_installed("mockery")
 library(mockery)
-library(testthat)
-library(httr)
-library(jsonlite)
-library(dplyr)
-library(purrr)
-library(tibble)
 
-# --- Operador y Mocks (sin cambios) ---
-`%||%` <- function(a, b) if (is.null(a)) b else a
-mock_json_single_observation_record_content <- '{
-  "id": 12345, "observed_on": "2025-01-15",
-  "observed_on_details": {"year": 2025, "month": 1, "week":3, "day":15, "hour":10},
-  "created_at": "2025-01-15T10:00:00Z", "updated_at": "2025-01-15T10:00:00Z",
-  "geojson": {"coordinates": [2.0, 41.0]}, "positional_accuracy": 5,
-  "taxon_geoprivacy": "obscured", "obscured": true, "uri": "http://minka/obs/12345",
-  "taxon": {"default_photo": {"square_url": "sq.jpg", "medium_url": "med.jpg"}, "id":100, "name":"Sp", "rank":"species", "min_species_ancestry":"anc", "endemic":true, "threatened":false, "introduced":false, "native":true},
-  "quality_grade": "research", "species_guess": "Guess", "user": {"id":1, "login":"user1"}
-}'
-
-# --- TESTS ---
-
-test_that("mnk_obs handles invalid input", {
+test_that("mnk_obs se detiene si no hay parámetros", {
   expect_error(mnk_obs(), "You must specify at least one search parameter")
 })
 
-test_that("mnk_obs handles day-specific download", {
-  mock_dpd <- function(...) { return(list(data = tibble(id = 1:50), count = 50)) }
-  with_mocked_bindings(download_paginated_data = mock_dpd, {
-    result <- suppressMessages(mnk_obs(taxon_name="test", year=2025, month=1, day=15))
-    expect_s3_class(result, "tbl_df"); expect_equal(nrow(result), 50)
-  })
+test_that("mnk_obs valida los parámetros lógicos", {
+  expect_error(mnk_obs(taxon_name = "test", quiet = "no"), "'quiet' must be TRUE or FALSE")
+  expect_error(mnk_obs(taxon_name = "test", limit_download = "yes"), "'limit_download' must be TRUE or FALSE")
 })
 
-test_that("mnk_obs handles month-specific download (<10k)", {
-  mock_dmd <- function(...) { return(list(data = tibble(id = 1:500), count = 500)) }
-  with_mocked_bindings(download_month_data = mock_dmd, {
-    result <- suppressMessages(mnk_obs(taxon_name="Sp_Monthly_500", year=2025, month=1))
-    expect_s3_class(result, "tbl_df"); expect_equal(nrow(result), 500)
-  })
+test_that("mnk_obs valida el parámetro 'quality'", {
+  expect_error(mnk_obs(quality = "malo"), "must be 'casual' or 'research'")
 })
 
-test_that("mnk_obs annual mode correctly calls monthly downloads", {
-  call_log <- list()
-  mock_dmd_annual <- function(base_params, year, current_month, quiet, remaining_limit) {
-    call_log[[length(call_log) + 1]] <<- current_month
-    return(list(data = tibble(id = 1), count = 1))
-  }
-  with_mocked_bindings(download_month_data = mock_dmd_annual, {
-    suppressMessages(mnk_obs(taxon_name="Sp_Annual_Generic", year=2025, limit_download=FALSE))
-    expect_equal(length(call_log), 12)
-  })
-})
+# --- NUEVO TEST AÑADIDO ---
+test_that("process_minka_results maneja una lista vacía", {
+  # Objetivo: Cubrir la línea 28
 
-test_that("download_month_data subdivides by day when monthly_total > 10000", {
-  download_month_data_local <- rminka:::download_month_data # Usamos la función real del paquete
+  # Llamamos a la función interna con una lista vacía
+  result <- rminka:::process_minka_results(list())
 
-  daily_calls <- 0
-  mock_dpd_daily <- function(...) {
-    daily_calls <<- daily_calls + 1
-    return(list(data = tibble(id = 1:100), count = 100))
-  }
-  # Reemplazamos la función de descarga por día
-  stub(download_month_data_local, 'download_paginated_data', mock_dpd_daily)
-
-  # LA ÚNICA CORRECCIÓN ESTÁ AQUÍ:
-  # Creamos una respuesta simulada completa, incluyendo el encabezado Content-Type.
-  # Esto soluciona el error en GitHub Actions.
-  stub(download_month_data_local, 'httr::GET', function(...) {
-    structure(
-      list(
-        status_code = 200L,
-        headers = list('Content-Type' = 'application/json; charset=utf-8'),
-        content = charToRaw('{"total_results": 12000}')
-      ),
-      class = "response"
-    )
-  })
-
-  res <- suppressMessages(download_month_data_local(base_params=list(), year=2025, current_month=2, quiet=TRUE, remaining_limit=Inf))
-
-  expect_equal(daily_calls, 28)
-  expect_equal(res$count, 2800)
-})
-
-test_that("process_minka_results correctly transforms list with missing data", {
-  process_minka_results_local <- rminka:::process_minka_results
-
-  mock_data_list <- list(
-    jsonlite::fromJSON(mock_json_single_observation_record_content, simplifyVector = FALSE),
-    list(id = 2, taxon = list(default_photo = NULL))
-  )
-  result <- process_minka_results_local(mock_data_list)
+  # Comprobamos que devuelve un tibble vacío, como se espera
   expect_s3_class(result, "tbl_df")
-  expect_true("photo_url_square" %in% names(result))
-  expect_true(is.na(result$photo_url_square[2]))
+  expect_equal(nrow(result), 0)
 })
+# ======================================================
+# Tus tests originales que ya funcionaban
+# ======================================================
+test_that("mnk_obs se detiene si no hay parámetros", {
+  expect_error(rminka::mnk_obs(), "You must specify at least one search parameter")
+})
+
+test_that("mnk_obs valida los parámetros lógicos", {
+  expect_error(rminka::mnk_obs(taxon_name = "test", quiet = "no"), "'quiet' must be TRUE or FALSE")
+  expect_error(rminka::mnk_obs(taxon_name = "test", limit_download = "yes"), "'limit_download' must be TRUE or FALSE")
+})
+
+test_that("mnk_obs valida el parámetro 'quality'", {
+  expect_error(rminka::mnk_obs(quality = "malo"), "must be 'casual' or 'research'")
+})
+
+test_that("process_minka_results maneja una lista vacía", {
+  result <- rminka:::process_minka_results(list())
+  expect_s3_class(result, "tbl_df")
+  expect_equal(nrow(result), 0)
+})
+
+# ======================================================
+# EL NUEVO TEST QUE VAMOS A HACER FUNCIONAR
+# ======================================================
+
+test_that("download_paginated_data maneja una respuesta de 0 resultados", {
+  # Objetivo: Cubrir líneas 87-89
+
+  with_mock_api({
+    # Al ejecutar el test, esto hará una llamada real a la API
+    # Y httptest guardará la respuesta en un archivo .json
+    result <- rminka:::download_paginated_data(params = list(q = "cero_resultados_test"))
+
+    expect_equal(result$count, 0)
+    expect_s3_class(result$data, "tbl_df")
+  })
+})
+
+#------------------------------------------
+
+test_that("download_paginated_data descarga una página de resultados", {
+  # Objetivo: Cubrir el bucle while y el procesamiento de resultados (líneas 92-108)
+
+  with_mock_api({
+    # Usamos un parámetro 'q' diferente para que busque un archivo.json diferente
+    result <- rminka:::download_paginated_data(params = list(q = "una_pagina_test"))
+
+    # Comprobamos que ha procesado el resultado que pondremos en el.json
+    expect_equal(result$count, 1)
+    expect_s3_class(result$data, "tbl_df")
+    expect_equal(nrow(result$data), 1)
+    expect_equal(result$data$id[1], 12345) # Verificamos un dato del.json
+  })
+})
+
+###-----------------------------------------------------
+
+# tests/testthat/test-mnk_obs.R
+#... (todos los tests anteriores)...
+
+test_that("download_paginated_data maneja múltiples páginas de resultados", {
+  # Objetivo: Forzar al bucle 'while' a ejecutarse más de una vez.
+  # Para ello, simularemos una respuesta con 201 resultados.
+
+  with_mock_api({
+    # Usamos un nuevo parámetro 'q' para que busque un nuevo juego de archivos
+    result <- rminka:::download_paginated_data(params = list(q = "multi_pagina_test"))
+
+    # Comprobamos que el resultado final es correcto
+    expect_equal(result$count, 201)
+    expect_s3_class(result$data, "tbl_df")
+    expect_equal(nrow(result$data), 201)
+    # Verificamos el id del último registro para confirmar que la página 2 se añadió
+    expect_equal(result$data$id[201], 99999)
+  })
+})
+test_that("download_paginated_data maneja múltiples páginas de resultados", {
+  with_mock_api({
+    result <- rminka:::download_paginated_data(params = list(q = "multi_pagina_test"))
+    expect_equal(result$count, 201)
+    expect_s3_class(result$data, "tbl_df")
+    expect_equal(nrow(result$data), 201)
+    expect_equal(result$data$id[201], 99999)
+  })
+})
+

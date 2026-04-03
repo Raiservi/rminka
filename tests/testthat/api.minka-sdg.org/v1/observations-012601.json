@@ -1,0 +1,807 @@
+{
+    "total_results": 201,
+    "page": 1,
+    "per_page": 200,
+    "results": [
+        {
+            "id": 1,
+            "quality_grade": "research"
+        },
+        {
+            "id": 2,
+            "quality_grade": "research"
+        },
+        {
+            "id": 3,
+            "quality_grade": "research"
+        },
+        {
+            "id": 4,
+            "quality_grade": "research"
+        },
+        {
+            "id": 5,
+            "quality_grade": "research"
+        },
+        {
+            "id": 6,
+            "quality_grade": "research"
+        },
+        {
+            "id": 7,
+            "quality_grade": "research"
+        },
+        {
+            "id": 8,
+            "quality_grade": "research"
+        },
+        {
+            "id": 9,
+            "quality_grade": "research"
+        },
+        {
+            "id": 10,
+            "quality_grade": "research"
+        },
+        {
+            "id": 11,
+            "quality_grade": "research"
+        },
+        {
+            "id": 12,
+            "quality_grade": "research"
+        },
+        {
+            "id": 13,
+            "quality_grade": "research"
+        },
+        {
+            "id": 14,
+            "quality_grade": "research"
+        },
+        {
+            "id": 15,
+            "quality_grade": "research"
+        },
+        {
+            "id": 16,
+            "quality_grade": "research"
+        },
+        {
+            "id": 17,
+            "quality_grade": "research"
+        },
+        {
+            "id": 18,
+            "quality_grade": "research"
+        },
+        {
+            "id": 19,
+            "quality_grade": "research"
+        },
+        {
+            "id": 20,
+            "quality_grade": "research"
+        },
+        {
+            "id": 21,
+            "quality_grade": "research"
+        },
+        {
+            "id": 22,
+            "quality_grade": "research"
+        },
+        {
+            "id": 23,
+            "quality_grade": "research"
+        },
+        {
+            "id": 24,
+            "quality_grade": "research"
+        },
+        {
+            "id": 25,
+            "quality_grade": "research"
+        },
+        {
+            "id": 26,
+            "quality_grade": "research"
+        },
+        {
+            "id": 27,
+            "quality_grade": "research"
+        },
+        {
+            "id": 28,
+            "quality_grade": "research"
+        },
+        {
+            "id": 29,
+            "quality_grade": "research"
+        },
+        {
+            "id": 30,
+            "quality_grade": "research"
+        },
+        {
+            "id": 31,
+            "quality_grade": "research"
+        },
+        {
+            "id": 32,
+            "quality_grade": "research"
+        },
+        {
+            "id": 33,
+            "quality_grade": "research"
+        },
+        {
+            "id": 34,
+            "quality_grade": "research"
+        },
+        {
+            "id": 35,
+            "quality_grade": "research"
+        },
+        {
+            "id": 36,
+            "quality_grade": "research"
+        },
+        {
+            "id": 37,
+            "quality_grade": "research"
+        },
+        {
+            "id": 38,
+            "quality_grade": "research"
+        },
+        {
+            "id": 39,
+            "quality_grade": "research"
+        },
+        {
+            "id": 40,
+            "quality_grade": "research"
+        },
+        {
+            "id": 41,
+            "quality_grade": "research"
+        },
+        {
+            "id": 42,
+            "quality_grade": "research"
+        },
+        {
+            "id": 43,
+            "quality_grade": "research"
+        },
+        {
+            "id": 44,
+            "quality_grade": "research"
+        },
+        {
+            "id": 45,
+            "quality_grade": "research"
+        },
+        {
+            "id": 46,
+            "quality_grade": "research"
+        },
+        {
+            "id": 47,
+            "quality_grade": "research"
+        },
+        {
+            "id": 48,
+            "quality_grade": "research"
+        },
+        {
+            "id": 49,
+            "quality_grade": "research"
+        },
+        {
+            "id": 50,
+            "quality_grade": "research"
+        },
+        {
+            "id": 51,
+            "quality_grade": "research"
+        },
+        {
+            "id": 52,
+            "quality_grade": "research"
+        },
+        {
+            "id": 53,
+            "quality_grade": "research"
+        },
+        {
+            "id": 54,
+            "quality_grade": "research"
+        },
+        {
+            "id": 55,
+            "quality_grade": "research"
+        },
+        {
+            "id": 56,
+            "quality_grade": "research"
+        },
+        {
+            "id": 57,
+            "quality_grade": "research"
+        },
+        {
+            "id": 58,
+            "quality_grade": "research"
+        },
+        {
+            "id": 59,
+            "quality_grade": "research"
+        },
+        {
+            "id": 60,
+            "quality_grade": "research"
+        },
+        {
+            "id": 61,
+            "quality_grade": "research"
+        },
+        {
+            "id": 62,
+            "quality_grade": "research"
+        },
+        {
+            "id": 63,
+            "quality_grade": "research"
+        },
+        {
+            "id": 64,
+            "quality_grade": "research"
+        },
+        {
+            "id": 65,
+            "quality_grade": "research"
+        },
+        {
+            "id": 66,
+            "quality_grade": "research"
+        },
+        {
+            "id": 67,
+            "quality_grade": "research"
+        },
+        {
+            "id": 68,
+            "quality_grade": "research"
+        },
+        {
+            "id": 69,
+            "quality_grade": "research"
+        },
+        {
+            "id": 70,
+            "quality_grade": "research"
+        },
+        {
+            "id": 71,
+            "quality_grade": "research"
+        },
+        {
+            "id": 72,
+            "quality_grade": "research"
+        },
+        {
+            "id": 73,
+            "quality_grade": "research"
+        },
+        {
+            "id": 74,
+            "quality_grade": "research"
+        },
+        {
+            "id": 75,
+            "quality_grade": "research"
+        },
+        {
+            "id": 76,
+            "quality_grade": "research"
+        },
+        {
+            "id": 77,
+            "quality_grade": "research"
+        },
+        {
+            "id": 78,
+            "quality_grade": "research"
+        },
+        {
+            "id": 79,
+            "quality_grade": "research"
+        },
+        {
+            "id": 80,
+            "quality_grade": "research"
+        },
+        {
+            "id": 81,
+            "quality_grade": "research"
+        },
+        {
+            "id": 82,
+            "quality_grade": "research"
+        },
+        {
+            "id": 83,
+            "quality_grade": "research"
+        },
+        {
+            "id": 84,
+            "quality_grade": "research"
+        },
+        {
+            "id": 85,
+            "quality_grade": "research"
+        },
+        {
+            "id": 86,
+            "quality_grade": "research"
+        },
+        {
+            "id": 87,
+            "quality_grade": "research"
+        },
+        {
+            "id": 88,
+            "quality_grade": "research"
+        },
+        {
+            "id": 89,
+            "quality_grade": "research"
+        },
+        {
+            "id": 90,
+            "quality_grade": "research"
+        },
+        {
+            "id": 91,
+            "quality_grade": "research"
+        },
+        {
+            "id": 92,
+            "quality_grade": "research"
+        },
+        {
+            "id": 93,
+            "quality_grade": "research"
+        },
+        {
+            "id": 94,
+            "quality_grade": "research"
+        },
+        {
+            "id": 95,
+            "quality_grade": "research"
+        },
+        {
+            "id": 96,
+            "quality_grade": "research"
+        },
+        {
+            "id": 97,
+            "quality_grade": "research"
+        },
+        {
+            "id": 98,
+            "quality_grade": "research"
+        },
+        {
+            "id": 99,
+            "quality_grade": "research"
+        },
+        {
+            "id": 100,
+            "quality_grade": "research"
+        },
+        {
+            "id": 101,
+            "quality_grade": "research"
+        },
+        {
+            "id": 102,
+            "quality_grade": "research"
+        },
+        {
+            "id": 103,
+            "quality_grade": "research"
+        },
+        {
+            "id": 104,
+            "quality_grade": "research"
+        },
+        {
+            "id": 105,
+            "quality_grade": "research"
+        },
+        {
+            "id": 106,
+            "quality_grade": "research"
+        },
+        {
+            "id": 107,
+            "quality_grade": "research"
+        },
+        {
+            "id": 108,
+            "quality_grade": "research"
+        },
+        {
+            "id": 109,
+            "quality_grade": "research"
+        },
+        {
+            "id": 110,
+            "quality_grade": "research"
+        },
+        {
+            "id": 111,
+            "quality_grade": "research"
+        },
+        {
+            "id": 112,
+            "quality_grade": "research"
+        },
+        {
+            "id": 113,
+            "quality_grade": "research"
+        },
+        {
+            "id": 114,
+            "quality_grade": "research"
+        },
+        {
+            "id": 115,
+            "quality_grade": "research"
+        },
+        {
+            "id": 116,
+            "quality_grade": "research"
+        },
+        {
+            "id": 117,
+            "quality_grade": "research"
+        },
+        {
+            "id": 118,
+            "quality_grade": "research"
+        },
+        {
+            "id": 119,
+            "quality_grade": "research"
+        },
+        {
+            "id": 120,
+            "quality_grade": "research"
+        },
+        {
+            "id": 121,
+            "quality_grade": "research"
+        },
+        {
+            "id": 122,
+            "quality_grade": "research"
+        },
+        {
+            "id": 123,
+            "quality_grade": "research"
+        },
+        {
+            "id": 124,
+            "quality_grade": "research"
+        },
+        {
+            "id": 125,
+            "quality_grade": "research"
+        },
+        {
+            "id": 126,
+            "quality_grade": "research"
+        },
+        {
+            "id": 127,
+            "quality_grade": "research"
+        },
+        {
+            "id": 128,
+            "quality_grade": "research"
+        },
+        {
+            "id": 129,
+            "quality_grade": "research"
+        },
+        {
+            "id": 130,
+            "quality_grade": "research"
+        },
+        {
+            "id": 131,
+            "quality_grade": "research"
+        },
+        {
+            "id": 132,
+            "quality_grade": "research"
+        },
+        {
+            "id": 133,
+            "quality_grade": "research"
+        },
+        {
+            "id": 134,
+            "quality_grade": "research"
+        },
+        {
+            "id": 135,
+            "quality_grade": "research"
+        },
+        {
+            "id": 136,
+            "quality_grade": "research"
+        },
+        {
+            "id": 137,
+            "quality_grade": "research"
+        },
+        {
+            "id": 138,
+            "quality_grade": "research"
+        },
+        {
+            "id": 139,
+            "quality_grade": "research"
+        },
+        {
+            "id": 140,
+            "quality_grade": "research"
+        },
+        {
+            "id": 141,
+            "quality_grade": "research"
+        },
+        {
+            "id": 142,
+            "quality_grade": "research"
+        },
+        {
+            "id": 143,
+            "quality_grade": "research"
+        },
+        {
+            "id": 144,
+            "quality_grade": "research"
+        },
+        {
+            "id": 145,
+            "quality_grade": "research"
+        },
+        {
+            "id": 146,
+            "quality_grade": "research"
+        },
+        {
+            "id": 147,
+            "quality_grade": "research"
+        },
+        {
+            "id": 148,
+            "quality_grade": "research"
+        },
+        {
+            "id": 149,
+            "quality_grade": "research"
+        },
+        {
+            "id": 150,
+            "quality_grade": "research"
+        },
+        {
+            "id": 151,
+            "quality_grade": "research"
+        },
+        {
+            "id": 152,
+            "quality_grade": "research"
+        },
+        {
+            "id": 153,
+            "quality_grade": "research"
+        },
+        {
+            "id": 154,
+            "quality_grade": "research"
+        },
+        {
+            "id": 155,
+            "quality_grade": "research"
+        },
+        {
+            "id": 156,
+            "quality_grade": "research"
+        },
+        {
+            "id": 157,
+            "quality_grade": "research"
+        },
+        {
+            "id": 158,
+            "quality_grade": "research"
+        },
+        {
+            "id": 159,
+            "quality_grade": "research"
+        },
+        {
+            "id": 160,
+            "quality_grade": "research"
+        },
+        {
+            "id": 161,
+            "quality_grade": "research"
+        },
+        {
+            "id": 162,
+            "quality_grade": "research"
+        },
+        {
+            "id": 163,
+            "quality_grade": "research"
+        },
+        {
+            "id": 164,
+            "quality_grade": "research"
+        },
+        {
+            "id": 165,
+            "quality_grade": "research"
+        },
+        {
+            "id": 166,
+            "quality_grade": "research"
+        },
+        {
+            "id": 167,
+            "quality_grade": "research"
+        },
+        {
+            "id": 168,
+            "quality_grade": "research"
+        },
+        {
+            "id": 169,
+            "quality_grade": "research"
+        },
+        {
+            "id": 170,
+            "quality_grade": "research"
+        },
+        {
+            "id": 171,
+            "quality_grade": "research"
+        },
+        {
+            "id": 172,
+            "quality_grade": "research"
+        },
+        {
+            "id": 173,
+            "quality_grade": "research"
+        },
+        {
+            "id": 174,
+            "quality_grade": "research"
+        },
+        {
+            "id": 175,
+            "quality_grade": "research"
+        },
+        {
+            "id": 176,
+            "quality_grade": "research"
+        },
+        {
+            "id": 177,
+            "quality_grade": "research"
+        },
+        {
+            "id": 178,
+            "quality_grade": "research"
+        },
+        {
+            "id": 179,
+            "quality_grade": "research"
+        },
+        {
+            "id": 180,
+            "quality_grade": "research"
+        },
+        {
+            "id": 181,
+            "quality_grade": "research"
+        },
+        {
+            "id": 182,
+            "quality_grade": "research"
+        },
+        {
+            "id": 183,
+            "quality_grade": "research"
+        },
+        {
+            "id": 184,
+            "quality_grade": "research"
+        },
+        {
+            "id": 185,
+            "quality_grade": "research"
+        },
+        {
+            "id": 186,
+            "quality_grade": "research"
+        },
+        {
+            "id": 187,
+            "quality_grade": "research"
+        },
+        {
+            "id": 188,
+            "quality_grade": "research"
+        },
+        {
+            "id": 189,
+            "quality_grade": "research"
+        },
+        {
+            "id": 190,
+            "quality_grade": "research"
+        },
+        {
+            "id": 191,
+            "quality_grade": "research"
+        },
+        {
+            "id": 192,
+            "quality_grade": "research"
+        },
+        {
+            "id": 193,
+            "quality_grade": "research"
+        },
+        {
+            "id": 194,
+            "quality_grade": "research"
+        },
+        {
+            "id": 195,
+            "quality_grade": "research"
+        },
+        {
+            "id": 196,
+            "quality_grade": "research"
+        },
+        {
+            "id": 197,
+            "quality_grade": "research"
+        },
+        {
+            "id": 198,
+            "quality_grade": "research"
+        },
+        {
+            "id": 199,
+            "quality_grade": "research"
+        },
+        {
+            "id": 200,
+            "quality_grade": "research"
+        }
+    ]
+}
