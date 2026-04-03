@@ -12,3 +12,5 @@
 ^NEWS\.md$
 ^\.RData$
 ^\.Renviron$
+^doc$
+^Meta$

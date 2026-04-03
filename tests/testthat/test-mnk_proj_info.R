@@ -1,21 +1,21 @@
 
-# Cargar librerías necesarias para los tests
+
 skip_if_not_installed("mockery")
 library(testthat)
 library(httr)
 library(jsonlite)
 library(tibble)
 
-# --- TESTS DE VALIDACIÓN DE ENTRADA (Sin cambios)
+
 test_that("mnk_proj_info handles invalid input", {
   expect_error(mnk_proj_info(project_id = NULL, grpid = NULL), "You must provide either 'project_id' or 'grpid'")
   expect_error(mnk_proj_info(project_id = c("1", "2")), "'project_id' must be a single character string or number.")
   expect_error(mnk_proj_info(grpid = c("group1", "group2")), "'grpid' must be a single character string or number.")
 })
 
-# --- TESTS DE MANEJO DE ERRORES HTTP (Corregidos con mocks robustos) ---
+
 test_that("mnk_proj_info handles network and HTTP errors", {
-  # Sub-test para Error de Red (simulamos que GET lanza un error)
+
   local_mocked_bindings(
     GET = function(...) stop("Network failure"),
     .package = "httr"
@@ -26,7 +26,7 @@ test_that("mnk_proj_info handles network and HTTP errors", {
   )
   expect_null(result_net)
 
-  # Sub-test para Error HTTP (ej. 404 Not Found)
+
   mock_GET_http_error <- function(url, ...) {
     structure(
       list(
@@ -47,7 +47,6 @@ test_that("mnk_proj_info handles network and HTTP errors", {
   expect_null(result_http)
 })
 
-# --- TESTS DE RESPUESTAS VACÍAS O ANORMALES (Corregidos con mocks robustos) ---
 test_that("mnk_proj_info handles empty, null, or no-result API responses", {
   mock_GET_various_empty <- function(url, query, ...) {
     content_str <- switch(query$id,
@@ -74,9 +73,7 @@ test_that("mnk_proj_info handles empty, null, or no-result API responses", {
   expect_message(mnk_proj_info(project_id = "other"), "No project details found")
 })
 
-# --- TESTS DE LÓGICA DE 'users' (Corregidos con mocks robustos) ---
 
-# Test para users=FALSE (comportamiento por defecto)
 test_that("mnk_proj_info with users=FALSE returns project info list", {
   mock_json <- '{ "results": [{ "id": 420, "title": "Test Project", "description": "A test description.", "slug": "test-project", "created_at": "2023-01-01T12:00:00Z", "place_id": 101, "user_ids": [10, 20, 30] }] }'
 
@@ -97,7 +94,6 @@ test_that("mnk_proj_info with users=FALSE returns project info list", {
   expect_equal(result$id, 420)
 })
 
-# Test para users=TRUE
 test_that("mnk_proj_info with users=TRUE returns a tibble of user IDs", {
   mock_json <- '{ "results": [{ "user_ids": [10, 20, 30] }] }'
 
@@ -118,7 +114,6 @@ test_that("mnk_proj_info with users=TRUE returns a tibble of user IDs", {
   expect_equal(nrow(result), 3)
 })
 
-# Test para users=TRUE sin usuarios
 test_that("mnk_proj_info with users=TRUE handles no users", {
   mock_json <- '{ "results": [ { "id": 421, "user_ids": [] } ] }'
 
@@ -139,7 +134,7 @@ test_that("mnk_proj_info with users=TRUE handles no users", {
   expect_equal(nrow(result), 0)
 })
 
-# Test para campos ausentes con users=FALSE
+
 test_that("mnk_proj_info handles missing fields correctly when users=FALSE", {
   mock_json <- '{ "results": [ { "id": 777, "title": "Missing" } ] }'
 
@@ -160,7 +155,7 @@ test_that("mnk_proj_info handles missing fields correctly when users=FALSE", {
   expect_equal(result$subscrib_users, 0)
 })
 
-# --- TEST PARA COBERTURA DE 'grpid' (Añadido y corregido) ---
+
 test_that("mnk_proj_info works correctly with the 'grpid' argument", {
   mock_json_response <- '{
     "results": [{

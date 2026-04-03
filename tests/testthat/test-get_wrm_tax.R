@@ -1,14 +1,10 @@
-## Cargar las bibliotecas necesarias para los tests
-library(testthat)
-library(tibble)
 
-# Configuración de skips iniciales
 skip_if_not_installed("mockery")
 skip_if_not_installed("httptest")
 
-# =========================================================================
-# === Tests SIN conexión a internet (usando simulación/mocking) ===
-# =========================================================================
+
+library(testthat)
+library(tibble)
 
 test_that("get_wrm_tax handles network errors (e.g., no connection)", {
   mock_httr_GET_network_error <- function(url) {
@@ -130,9 +126,7 @@ test_that("get_wrm_tax parses a valid JSON response correctly (offline)", {
   )
 })
 
-# ===================================================================
-# === Tests para la validación de la entrada (no dependen de API) ===
-# ===================================================================
+
 
 test_that("get_wrm_tax throws error for invalid input", {
   err_msg <- "'scientific_name' must be a single non-empty character string."
@@ -142,9 +136,7 @@ test_that("get_wrm_tax throws error for invalid input", {
   expect_error(get_wrm_tax("    "), regexp = err_msg, fixed = TRUE)
 })
 
-# =====================================================================
-# === Test con conexión real (solo si hay internet y no es CRAN) ===
-# =====================================================================
+
 
 test_that("get_wrm_tax works for a valid species name (live API call)", {
   skip_if_offline(host = "www.marinespecies.org")

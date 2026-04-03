@@ -2,40 +2,46 @@
 % Please edit documentation in R/mnk_proj_obs.R
 \name{mnk_proj_obs}
 \alias{mnk_proj_obs}
-\title{Observations from a Minka project}
+\title{Download Project Observations by Year}
 \usage{
-mnk_proj_obs(project_id, year, month = NULL)
+mnk_proj_obs(
+  project_id,
+  year,
+  month = NULL,
+  day = NULL,
+  quiet = FALSE,
+  limit_download = TRUE
+)
 }
 \arguments{
-\item{project_id}{A single id for a Minka project.}
+\item{project_id}{The numeric ID of the Minka project.}
 
-\item{year}{Return all observations of project only in that year (can only be
-one year, not a range of years).}
+\item{year}{The numeric year for the query (required).}
 
-\item{month}{A number from 1 to 12 to download only that month.
-If it is NULL, the entire year will be downloaded.}
+\item{month}{(Optional) The numeric month (1-12). Defaults to NULL (all months).}
+
+\item{day}{(Optional) The numeric day (1-31). Defaults to NULL (all days).}
+
+\item{quiet}{A logical value. If `TRUE`, all console messages will be suppressed.}
+
+\item{limit_download}{A logical value. If `TRUE` (default), the download is capped
+at 10,000 records per query subdivision. If `FALSE`, it attempts to download all records.}
 }
 \value{
-A data frame with all the year/month records with full details.
+A `tibble::tibble` containing the downloaded observation data.
 }
 \description{
-This function downloads observation data for a Minka project,in a given year,
-optionally, a specific month. It automatically manages if you download it
-must be done month by month or for a single month.
-}
-\details{
-Before using this function, you need to know the \code{project_id}.
-If the ID is unknown, you can first use the function \code{\link{mnk_proj_byname}}
-to find it based on the project's name.
+This is a convenience wrapper for \code{\link{mnk_obs}} to simplify downloading
+observations for a specific project, filtered by year and optionally by month and day.
 }
 \examples{
 \dontrun{
-  #If the project_id is known you can use directly the function
-  biomarato <- mnk_proj_byname(420,year=2025)
-  #First of all it is necessary to obtain the project_id of the project.
-  projects <- mnk_proj_byname(query="Biomarato 2025")
-  #Select the id_project
-  obs_june_2025 <- mnk_proj_obs( projects$project_id[1], year=2025, month=6)
-  obs_2025 <- mnk_proj_obs( projects$project_id[1], year=2025, month=NULL)
+# Download all observations for project 419 for the year 2024
+# (up to the download limit)
+proj_data_2024 <- mnk_proj_obs(project_id = 419, year = 2024)
+
+# Download all observations for project 419 for August 2025,
+# attempting to get all records without a limit.
+proj_data_aug_2025 <- mnk_proj_obs(project_id = 419, year = 2025, month = 8, limit_download = FALSE)
 }
 }

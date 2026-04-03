@@ -66,8 +66,8 @@ observations.
   name.
 - `mnk_user_proj()`: Find the projects to which a user has explicitly
   subscribed based on their user_ID.
-- `mnk_user_obs()`: Retrieves all observations contributed by that user
-  for a given year ( all the year or only a specific month) from their
+- `mnk_obs()`: Retrieves all observations contributed by that user for a
+  given year ( all the year or only a specific month) from their
   id_user.
 
 **c) Place Queries:** Functions to find places and retrieve their

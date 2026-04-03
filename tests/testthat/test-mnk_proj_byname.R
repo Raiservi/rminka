@@ -1,3 +1,4 @@
+skip_if_not_installed("mockery")
 
 
 library(testthat)
@@ -118,12 +119,8 @@ test_that("mnk_proj_byname handles JSON with no projects found", {
   )
 })
 
-
-# --- Test para API devuelve datos válidos (VERSIÓN CORREGIDA PARA TU FUNCIÓN) ---
 test_that("mnk_proj_byname returns a tibble with specific columns for a valid query", {
-  # El JSON de prueba ahora usa las columnas que la función busca ('title', 'slug', etc.)
-  # También añadimos una columna extra para asegurarnos de que la función la ignora.
-  # El segundo objeto JSON no tiene todos los campos para probar la asignación de NA.
+
   mock_response_json <- '{
     "results": [
       {
@@ -167,23 +164,23 @@ test_that("mnk_proj_byname returns a tibble with specific columns for a valid qu
     {
       result <- mnk_proj_byname("Proyecto Test")
 
-      # 1. Comprobamos que el resultado es un tibble con 2 filas
+
       expect_s3_class(result, "tbl_df")
       expect_equal(nrow(result), 2)
 
-      # 2. Comprobamos que el resultado TIENE EXACTAMENTE las columnas deseadas
+
       columnas_esperadas <- c("id", "title", "place_id", "slug", "created_at",
                               "updated_at", "project_type", "description")
       expect_equal(sort(names(result)), sort(columnas_esperadas))
 
-      # 3. Comprobamos los valores, incluyendo los NA para campos ausentes
+
       expect_equal(result$title, c("Proyecto Test A", "Proyecto Test B"))
       expect_equal(result$id, c(101, 102))
 
-      # El segundo proyecto no tenía 'place_id', así que debe ser NA_integer_
+
       expect_equal(result$place_id, c(901, NA_integer_))
 
-      # El segundo proyecto no tenía 'description', así que debe ser NA_character_
+
       expect_equal(result$description, c("Descripción del Proyecto A", NA_character_))
     }
   )

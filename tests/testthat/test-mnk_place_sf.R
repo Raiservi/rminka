@@ -9,11 +9,6 @@ library(purrr)
 library(tibble)
 library(stringr)
 
-# Asegúrate de que tu función mnk_place_sf esté cargada.
-# source("R/mnk_place_sf.R") # ¡Descomenta si tu paquete no está instalado o cargado!
-
-# --- DEFINICIONES DE MOCKS JSON GLOBALES (TODAS AL PRINCIPIO DEL ARCHIVO) ---
-# ESTOS SON SOLO STRINGS, PUEDEN ESTAR AQUÍ.
 
 mock_response_json_success_point <- '{
   "total_results": 1,
@@ -169,7 +164,7 @@ test_that("mnk_place_sf returns an sf object for a valid ID", {
   )
 })
 
-# --- Test para no resultados o respuesta vacía de la API ---
+
 test_that("mnk_place_sf handles no results or empty response from API", {
   # Definición de la función mock_httr_GET para ESTE test_that
   mock_httr_GET_empty <- function(url = NULL,..., path = NULL, as) {
@@ -186,7 +181,7 @@ test_that("mnk_place_sf handles no results or empty response from API", {
     } else if (id_from_path == 666) { # ID que devuelve JSON con 'results' pero un elemento sin geometry_geojson
       response_content <- mock_response_json_results_no_geom
     } else {
-      stop("Mock no configurado para esta URL en el test de no resultados: ", path)
+      stop("Mock not configured for this result: ", path)
     }
 
     response_obj <- structure(list(
@@ -256,18 +251,18 @@ test_that("mnk_place_sf handles API HTTP error", {
     GET = mock_httr_GET_error,
     .package = "httr",
     {
-      # Test con error 500
+
       expect_message(result_500 <- mnk_place_sf(500), regexp = "Minka API request failed. Status code: 500")
       expect_null(result_500)
 
-      # Test con error 404
+
       expect_message(result_404 <- mnk_place_sf(404), regexp = "Minka API request failed. Status code: 404")
       expect_null(result_404)
     }
   )
 })
 
-# --- Test para GeoJSON malformado ---
+
 test_that("mnk_place_sf handles malformed GeoJSON or JSON", {
   # Definición de la función mock_httr_GET para ESTE test_that
   mock_httr_GET_malformed <- function(url = NULL,..., path = NULL, as) {
@@ -296,14 +291,14 @@ test_that("mnk_place_sf handles malformed GeoJSON or JSON", {
     GET = mock_httr_GET_malformed,
     .package = "httr",
     {
-      # Test con GeoJSON con coordenadas mal formadas (sf::st_read fallará)
+
       result_malformed_geom <- suppressWarnings(mnk_place_sf(666)) # Añadido suppressWarnings
       expect_s3_class(result_malformed_geom, "sf")
       expect_equal(nrow(result_malformed_geom), 1)
       expect_true(sf::st_is(result_malformed_geom$sf_geometry, "POINT"))
       expect_true(sf::st_is_empty(result_malformed_geom$sf_geometry))
 
-      # Test con JSON completamente malformado (jsonlite::fromJSON fallará)
+
       expect_error(mnk_place_sf(777), regexp = "lexical error|syntax error|unallowed token|premature EOF", class = "error")
     }
   )

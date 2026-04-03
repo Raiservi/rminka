@@ -91,4 +91,30 @@ kable(t(as.data.frame(prj_info_us)))
 
   
 **- mnk_proj_obs **
-   `mnk_proj_obs()`: Fetches all observations for a specific year within that project.
+   
+
+kable(as.data.frame(obs_prj))
+```
+
+**- User Queries ** 
+  
+* mnk_user_byname 
+
+```{r user_name, include = TRUE , echo=TRUE}
+
+user_name <- mnk_user_byname("ramon")
+
+user_name
+
+kable(as.data.frame(user_name))
+```
+
+* mnk_user_proj 
+
+```{r user_project, include = TRUE , echo=TRUE}
+
+user_project <- mnk_user_proj(6)
+
+user_project
+
+kable(as.data.frame(user_project))
