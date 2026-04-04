@@ -219,3 +219,21 @@ test_that("download_paginated_data devuelve un tibble vacío si la API falla", {
   })
 })
 
+
+test_that("download_paginated_data muestra mensaje al superar el límite de descarga", {
+  # Objetivo: Cubrir el `if (total_res > numeric_limit ...)` que imprime una nota
+  with_mock_api({
+    # Esperamos el mensaje específico sobre el límite
+    expect_message(
+      # Ejecutamos la función pero no nos importa el resultado, solo el mensaje
+      void <- rminka:::download_paginated_data(
+        params = list(q = "test_limit_message"),
+        numeric_limit = 50,
+        quiet = FALSE
+      ),
+      "NOTE: Fetching only the first 50 of 101 available records"
+    )
+  })
+})
+
+
