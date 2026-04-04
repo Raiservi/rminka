@@ -1,8 +1,10 @@
 # Cargamos las librerías necesarias para los tests
 skip_if_not_installed("httptest")
 skip_if_not_installed("tibble")
+skip_if_not_installed("sf")
 library(httptest)
 library(tibble)
+library(sf)
 
 # ======================================================
 # Tests de validación de parámetros de mnk_obs()
@@ -235,5 +237,7 @@ test_that("download_paginated_data muestra mensaje al superar el límite de desc
     )
   })
 })
+
+
 
 

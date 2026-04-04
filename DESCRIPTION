@@ -19,8 +19,8 @@ Imports:
     magrittr,
     purrr,
     rlang,
-    sf,
     stringr,
+    sf,
     tibble
 RoxygenNote: 7.3.3
 Suggests:
