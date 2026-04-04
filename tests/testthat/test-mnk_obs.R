@@ -142,3 +142,15 @@ test_that("mnk_obs descarga datos sin filtro de fecha", {
     expect_equal(datos_sin_fecha$id[1], 99901)
   })
 })
+
+test_that("mnk_obs subdivide la descarga por días si un mes tiene >10k resultados", {
+  # Objetivo: Cubrir la lógica de subdivisión en `download_month_data`.
+  with_mock_api({
+    # Usamos taxon_name y mes únicos.
+    datos_subdivididos <- mnk_obs(taxon_name = "test_taxon_subdivision", year = 2024, month = 4, quiet = TRUE)
+
+    expect_s3_class(datos_subdivididos, "tbl_df")
+    expect_equal(nrow(datos_subdivididos), 1)
+    expect_equal(datos_subdivididos$id[1], 40101)
+  })
+})
