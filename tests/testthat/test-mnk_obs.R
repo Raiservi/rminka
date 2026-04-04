@@ -260,3 +260,26 @@ test_that("mnk_obs maneja correctamente una respuesta sin resultados", {
     "No data could be downloaded"
   )
 })
+
+test_that("mnk_obs procesa correctamente múltiples parámetros a la vez", {
+
+  httptest::with_mock_api({
+
+    many_params_result <- mnk_obs(
+      query = "test_muchos_parametros",
+      taxon_id = 5,
+      user_id = 10,
+      place_id = 15,
+      project = "mi-proyecto-test",
+      geo = TRUE,
+      endemic = TRUE,
+      threatened = TRUE,
+      introduced = FALSE,
+      quality = "research", # <-- ¡CORRECCIÓN AQUÍ!
+      quiet = TRUE
+    )
+
+    expect_s3_class(many_params_result, "data.frame")
+
+  })
+})
