@@ -1,11 +1,12 @@
-# tests/testthat/test-mnk_obs.R
-
-
+# Cargamos las librerías necesarias para los tests
 skip_if_not_installed("httptest")
+skip_if_not_installed("tibble")
 library(httptest)
-# tests/testthat/test-mnk_obs.R
+library(tibble)
 
-
+# ======================================================
+# Tests de validación de parámetros de mnk_obs()
+# ======================================================
 
 test_that("mnk_obs se detiene si no hay parámetros", {
   expect_error(mnk_obs(), "You must specify at least one search parameter")
@@ -20,49 +21,20 @@ test_that("mnk_obs valida el parámetro 'quality'", {
   expect_error(mnk_obs(quality = "malo"), "must be 'casual' or 'research'")
 })
 
-# --- NUEVO TEST AÑADIDO ---
-test_that("process_minka_results maneja una lista vacía", {
-  # Objetivo: Cubrir la línea 28
-
-  # Llamamos a la función interna con una lista vacía
-  result <- rminka:::process_minka_results(list())
-
-  # Comprobamos que devuelve un tibble vacío, como se espera
-  expect_s3_class(result, "tbl_df")
-  expect_equal(nrow(result), 0)
-})
 # ======================================================
-# Tus tests originales que ya funcionaban
+# Tests para funciones auxiliares (internas)
 # ======================================================
-test_that("mnk_obs se detiene si no hay parámetros", {
-  expect_error(rminka::mnk_obs(), "You must specify at least one search parameter")
-})
-
-test_that("mnk_obs valida los parámetros lógicos", {
-  expect_error(rminka::mnk_obs(taxon_name = "test", quiet = "no"), "'quiet' must be TRUE or FALSE")
-  expect_error(rminka::mnk_obs(taxon_name = "test", limit_download = "yes"), "'limit_download' must be TRUE or FALSE")
-})
-
-test_that("mnk_obs valida el parámetro 'quality'", {
-  expect_error(rminka::mnk_obs(quality = "malo"), "must be 'casual' or 'research'")
-})
 
 test_that("process_minka_results maneja una lista vacía", {
+  # Objetivo: Cubrir la línea del if (length(all_results) == 0)
   result <- rminka:::process_minka_results(list())
   expect_s3_class(result, "tbl_df")
   expect_equal(nrow(result), 0)
 })
 
-# ======================================================
-# EL NUEVO TEST QUE VAMOS A HACER FUNCIONAR
-# ======================================================
-
-test_that("download_paginated_data maneja una respuesta de 0 resultados", {
-  # Objetivo: Cubrir líneas 87-89
-
+test_that("download_paginated_data maneja una respuesta de API con 0 resultados", {
+  # Objetivo: Cubrir el caso donde la API devuelve total_results = 0
   with_mock_api({
-    # Al ejecutar el test, esto hará una llamada real a la API
-    # Y httptest guardará la respuesta en un archivo .json
     result <- rminka:::download_paginated_data(params = list(q = "cero_resultados_test"))
 
     expect_equal(result$count, 0)
@@ -70,168 +42,103 @@ test_that("download_paginated_data maneja una respuesta de 0 resultados", {
   })
 })
 
-#------------------------------------------
-
 test_that("download_paginated_data descarga una página de resultados", {
-  # Objetivo: Cubrir el bucle while y el procesamiento de resultados (líneas 92-108)
-
+  # Objetivo: Cubrir el bucle de paginación con una sola ejecución
   with_mock_api({
-    # Usamos un parámetro 'q' diferente para que busque un archivo.json diferente
     result <- rminka:::download_paginated_data(params = list(q = "una_pagina_test"))
 
-    # Comprobamos que ha procesado el resultado que pondremos en el.json
     expect_equal(result$count, 1)
     expect_s3_class(result$data, "tbl_df")
     expect_equal(nrow(result$data), 1)
-    expect_equal(result$data$id[1], 12345) # Verificamos un dato del.json
+    expect_equal(result$data$id[1], 12345) # Dato del mock JSON
   })
 })
 
-###-----------------------------------------------------
-
-# tests/testthat/test-mnk_obs.R
-#... (todos los tests anteriores)...
-
 test_that("download_paginated_data maneja múltiples páginas de resultados", {
-  # Objetivo: Forzar al bucle 'while' a ejecutarse más de una vez.
-  # Para ello, simularemos una respuesta con 201 resultados.
-
+  # Objetivo: Forzar al bucle de paginación a ejecutarse más de una vez
   with_mock_api({
-    # Usamos un nuevo parámetro 'q' para que busque un nuevo juego de archivos
     result <- rminka:::download_paginated_data(params = list(q = "multi_pagina_test"))
 
-    # Comprobamos que el resultado final es correcto
     expect_equal(result$count, 201)
     expect_s3_class(result$data, "tbl_df")
     expect_equal(nrow(result$data), 201)
-    # Verificamos el id del último registro para confirmar que la página 2 se añadió
-    expect_equal(result$data$id[201], 99999)
-  })
-})
-test_that("download_paginated_data maneja múltiples páginas de resultados", {
-  with_mock_api({
-    result <- rminka:::download_paginated_data(params = list(q = "multi_pagina_test"))
-    expect_equal(result$count, 201)
-    expect_s3_class(result$data, "tbl_df")
-    expect_equal(nrow(result$data), 201)
+    # Verificamos el ID del último registro para confirmar que la página 2 se añadió
     expect_equal(result$data$id[201], 99999)
   })
 })
 
-# Cargamos httptest, la herramienta correcta para este trabajo.
-skip_if_not_installed("httptest")
-library(httptest)
-# tests/testthat/test-mnk_obs.R
-
-
-test_that("mnk_obs se detiene si no hay parámetros", {
-  expect_error(mnk_obs(), "You must specify at least one search parameter")
+test_that("mnk_obs valida el formato del parámetro 'annotation'", {
+  # Debe ser un vector numérico
+  expect_error(
+    mnk_obs(annotation = c("a", "b")),
+    "The 'annotation' parameter must be a numeric vector of length 2"
+  )
+  # Debe tener longitud 2
+  expect_error(
+    mnk_obs(annotation = c(1, 2, 3)),
+    "The 'annotation' parameter must be a numeric vector of length 2"
+  )
 })
 
-test_that("mnk_obs valida los parámetros lógicos", {
-  expect_error(mnk_obs(taxon_name = "test", quiet = "no"), "'quiet' must be TRUE or FALSE")
-  expect_error(mnk_obs(taxon_name = "test", limit_download = "yes"), "'limit_download' must be TRUE or FALSE")
+test_that("mnk_obs valida el formato del parámetro 'bounds'", {
+  # Si no es un objeto 'sf', debe ser un vector numérico de longitud 4
+  expect_error(
+    mnk_obs(bounds = c(1, 2, 3)), # Longitud incorrecta
+    "'bounds' must be a numeric vector of length 4"
+  )
+  expect_error(
+    mnk_obs(bounds = c("a", "b", "c", "d")), # Tipo de dato incorrecto
+    "'bounds' must be a numeric vector of length 4"
+  )
 })
 
-test_that("mnk_obs valida el parámetro 'quality'", {
-  expect_error(mnk_obs(quality = "malo"), "must be 'casual' or 'research'")
-})
-
-# --- NUEVO TEST AÑADIDO ---
-test_that("process_minka_results maneja una lista vacía", {
-  # Objetivo: Cubrir la línea 28
-
-  # Llamamos a la función interna con una lista vacía
-  result <- rminka:::process_minka_results(list())
-
-  # Comprobamos que devuelve un tibble vacío, como se espera
-  expect_s3_class(result, "tbl_df")
-  expect_equal(nrow(result), 0)
-})
-# ======================================================
-# Tus tests originales que ya funcionaban
-# ======================================================
-test_that("mnk_obs se detiene si no hay parámetros", {
-  expect_error(rminka::mnk_obs(), "You must specify at least one search parameter")
-})
-
-test_that("mnk_obs valida los parámetros lógicos", {
-  expect_error(rminka::mnk_obs(taxon_name = "test", quiet = "no"), "'quiet' must be TRUE or FALSE")
-  expect_error(rminka::mnk_obs(taxon_name = "test", limit_download = "yes"), "'limit_download' must be TRUE or FALSE")
-})
-
-test_that("mnk_obs valida el parámetro 'quality'", {
-  expect_error(rminka::mnk_obs(quality = "malo"), "must be 'casual' or 'research'")
-})
-
-test_that("process_minka_results maneja una lista vacía", {
-  result <- rminka:::process_minka_results(list())
-  expect_s3_class(result, "tbl_df")
-  expect_equal(nrow(result), 0)
-})
-
-# ======================================================
-# EL NUEVO TEST QUE VAMOS A HACER FUNCIONAR
-# ======================================================
-
-test_that("download_paginated_data maneja una respuesta de 0 resultados", {
-  # Objetivo: Cubrir líneas 87-89
-
+test_that("mnk_obs descarga datos para un día específico", {
+  # Objetivo: Cubrir la rama if (!is.null(year) && !is.null(month) && !is.null(day))
   with_mock_api({
-    # Al ejecutar el test, esto hará una llamada real a la API
-    # Y httptest guardará la respuesta en un archivo .json
-    result <- rminka:::download_paginated_data(params = list(q = "cero_resultados_test"))
+    # Usamos un taxon_name único para que httptest cree un mock específico para este test.
+    datos_dia <- mnk_obs(taxon_name = "test_taxon_dia", year = 2025, month = 8, day = 15)
 
-    expect_equal(result$count, 0)
-    expect_s3_class(result$data, "tbl_df")
+    # Comprobaciones basadas en el mock que vamos a crear
+    expect_s3_class(datos_dia, "tbl_df")
+    expect_equal(nrow(datos_dia), 1)
+    expect_equal(datos_dia$id[1], 815) # ID de ejemplo para el día 15/8
   })
 })
 
-#------------------------------------------
-
-test_that("download_paginated_data descarga una página de resultados", {
-  # Objetivo: Cubrir el bucle while y el procesamiento de resultados (líneas 92-108)
-
+test_that("mnk_obs descarga un mes completo (menos de 10k resultados)", {
+  # Objetivo: Cubrir la rama de descarga por mes, sin subdivisión.
   with_mock_api({
-    # Usamos un parámetro 'q' diferente para que busque un archivo.json diferente
-    result <- rminka:::download_paginated_data(params = list(q = "una_pagina_test"))
+    # Usamos un taxon_name nuevo para no mezclar mocks
+    datos_mes <- mnk_obs(taxon_name = "test_taxon_mes", year = 2025, month = 9)
 
-    # Comprobamos que ha procesado el resultado que pondremos en el.json
-    expect_equal(result$count, 1)
-    expect_s3_class(result$data, "tbl_df")
-    expect_equal(nrow(result$data), 1)
-    expect_equal(result$data$id[1], 12345) # Verificamos un dato del.json
+    expect_s3_class(datos_mes, "tbl_df")
+    expect_equal(nrow(datos_mes), 2)
+    # Comprobamos el ID del segundo registro para confirmar que se leyeron ambos
+    expect_equal(datos_mes$id[2], 902)
   })
 })
 
-###-----------------------------------------------------
-
-# tests/testthat/test-mnk_obs.R
-#... (todos los tests anteriores)...
-
-test_that("download_paginated_data maneja múltiples páginas de resultados", {
-  # Objetivo: Forzar al bucle 'while' a ejecutarse más de una vez.
-  # Para ello, simularemos una respuesta con 201 resultados.
-
+test_that("mnk_obs descarga un año completo, iterando por meses", {
+  # Objetivo: Cubrir la rama de descarga anual y el bucle de 12 meses.
   with_mock_api({
-    # Usamos un nuevo parámetro 'q' para que busque un nuevo juego de archivos
-    result <- rminka:::download_paginated_data(params = list(q = "multi_pagina_test"))
+    # quiet = TRUE es útil para no llenar la consola de salida durante el test.
+    datos_anuales <- mnk_obs(taxon_name = "test_taxon_anual", year = 2024, quiet = TRUE)
 
-    # Comprobamos que el resultado final es correcto
-    expect_equal(result$count, 201)
-    expect_s3_class(result$data, "tbl_df")
-    expect_equal(nrow(result$data), 201)
-    # Verificamos el id del último registro para confirmar que la página 2 se añadió
-    expect_equal(result$data$id[201], 99999)
-  })
-})
-test_that("download_paginated_data maneja múltiples páginas de resultados", {
-  with_mock_api({
-    result <- rminka:::download_paginated_data(params = list(q = "multi_pagina_test"))
-    expect_equal(result$count, 201)
-    expect_s3_class(result$data, "tbl_df")
-    expect_equal(nrow(result$data), 201)
-    expect_equal(result$data$id[201], 99999)
+    expect_s3_class(datos_anuales, "tbl_df")
+    expect_equal(nrow(datos_anuales), 3)
+    # Comprobamos que un ID del último mes con datos está presente
+    expect_true(202 %in% datos_anuales$id)
   })
 })
 
+test_that("mnk_obs descarga datos sin filtro de fecha", {
+  # Objetivo: Cubrir la rama 'else' final, cuando no hay parámetros de fecha.
+  with_mock_api({
+    # Usamos un parámetro que no sea de fecha, como `project_id`.
+    datos_sin_fecha <- mnk_obs(project_id = 999, quiet = TRUE)
+
+    expect_s3_class(datos_sin_fecha, "tbl_df")
+    expect_equal(nrow(datos_sin_fecha), 1)
+    expect_equal(datos_sin_fecha$id[1], 99901)
+  })
+})
