@@ -202,14 +202,20 @@ test_that("mnk_obs valida correctamente todos los tipos de parámetros", {
 
 })
 
-
-test_that("download_paginated_data se detiene si la API devuelve un error", {
-  # Objetivo: Cubrir la rama de error de la API (que provoca un stop).
+test_that("download_paginated_data devuelve un tibble vacío si la API falla", {
+  # Objetivo: Verificar el comportamiento del manejo de errores INTERNO de la función.
   with_mock_api({
-    # Verificamos que la función se detiene con un error, que es el comportamiento
-    # por defecto de httr::GET ante un código 500.
-    expect_error(
-      rminka:::download_paginated_data(params = list(q = "test_api_error_500"))
+    # Simulamos la llamada que sabemos que tiene un mock de error 500
+    resultado <- rminka:::download_paginated_data(
+      params = list(q = "test_api_error_500"),
+      quiet = TRUE # Usamos quiet=TRUE para no llenar la consola
     )
+
+    # La prueba de fuego: ¿Qué devuelve la función tras capturar el error?
+    # Asumimos que devuelve la estructura esperada pero sin datos.
+    expect_s3_class(resultado$data, "tbl_df")
+    expect_equal(nrow(resultado$data), 0)
+    expect_equal(resultado$count, 0)
   })
 })
+
