@@ -154,3 +154,62 @@ test_that("mnk_obs subdivide la descarga por días si un mes tiene >10k resultad
     expect_equal(datos_subdivididos$id[1], 40101)
   })
 })
+
+test_that("mnk_obs valida correctamente todos los tipos de parámetros", {
+
+  # -----------------------------------------------------------------
+  # Objetivo: Cubrir las ramas `stop()` de validación de parámetros
+  # Estas pruebas no requieren mock de API porque fallan antes.
+  # -----------------------------------------------------------------
+
+  # Validar 'endemic'
+  expect_error(
+    mnk_obs(endemic = "no"),
+    "The 'endemic' parameter must be TRUE or FALSE."
+  )
+
+  # Validar 'introduced'
+  expect_error(
+    mnk_obs(introduced = "yes"),
+    "The 'introduced' parameter must be TRUE or FALSE."
+  )
+
+  # Validar 'threatened'
+  expect_error(
+    mnk_obs(threatened = 1),
+    "The 'threatened' parameter must be TRUE or FALSE."
+  )
+
+  # Validar 'annotation' (formato incorrecto)
+  expect_error(
+    mnk_obs(annotation = c(1, 2, 3)),
+    "The 'annotation' parameter must be a numeric vector of length 2"
+  )
+  expect_error(
+    mnk_obs(annotation = c("a", "b")),
+    "The 'annotation' parameter must be a numeric vector of length 2"
+  )
+
+  # Validar 'bounds' como vector numérico (formato incorrecto)
+  expect_error(
+    mnk_obs(bounds = c(1, 2, 3)),
+    "'bounds' must be a numeric vector of length 4"
+  )
+  expect_error(
+    mnk_obs(bounds = c("a", "b", "c", "d")),
+    "'bounds' must be a numeric vector of length 4"
+  )
+
+})
+
+
+test_that("download_paginated_data se detiene si la API devuelve un error", {
+  # Objetivo: Cubrir la rama de error de la API (que provoca un stop).
+  with_mock_api({
+    # Verificamos que la función se detiene con un error, que es el comportamiento
+    # por defecto de httr::GET ante un código 500.
+    expect_error(
+      rminka:::download_paginated_data(params = list(q = "test_api_error_500"))
+    )
+  })
+})
