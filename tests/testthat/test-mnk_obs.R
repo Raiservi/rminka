@@ -238,6 +238,25 @@ test_that("download_paginated_data muestra mensaje al superar el límite de desc
   })
 })
 
+test_that("mnk_obs maneja correctamente una respuesta sin resultados", {
+  # Este test se asegura de que la función devuelve una tabla vacía
+  # y (si no está en modo 'quiet') muestra un mensaje.
 
+  # 1. Probamos que devuelve una tabla (tibble) vacía
+  httptest::with_mock_api({
+    # --- CAMBIO AQUÍ ---
+    no_results <- mnk_obs(query = "no_existe_nada_con_este_nombre", quiet = TRUE)
 
+    expect_s3_class(no_results, "data.frame")
+    expect_equal(nrow(no_results), 0)
+  })
 
+  # 2. Probamos que muestra el mensaje correcto cuando quiet = FALSE
+  expect_message(
+    httptest::with_mock_api({
+      # --- Y CAMBIO AQUÍ ---
+      mnk_obs(query = "no_existe_nada_con_este_nombre", quiet = FALSE)
+    }),
+    "No data could be downloaded"
+  )
+})
