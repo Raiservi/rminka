@@ -379,13 +379,13 @@ test_that("mnk_obs gestiona un fallo en una página de descarga intermedia", {
   })
 })
 
-test_that("mnk_obs gestiona un fallo en la consulta PING inicial", {
+test_that("mnk_obs devuelve un tibble vacío cuando la consulta PING inicial falla", {
 
   httptest::with_mock_api({
 
-    # El test anterior demostró que no se emite ningún mensaje de error.
-    # Por tanto, solo comprobamos el resultado final: un tibble vacío.
-    results <- mnk_obs(project_id = "test-ping-fail", quiet = TRUE)
+    # El test demuestra que ante un fallo de API, la función falla silenciosamente
+    # y devuelve un resultado vacío, sin emitir errores ni mensajes específicos.
+    results <- mnk_obs(project_id = "test-ping-fail", quiet = FALSE)
 
     expect_s3_class(results, "tbl_df")
     expect_equal(nrow(results), 0)
