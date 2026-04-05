@@ -148,3 +148,37 @@ test_that("get_wrm_tax works for a valid species name (live API call)", {
   expect_equal(nrow(result), 1)
   expect_equal(result$valid_name, "Diplodus sargus")
 })
+
+test_that("get_wrm_tax handles JSON that parses to an empty list", {
+
+
+
+  mock_httr_GET_success <- function(url) {
+    structure(list(
+      status_code = 200L,
+      content = charToRaw('{"some_valid":"json"}'), # El contenido no importa mucho aquí
+      url = "https://www.marinespecies.org/rest/mock-empty-list",
+      headers = list("Content-Type" = "application/json")
+    ), class = "response")
+  }
+
+  #
+  mock_fromJSON_empty_list <- function(...) {
+    return(list())
+  }
+
+
+  with_mocked_bindings(.package = "httr", GET = mock_httr_GET_success, {
+    with_mocked_bindings(.package = "jsonlite", fromJSON = mock_fromJSON_empty_list, {
+
+
+      expect_message(
+        result <- get_wrm_tax("a species name"),
+        regexp = "API returned an empty or invalid response for: 'a species name'."
+      )
+
+
+      expect_null(result)
+    })
+  })
+})
