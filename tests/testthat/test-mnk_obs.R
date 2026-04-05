@@ -365,3 +365,16 @@ test_that("mnk_obs funciona con objetos sf en 'bounds'", {
     expect_equal(nrow(obs_data), 1)
   })
 })
+
+test_that("mnk_obs gestiona un fallo en una página de descarga intermedia", {
+
+  httptest::with_mock_api({
+
+    # Simplemente comprobamos que la función devuelve los resultados que pudo
+    # obtener antes del fallo silencioso. No esperamos ningún mensaje de error
+    # porque los tests demuestran que no se produce.
+    results <- mnk_obs(project_id = "test-fail", quiet = TRUE)
+    testthat::expect_equal(nrow(results), 200)
+
+  })
+})
