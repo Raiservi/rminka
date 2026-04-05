@@ -1,0 +1,19 @@
+    {
+      "total_results": 2,
+      "page": 1,
+      "per_page": 200,
+      "results": [
+        {
+          "id": 12345,
+          "observed_on_string": "2025-09-01T12:00:00+02:00",
+          "user": { "login": "testuser1" },
+          "taxon": { "name": "test-taxon1", "preferred_common_name": "Test Taxon 1" }
+        },
+        {
+          "id": 67890,
+          "observed_on_string": "2025-09-02T13:00:00+02:00",
+          "user": { "login": "testuser2" },
+          "taxon": { "name": "test-taxon2", "preferred_common_name": "Test Taxon 2" }
+        }
+      ]
+    }

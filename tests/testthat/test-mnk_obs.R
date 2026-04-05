@@ -275,11 +275,29 @@ test_that("mnk_obs procesa correctamente múltiples parámetros a la vez", {
       endemic = TRUE,
       threatened = TRUE,
       introduced = FALSE,
-      quality = "research", # <-- ¡CORRECCIÓN AQUÍ!
+      quality = "research",
       quiet = TRUE
     )
 
     expect_s3_class(many_params_result, "data.frame")
 
   })
+})
+
+test_that("El parámetro 'limit_download' funciona correctamente", {
+
+  httptest::with_mock_api({
+
+    results_paginated <- mnk_obs(month = "September", quiet = TRUE)
+
+    expect_equal(nrow(results_paginated), 2)
+  })
+
+  httptest::with_mock_api({
+
+    results_one_page <- mnk_obs(month = "September", limit_download = FALSE, quiet = TRUE)
+
+    expect_equal(nrow(results_one_page), 2)
+  })
+
 })
