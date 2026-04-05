@@ -326,3 +326,42 @@ test_that("mnk_obs procesa bounds y annotation correctamente", {
 
   })
 })
+
+test_that("mnk_obs gestiona un fallo en la llamada 'ping'", {
+
+  # Creamos un mock que simula una respuesta de ERROR (status 404: Not Found)
+  # El nombre del mock lo sacaremos del error, como siempre.
+  httptest::with_mock_api({
+
+    # Le pedimos que nos dé un mensaje de error claro (quiet = FALSE)
+    expect_message(
+      mnk_obs(project_id = "non-existent-project", quiet = FALSE),
+      "No data could be downloaded for the specified criteria."
+    )
+
+    # También comprobamos que devuelve un data.frame vacío
+    results <- mnk_obs(project_id = "non-existent-project", quiet = TRUE)
+    expect_s3_class(results, "data.frame")
+    expect_equal(nrow(results), 0)
+
+  })
+})
+
+test_that("mnk_obs funciona con objetos sf en 'bounds'", {
+
+  skip_if_not_installed("sf")
+
+  # Creamos un sf object de la forma más simple posible
+  point <- sf::st_point(c(2.15, 41.35))
+  sf_obj <- sf::st_as_sf(data.frame(geom = sf::st_sfc(point, crs = 4326)))
+
+  # Usamos el plan de mocks de siempre
+  httptest::with_mock_api({
+
+    # El error de esta llamada nos dará el nombre del mock "ping"
+    obs_data <- mnk_obs(bounds = sf_obj, quiet = TRUE)
+
+    # Al final, el test comprobará que devuelve 1 fila, como diremos en los mocks
+    expect_equal(nrow(obs_data), 1)
+  })
+})
