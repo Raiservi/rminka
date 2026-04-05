@@ -1,0 +1,19 @@
+    {
+      "total_results": 1,
+      "page": 1,
+      "per_page": 200,
+      "results": [
+        {
+          "id": 99999,
+          "observed_on_string": "2025-09-10T10:00:00+02:00",
+          "user": { "login": "bound_tester" },
+          "taxon": { "name": "bounds-taxon", "preferred_common_name": "Bounds Taxon" },
+          "annotations": [
+            {
+              "controlled_attribute_id": 1,
+              "controlled_value_id": 2
+            }
+          ]
+        }
+      ]
+    }

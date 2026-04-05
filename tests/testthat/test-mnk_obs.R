@@ -301,3 +301,28 @@ test_that("El parámetro 'limit_download' funciona correctamente", {
   })
 
 })
+
+test_that("mnk_obs procesa bounds y annotation correctamente", {
+
+  # Usaremos un mock específico para esta combinación de parámetros
+  httptest::with_mock_api({
+
+    # Definimos los parámetros que queremos probar
+    barcelona_bounds <- c(41.3, 2.1, 41.4, 2.2) # Formato: sw_lat, sw_lng, ne_lat, ne_lng
+    life_stage_annotation <- c(1, 2)          # Ejemplo: Adulto y Teno
+
+    # Hacemos la llamada con los nuevos parámetros
+    # (La combinamos con 'month' para hacer la URL más específica)
+    obs_bounds_annot <- mnk_obs(
+      month = "September",
+      bounds = barcelona_bounds,
+      annotation = life_stage_annotation,
+      quiet = TRUE
+    )
+
+    # De momento, solo comprobamos que devuelve un data.frame.
+    # Cuando creemos el mock, ajustaremos el número de filas.
+    expect_s3_class(obs_bounds_annot, "data.frame")
+
+  })
+})
