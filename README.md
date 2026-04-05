@@ -66,8 +66,8 @@ observations.
   name.
 - `mnk_user_proj()`: Find the projects to which a user has explicitly
   subscribed based on their user_ID.
-- `mnk_obs()`: Retrieves all observations contributed by that user for a
-  given year ( all the year or only a specific month) from their
+- `mnk_user_obs()`: Retrieves all observations contributed by that user
+  for a given year ( all the year or only a specific month) from their
   id_user.
 
 **c) Place Queries:** Functions to find places and retrieve their
@@ -77,6 +77,8 @@ spatial data.
   approximate place name.
 - `mnk_place_sf()`: Returns the `sf` geometry for a place, ready for
   plotting with packages like `ggplot2` or `leaflet`.
+- `mnk_place_obs()`: Retrieves all observations for a place for a given
+  year ( all the year or only a specific month) from their id_user.
 
 **d) Observation Queries:** A variety of functions to fetch observation
 data based on different parameters.
