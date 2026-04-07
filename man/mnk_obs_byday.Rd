@@ -11,7 +11,7 @@ mnk_obs_byday(d1, d2, ..., quiet = FALSE, limit_download = TRUE)
 
 \item{d2}{End date ('yyyy-mm-dd').}
 
-\item{...}{Additional query parameters passed to the API (e.g., `user_id`, `project_id`).}
+\item{...}{Additional query parameters passed to the API (e.g., `user_id`, `project_id`, `bounds`, `annotation`, `quality`, `taxon_name`, etc.). All parameters from `mnk_obs` (except `year`, `month`, `day`) are accepted.}
 
 \item{quiet}{Logical. If TRUE, suppress messages.}
 

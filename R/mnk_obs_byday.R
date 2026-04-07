@@ -1,3 +1,72 @@
+# ===================================================================
+# CÓDIGO CORREGIDO PARA EL FICHERO: R/mnk_obs_byday.R
+# (CON EL ORDEN DE LAS FUNCIONES CORREGIDO)
+# ===================================================================
+
+# ---
+# ECOSISTEMA PRIVADO DE mnk_obs_byday (DEFINIDO ANTES DE USARSE)
+# ---
+
+# Helper 1 para byday: hacer un PING
+#' @noRd
+byday_get_total_results <- function(p) {
+  # El operador %||% se define aquí para ser autocontenido
+  `%||%` <- function(a, b) { if (is.null(a)) b else a }
+
+  resp <- httr::GET("https://api.minka-sdg.org/v1/observations", query = c(p, list(per_page = 1)))
+  if(httr::http_error(resp)) 0 else httr::content(resp, as="parsed")$total_results %||% 0
+}
+
+# Helper 2 para byday: procesar la lista de resultados de la API
+#' @noRd
+byday_process_results <- function(all_results) {
+  # Esta es una copia de la lógica, pero vive solo aquí
+  `%||%` <- function(a, b) { if (is.null(a)) b else a }
+
+  if (length(all_results) == 0) return(tibble::tibble())
+
+  purrr::map(all_results, ~tibble::tibble(
+    id = .x$id %||% NA_integer_, observed_on = .x$observed_on %||% NA,
+    year = .x$observed_on_details$year %||% NA_integer_, month = .x$observed_on_details$month %||% NA_integer_,
+    week = .x$observed_on_details$week %||% NA_integer_, day = .x$observed_on_details$day %||% NA_integer_,
+    hour = .x$observed_on_details$hour %||% NA_integer_, created_at = .x$created_at %||% NA,
+    updated_at = .x$updated_at %||% NA, latitude = .x$geojson$coordinates[[2]] %||% NA_real_,
+    longitude = .x$geojson$coordinates[[1]] %||% NA_real_, positional_accuracy = .x$positional_accuracy %||% NA_integer_,
+    geoprivacy = .x$taxon_geoprivacy %||% NA, obscured = .x$obscured %||% NA,
+    uri = .x$uri %||% NA, photo_url_square = .x$taxon$default_photo$square_url %||% NA_character_,
+    photo_url_medium = .x$taxon$default_photo$medium_url %||% NA_character_, quality_grade = .x$quality_grade %||% NA,
+    species_guess = .x$species_guess %||% NA, taxon_id = .x$taxon$id %||% NA_integer_,
+    taxon_name = .x$taxon$name %||% NA, taxon_rank = .x$taxon$rank %||% NA,
+    taxon_min_ancestry = .x$taxon$min_species_ancestry %||% NA, taxon_endemic = .x$taxon$endemic %||% NA,
+    taxon_threatened = .x$taxon$threatened %||% NA, taxon_introduced = .x$taxon$introduced %||% NA,
+    taxon_native = .x$taxon$native %||% NA, user_id = .x$user$id %||% NA_integer_,
+    user_login = .x$user$login %||% NA
+  )) |> dplyr::bind_rows()
+}
+
+# Helper 3 para byday: la "copia" de mnk_obs para descargar trozos
+#' @noRd
+byday_download_chunk <- function(params, total_res, quiet, limit_download) {
+  API_MAX_PER_PAGE <- 200
+  download_limit <- if(limit_download) 10000 else Inf
+  max_to_fetch <- min(total_res, download_limit)
+
+  all_results <- list()
+  if (max_to_fetch > 0) {
+    pages <- 1:ceiling(max_to_fetch / API_MAX_PER_PAGE)
+    for (i in pages) {
+      page_params <- c(params, list(per_page = API_MAX_PER_PAGE, page = i))
+      data_response <- httr::GET("https://api.minka-sdg.org/v1/observations", query = page_params)
+      if (httr::http_error(data_response)) next
+      data_content <- httr::content(data_response, as = "parsed")$results
+      if (!is.null(data_content) && length(data_content) > 0) {
+        all_results <- c(all_results, data_content)
+      } else { break }
+    }
+  }
+  return(byday_process_results(all_results))
+}
+
 #' @title Download Large Observation Datasets by Date Range
 #' @description A wrapper to handle large date ranges by automatically subdividing requests by month or day to avoid API limits. Does not interfere with `mnk_obs`.
 #' @param d1 Start date ('yyyy-mm-dd').
@@ -20,14 +89,9 @@ mnk_obs_byday <- function(d1, d2, ..., quiet = FALSE, limit_download = TRUE) {
   # CAPTURA Y PROCESAMIENTO COMPLETO DE PARÁMETROS (...)
   # ---
 
-  # Capturamos todos los argumentos pasados a '...' en una lista.
   all_params <- list(...)
-
-  # Inicializamos la lista de parámetros base que irán a la API.
-  # Usamos 'compact' para eliminar de entrada cualquier parámetro NULL.
   base_params <- purrr::compact(all_params)
 
-  # Procesamiento especial para 'bounds'
   if (!is.null(base_params$bounds)) {
     bounds <- base_params$bounds
     if (inherits(bounds, "sf")) {
@@ -39,28 +103,22 @@ mnk_obs_byday <- function(d1, d2, ..., quiet = FALSE, limit_download = TRUE) {
       }
       processed_bounds <- list(nelat = bounds[1], nelng = bounds[2], swlat = bounds[3], swlng = bounds[4])
     }
-
-    print(paste("nelat:",processed_bounds[1] ," nelng:",processed_bounds[2]," swlat:", processed_bounds[3], " swlng:",processed_bounds[4]))
-    # Eliminamos el 'bounds' original y añadimos los parámetros procesados.
-
     base_params$bounds <- NULL
     base_params <- c(base_params, processed_bounds)
   }
 
-  # Procesamiento especial para 'annotation'
   if (!is.null(base_params$annotation)) {
     annotation <- base_params$annotation
     if (!is.numeric(annotation) || length(annotation) != 2) {
       stop("The 'annotation' parameter must be a numeric vector of length 2: c(term_id, term_value_id)")
     }
     processed_annotation <- list(term_id = annotation[1], term_value_id = annotation[2])
-    # Eliminamos 'annotation' original y añadimos los parámetros procesados.
     base_params$annotation <- NULL
     base_params <- c(base_params, processed_annotation)
   }
 
   # ---
-  # INICIO DE LA LÓGICA DE DESCARGA (sin cambios)
+  # INICIO DE LA LÓGICA DE DESCARGA
   # ---
 
   total_results <- byday_get_total_results(c(base_params, list(d1=d1, d2=d2)))
@@ -135,7 +193,7 @@ mnk_obs_byday <- function(d1, d2, ..., quiet = FALSE, limit_download = TRUE) {
   if (!quiet) message(paste0("\nOverall process complete! A total of ", format(nrow(final_data), big.mark = ","), " unique records were obtained."))
   return(final_data)
 }
-
+#
 # library(dplyr)
 # library(tibble)
 # library(jsonlite)
@@ -147,5 +205,5 @@ mnk_obs_byday <- function(d1, d2, ..., quiet = FALSE, limit_download = TRUE) {
 # project_id <- 420
 # user_id = 4
 # bounds=c(42.20,2.2,38.2,0.6)
-# x <- mnk_obs_byday(d1 = d1, d2 = d2, bounds = bounds)
+# x <- mnk_obs_byday(d1 = d1, d2 = d2, bounds = bounds )
 # View(x)
