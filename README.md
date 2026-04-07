@@ -87,7 +87,7 @@ data based on different parameters.
   its unique ID.
 - `mnk_obs()`: Fetches observations based on various parameters for a
   full year, a specific month, or a single day.
-- `mnk_obs_bydays()`: Retrieves all observations within a date range in
+- `mnk_obs_byday()`: Retrieves all observations within a date range in
   the same year.
 - `mnk_obs_bycreation()`: Retrieves all observations within a date range
   of creation in the same year.
