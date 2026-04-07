@@ -21,7 +21,8 @@ Imports:
     rlang,
     stringr,
     sf,
-    tibble
+    tibble,
+    lubridate
 RoxygenNote: 7.3.3
 Suggests:
     httptest,
