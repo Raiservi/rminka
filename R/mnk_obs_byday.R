@@ -1,0 +1,151 @@
+#' @title Download Large Observation Datasets by Date Range
+#' @description A wrapper to handle large date ranges by automatically subdividing requests by month or day to avoid API limits. Does not interfere with `mnk_obs`.
+#' @param d1 Start date ('yyyy-mm-dd').
+#' @param d2 End date ('yyyy-mm-dd').
+#' @param ... Additional query parameters passed to the API (e.g., `user_id`, `project_id`, `bounds`, `annotation`, `quality`, `taxon_name`, etc.). All parameters from `mnk_obs` (except `year`, `month`, `day`) are accepted.
+#' @param quiet Logical. If TRUE, suppress messages.
+#' @param limit_download Logical. If TRUE, limit download to 10,000 records per subdivided request.
+#' @return A `tibble` with observation data.
+#' @importFrom dplyr bind_rows
+#' @importFrom purrr map compact
+#' @importFrom httr GET http_error content
+#' @importFrom lubridate days_in_month
+#' @export
+mnk_obs_byday <- function(d1, d2, ..., quiet = FALSE, limit_download = TRUE) {
+  date1 <- as.Date(d1, format = "%Y-%m-%d"); date2 <- as.Date(d2, format = "%Y-%m-%d")
+  if (is.na(date1) || is.na(date2)) stop("Dates d1 and d2 must be in 'yyyy-mm-dd' format.")
+  if (date1 > date2) stop("The start date (d1) cannot be after the end date (d2).")
+
+  # ---
+  # CAPTURA Y PROCESAMIENTO COMPLETO DE PARÁMETROS (...)
+  # ---
+
+  # Capturamos todos los argumentos pasados a '...' en una lista.
+  all_params <- list(...)
+
+  # Inicializamos la lista de parámetros base que irán a la API.
+  # Usamos 'compact' para eliminar de entrada cualquier parámetro NULL.
+  base_params <- purrr::compact(all_params)
+
+  # Procesamiento especial para 'bounds'
+  if (!is.null(base_params$bounds)) {
+    bounds <- base_params$bounds
+    if (inherits(bounds, "sf")) {
+      bbox <- sf::st_bbox(bounds)
+      processed_bounds <- list(swlng = bbox["xmin"], swlat = bbox["ymin"], nelng = bbox["xmax"], nelat = bbox["ymax"])
+    } else {
+      if (!is.numeric(bounds) || length(bounds) != 4) {
+        stop("'bounds' must be a numeric vector of length 4: c(nelat, nelng, swlat, swlng)")
+      }
+      processed_bounds <- list(nelat = bounds[1], nelng = bounds[2], swlat = bounds[3], swlng = bounds[4])
+    }
+
+    print(paste("nelat:",processed_bounds[1] ," nelng:",processed_bounds[2]," swlat:", processed_bounds[3], " swlng:",processed_bounds[4]))
+    # Eliminamos el 'bounds' original y añadimos los parámetros procesados.
+
+    base_params$bounds <- NULL
+    base_params <- c(base_params, processed_bounds)
+  }
+
+  # Procesamiento especial para 'annotation'
+  if (!is.null(base_params$annotation)) {
+    annotation <- base_params$annotation
+    if (!is.numeric(annotation) || length(annotation) != 2) {
+      stop("The 'annotation' parameter must be a numeric vector of length 2: c(term_id, term_value_id)")
+    }
+    processed_annotation <- list(term_id = annotation[1], term_value_id = annotation[2])
+    # Eliminamos 'annotation' original y añadimos los parámetros procesados.
+    base_params$annotation <- NULL
+    base_params <- c(base_params, processed_annotation)
+  }
+
+  # ---
+  # INICIO DE LA LÓGICA DE DESCARGA (sin cambios)
+  # ---
+
+  total_results <- byday_get_total_results(c(base_params, list(d1=d1, d2=d2)))
+
+  if (!quiet) {
+    if (total_results > 0) message(paste("Found a total of", format(total_results, big.mark = ","), "records between", d1, "and", d2, "."))
+    else message("No records found for the specified criteria.")
+  }
+  if(total_results == 0) return(tibble::tibble())
+
+  if (total_results <= 10000) {
+    params <- c(base_params, list(d1 = d1, d2 = d2))
+    return(byday_download_chunk(params, total_results, quiet, limit_download))
+  }
+
+  if (!quiet) message(" -> Total > 10,000. Subdividing request...")
+  all_results_list <- list()
+
+  years_in_range <- unique(format(seq.Date(date1, date2, by = "day"), "%Y"))
+
+  for(year_val in years_in_range){
+    year_start_date <- max(date1, as.Date(paste0(year_val, "-01-01")))
+    year_end_date <- min(date2, as.Date(paste0(year_val, "-12-31")))
+    months_in_range <- unique(format(seq.Date(year_start_date, year_end_date, by = "day"), "%Y-%m"))
+
+    for(month_str in months_in_range){
+      m_date <- as.Date(paste0(month_str, "-01"))
+      m <- as.numeric(format(m_date, "%m"))
+      if (!quiet) message(paste("\n--- Processing month:", month.name[m], year_val, "---"))
+
+      start_day <- as.numeric(format(max(year_start_date, m_date), "%d"))
+      end_day <- as.numeric(format(min(year_end_date, as.Date(paste0(month_str, "-", lubridate::days_in_month(m_date)))), "%d"))
+      is_full_month <- start_day == 1 && end_day == lubridate::days_in_month(m_date)
+
+      if (is_full_month) {
+        monthly_total <- byday_get_total_results(c(base_params, list(year=year_val, month=m)))
+        if (!quiet && monthly_total > 0) message(paste(" -> Month has", format(monthly_total, big.mark=","), "records."))
+
+        if (monthly_total > 0 && monthly_total <= 10000) {
+          if (!quiet) message(" -> Downloading month in one go...")
+          params <- c(base_params, list(year = year_val, month = m))
+          all_results_list[[length(all_results_list) + 1]] <- byday_download_chunk(params, monthly_total, TRUE, limit_download)
+        } else if (monthly_total > 10000) {
+          if (!quiet) message(" -> Month > 10,000. Downloading day by day...")
+          for(d in start_day:end_day){
+            params <- c(base_params, list(year=year_val, month=m, day=d))
+            day_total <- byday_get_total_results(params)
+            if (day_total > 0) {
+              if (!quiet) message(paste(" - Day:", d, "has", day_total, "records."))
+              all_results_list[[length(all_results_list) + 1]] <- byday_download_chunk(params, day_total, TRUE, limit_download)
+            }
+          }
+        }
+      } else {
+        for(d in start_day:end_day){
+          params <- c(base_params, list(year=year_val, month=m, day=d))
+          day_total <- byday_get_total_results(params)
+          if (day_total > 0) {
+            if (!quiet) message(paste(" - Day:", d, "has", day_total, "records."))
+            all_results_list[[length(all_results_list) + 1]] <- byday_download_chunk(params, day_total, TRUE, limit_download)
+          }
+        }
+      }
+    }
+  }
+
+  final_data <- dplyr::bind_rows(all_results_list)
+  if(nrow(final_data) > 0) {
+    final_data <- final_data[!duplicated(final_data$id), ]
+  }
+
+  if (!quiet) message(paste0("\nOverall process complete! A total of ", format(nrow(final_data), big.mark = ","), " unique records were obtained."))
+  return(final_data)
+}
+
+# library(dplyr)
+# library(tibble)
+# library(jsonlite)
+# library(sf)
+# library(httr)
+# library(stringr)
+# d1 <- "2025-05-15"
+# d2 <- "2025-06-28"
+# project_id <- 420
+# user_id = 4
+# bounds=c(42.20,2.2,38.2,0.6)
+# x <- mnk_obs_byday(d1 = d1, d2 = d2, bounds = bounds)
+# View(x)

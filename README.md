@@ -89,6 +89,8 @@ data based on different parameters.
   full year, a specific month, or a single day.
 - `mnk_obs_bydays()`: Retrieves all observations within a date range in
   the same year.
+- `mnk_obs_bycreation()`: Retrieves all observations within a date range
+  of creation in the same year.
 
 **e) Auxiliary functions:** a set of functions with different utilities
 that complement Minka’s observational data and help in processing them
