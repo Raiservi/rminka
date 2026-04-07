@@ -4,8 +4,6 @@
 # ===================================================================
 
 # ---
-# ECOSISTEMA PRIVADO DE mnk_obs_byday (DEFINIDO ANTES DE USARSE)
-# ---
 
 # Helper 1 para byday: hacer un PING
 #' @noRd
