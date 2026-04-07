@@ -1,0 +1,15 @@
+    {
+      "total_results": 1,
+      "page": 1,
+      "per_page": 200,
+      "results": [
+        {
+          "id": 101,
+          "observed_on": "2024-05-20",
+          "observed_on_details": { "year": 2024, "month": 5, "day": 20 },
+          "geojson": { "coordinates": [ -70, 40 ] },
+          "taxon": { "id": 10, "name": "Species X" },
+          "user": { "id": 1, "login": "test_user" }
+        }
+      ]
+    }

@@ -1,0 +1,23 @@
+    {
+      "total_results": 2,
+      "page": 1,
+      "per_page": 200,
+      "results": [
+        {
+          "id": 301,
+          "observed_on": "2024-03-15",
+          "observed_on_details": { "year": 2024, "month": 3, "day": 15 },
+          "geojson": { "coordinates": [ -74, 40 ] },
+          "taxon": { "id": 123, "name": "Species A" },
+          "user": { "id": 99, "login": "user_a" }
+        },
+        {
+          "id": 302,
+          "observed_on": "2024-03-20",
+          "observed_on_details": { "year": 2024, "month": 3, "day": 20 },
+          "geojson": { "coordinates": [ -75, 41 ] },
+          "taxon": { "id": 124, "name": "Species B" },
+          "user": { "id": 100, "login": "user_b" }
+        }
+      ]
+    }
