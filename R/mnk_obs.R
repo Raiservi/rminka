@@ -18,8 +18,8 @@
 #' Process Raw Minka API Results
 #'
 #' This internal function takes the raw list of observation results from the API
-#' and transforms it into a clean `tibble::tibble`, handling missing fields gracefully.
-#'
+#' and transforms it into a clean `tibble::tibble`, handling missing fields
+#'  gracefully.
 #' @param all_results A list containing the raw observation data from the API.
 #' @return A `tibble::tibble` with structured observation data.
 #' @noRd
@@ -65,11 +65,12 @@ process_minka_results <- function(all_results) {
 #'
 #' This helper function handles the pagination logic for a given set of query
 #' parameters. It fetches data in chunks up to the user-defined limit.
-#'
 #' @param params A list of query parameters for the API call.
-#' @param total_res Optional. The total number of results to expect, to avoid an initial ping.
+#' @param total_res Optional. The total number of results to expect, to avoid an
+#' initial ping.
 #' @param quiet A logical value. If TRUE, suppresses all messages.
-#' @param numeric_limit The numeric maximum number of records to download for this specific call.
+#' @param numeric_limit The numeric maximum number of records to download for
+#' this specific call.
 #' @return A list containing `$data` (a tibble) and `$count` (number of rows).
 #' @noRd
 download_paginated_data <- function(params, total_res = NULL, quiet = FALSE, numeric_limit = 10000) {
@@ -127,13 +128,14 @@ download_paginated_data <- function(params, total_res = NULL, quiet = FALSE, num
 
 #' Download Data for a Specific Month with Subdivision Logic
 #'
-#' This function downloads data for a given month, respecting the remaining download limit.
-#'
+#' This function downloads data for a given month, respecting the remaining
+#' download limit.
 #' @param base_params A list of base query parameters.
 #' @param year The year to download.
 #' @param current_month The month to download.
 #' @param quiet A logical value. If TRUE, suppresses messages.
-#' @param remaining_limit The maximum number of records to download in this and subsequent calls.
+#' @param remaining_limit The maximum number of records to download in this and
+#' subsequent calls.
 #' @return A list containing `$data` (a tibble) and `$count` (number of rows).
 #' @noRd
 download_month_data <- function(base_params, year, current_month, quiet = FALSE, remaining_limit) {
@@ -193,9 +195,7 @@ download_month_data <- function(base_params, year, current_month, quiet = FALSE,
 }
 
 # ===================================================================
-# FUNCIÓN PRINCIPAL (EXPORTADA)
-# Se define al final, una vez que todas sus dependencias ya existen.
-# ===================================================================
+# MAIN FUNCTION
 
 #' Download Observations from the Minka-SDG API
 #'
@@ -203,35 +203,47 @@ download_month_data <- function(base_params, year, current_month, quiet = FALSE,
 #' the Minka-SDG API. It automatically handles pagination and rate limits by
 #' subdividing large queries by month or day.
 #'
-#' @param query A generic query string for the 'q' parameter in the API. The exact behavior is not specified by the API documentation.
-#' @param taxon_name A character string for the taxon name (common or scientific).
+#' @param query A generic query string for the 'q' parameter in the API. The
+#' exact behavior is not specified by the API documentation.
+#' @param taxon_name A character string for the taxon name (common or
+#' scientific).
 #' @param taxon_id A numeric ID for the taxon.
 #' @param user_id A numeric ID for a specific user.
 #' @param project_id A numeric ID for a specific project.
 #' @param place_id A numeric ID for a specific place.
 #' @param endemic A logical value (`TRUE`/`FALSE`). Filter for endemic species.
-#' @param introduced A logical value (`TRUE`/`FALSE`). Filter for introduced species.
-#' @param threatened A logical value (`TRUE`/`FALSE`). Filter for threatened species.
+#' @param introduced A logical value (`TRUE`/`FALSE`). Filter for introduced
+#' species.
+#' @param threatened A logical value (`TRUE`/`FALSE`). Filter for threatened
+#' species.
 #' @param quality A character string. Must be either "casual" or "research".
-#' @param geo A logical value. If `TRUE`, filters for observations with geographic coordinates.
-#' @param annotation A numeric vector of length 2 (`c(term_id, term_value_id)`). The exact IDs for terms and values are not specified.
+#' @param geo A logical value. If `TRUE`, filters for observations with
+#' geographic coordinates.
+#' @param annotation A numeric vector of length 2 (`c(term_id, term_value_id)`).
+#' The exact IDs for terms and values are not specified.
 #' @param year A numeric value for the year.
 #' @param month A numeric value for the month (1-12).
 #' @param day A numeric value for the day (1-31).
-#' @param bounds An object representing a bounding box. Can be an `sf` object or a numeric vector of 4 elements in the order: `c(nelat, nelng, swlat, swlng)`.
-#' @param quiet A logical value. If `TRUE`, all console messages during download will be suppressed. Defaults to `FALSE`.
-#' @param limit_download A logical value. If `TRUE` (default), the download is capped at 10,000 records. If `FALSE`, it attempts to download all matching records.
-#'
-#' @return A `tibble::tibble` containing the downloaded observation data, or an empty tibble if no data is found or an error occurs.
+#' @param bounds An object representing a bounding box. Can be an `sf` object or
+#' a numeric vector of 4 elements in the order: `c(nelat, nelng, swlat, swlng)`.
+#' @param quiet A logical value. If `TRUE`, all console messages during download
+#' will be suppressed. Defaults to `FALSE`.
+#' @param limit_download A logical value. If `TRUE` (default), the download is
+#' capped at 10,000 records. If `FALSE`, it attempts to download all matching
+#' records.
+#' @return A `tibble::tibble` containing the downloaded observation data, or an
+#' empty tibble if no data is found or an error occurs.
 #' @importFrom sf st_bbox
 #' @export
 #' @examples
 #' \dontrun{
-#' # Download up to 10,000 observations of "Diplodus sargus" for August 2025 (default limit)
+#' # Download up to 10,000 observations of "Diplodus sargus" for August 2025
+#' (default limit)
 #' d_sargus <- mnk_obs(taxon_name = "Diplodus sargus", year = 2025, month = 8)
 #'
-#' # Attempt to download ALL observations from a project for the entire year 2024
-#' project_data <- mnk_obs(project_id = 419, year = 2024, limit_download = FALSE)
+#' # Attempt to download ALL observations from a project for the entire year
+#' 2024
+#' project_data <- mnk_obs(project_id = 419, year = 2024,limit_download = FALSE)
 #'
 #' # Download threatened species quietly (up to 10,000)
 #' threatened_data <- mnk_obs(threatened = TRUE, quiet = TRUE)

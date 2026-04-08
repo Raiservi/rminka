@@ -1,8 +1,11 @@
 #' @title Search Minka user by part of login name
-#' @description Get information on a specific Minka user selected by  a string contained in the user login name
-#' @details This fucntion is mainly used for obtain the user id and use this id for other functions.
-#' @param query A string that is contained in the the user login name
-#' @return A data frame with all some details of the differents users  that contains the string
+#' @description Get information on a specific Minka user selected by  a string
+#' contained in the user login name.
+#' @details This fucntion is mainly used for obtain the user id and use this id
+#' for other functions.
+#' @param query A string that is contained in the the user login name.
+#' @return A data frame with all some details of the differents users  that
+#' contains the string.
 #' @examples \dontrun{
 #' m_obs <- mnk_user_byname(query="xavier")
 #' }

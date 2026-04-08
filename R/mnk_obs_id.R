@@ -13,7 +13,7 @@
 #'
 mnk_obs_id <- function(id, meta = FALSE) {
 
-  # --- VALIDACIÓN ROBUSTA DEL ID ---
+
   if (is.null(id) || length(id) == 0 || is.na(id[1]) ||!is.atomic(id) || length(id) > 1) {
     stop("You must provide a single, non-empty, non-NA ID for the observation.")
   }
@@ -64,8 +64,6 @@ mnk_obs_id <- function(id, meta = FALSE) {
     message("No data found or unexpected JSON structure for observation ID ", id_char, ".")
     return(invisible(NULL))
   }
-
-  # EL BLOQUE REDUNDANTE (LÍNEAS 79-82) HA SIDO ELIMINADO
 
   return(tibble::as_tibble(df_result))
 }

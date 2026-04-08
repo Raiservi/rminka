@@ -1,13 +1,7 @@
 
-skip_if_not_installed("mockery")
-
 library(testthat)
-library(httr)
-library(jsonlite)
-library(dplyr)
-library(tibble)
 
-test_that("mnk_user_byname procesa correctamente una respuesta de API simulada", {
+test_that("mnk_user_byname correctly processes a mocked API response", {
 
   mock_content_success <- list(
     total_results = 2, page = 1, per_page = 2,
@@ -16,7 +10,6 @@ test_that("mnk_user_byname procesa correctamente una respuesta de API simulada",
       list(id = 456, login = "testuser2", name = NULL, observations_count = 100, created_at = "2023-01-02T13:00:00Z")
     )
   )
-
 
   mock_GET_generic_success <- function(url, path, query) {
     return(structure(list(status_code = 200L), class = c("response", "handle")))
@@ -35,7 +28,7 @@ test_that("mnk_user_byname procesa correctamente una respuesta de API simulada",
   }
 })
 
-test_that("mnk_user_byname maneja un error de API correctamente", {
+test_that("mnk_user_byname correctly handles an API error", {
 
   mock_GET_error <- function(url, path, query) {
     return(structure(list(status_code = 500L), class = c("response", "handle")))
@@ -49,16 +42,13 @@ test_that("mnk_user_byname maneja un error de API correctamente", {
   }
 })
 
-
 test_that("mnk_user_byname handles API response without 'results' field", {
 
   mock_content_no_results <- list(message = "This is not the data you are looking for")
 
-
   mock_GET_generic_success <- function(url, path, query) {
     return(structure(list(status_code = 200L), class = c("response", "handle")))
   }
-
 
   local_mocked_bindings(
     GET = mock_GET_generic_success,

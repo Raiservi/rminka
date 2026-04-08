@@ -1,4 +1,9 @@
+
+skip_if_not_installed("httptest")
+skip_if_not_installed("mockery")
+
 library(testthat)
+library(httptest)
 library(mockery)
 
 test_that("mnk_user_obs calls mnk_obs with the correct basic parameters", {

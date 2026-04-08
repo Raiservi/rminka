@@ -1,6 +1,5 @@
 # utils.R
 
-# Declaración de variables globales para evitar notas de R CMD check
 utils::globalVariables(c(
   "geojson_string",
   "sf_geometry",

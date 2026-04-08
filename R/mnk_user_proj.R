@@ -1,7 +1,8 @@
 #' @title Projects subscribed by a Minka user
 #' @description Retrieves the projects to which a user is subscribed from the
 #' Minka page web, and returns them as a tibble.
-#' @param id_user (numeric): A single integer number corresponding to the ID_user
+#' @param id_user (numeric): A single integer number corresponding to the
+#' ID_user
 #' @return A tibble where each row is a project and the columns
 #' contain relevant information about the project.
 #' Returns an empty tibble if there are no projects or if an error occurs.

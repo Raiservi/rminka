@@ -3,8 +3,7 @@
 skip_if_not_installed("httptest")
 
 library(testthat)
-
-
+library(httptest)
 
 test_that("mnk_user_proj throws error for invalid id_user", {
   expect_error(mnk_user_proj(NULL), "You must provide a single, non-NA numeric 'id_user'.")
@@ -12,7 +11,6 @@ test_that("mnk_user_proj throws error for invalid id_user", {
   expect_error(mnk_user_proj(c(1, 2)), "You must provide a single, non-NA numeric 'id_user'.")
   expect_error(mnk_user_proj("a string"), "You must provide a single, non-NA numeric 'id_user'.")
 })
-
 
 test_that("mnk_user_proj handles API HTTP errors", {
 
@@ -28,7 +26,7 @@ test_that("mnk_user_proj handles API HTTP errors", {
       class(response_obj) <- c("response", "handle")
       return(response_obj)
     }
-    stop("Mock no configurado para esta URL: ", url)
+    stop("Mock not configurer for this URL:", url)
   }
 
 
@@ -43,7 +41,6 @@ test_that("mnk_user_proj handles API HTTP errors", {
     }
   )
 })
-
 
 test_that("mnk_user_proj handles unexpected JSON format", {
 
@@ -60,7 +57,7 @@ test_that("mnk_user_proj handles unexpected JSON format", {
       class(response_obj) <- c("response", "handle")
       return(response_obj)
     }
-    stop("Mock no configurado para esta URL: ", url)
+    stop("Mock not configurer for this URL: ", url)
   }
 
   with_mocked_bindings(
@@ -113,7 +110,7 @@ test_that("mnk_user_proj returns a tibble for a valid user ID", {
       class(response_obj) <- c("response", "handle")
       return(response_obj)
     }
-    stop("Mock no configurado para esta URL: ", url)
+    stop("Mock not configurer for this URL: ", url)
   }
 
   with_mocked_bindings(

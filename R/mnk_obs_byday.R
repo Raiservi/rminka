@@ -104,9 +104,6 @@ mnk_obs_byday <- function(d1, d2, ..., quiet = FALSE, limit_download = TRUE) {
   if (is.na(date1) || is.na(date2)) stop("Dates d1 and d2 must be in 'yyyy-mm-dd' format.")
   if (date1 > date2) stop("The start date (d1) cannot be after the end date (d2).")
 
-  # ---
-  # CAPTURA Y PROCESAMIENTO COMPLETO DE PARÁMETROS (...)
-  # ---
 
   all_params <- list(...)
   base_params <- purrr::compact(all_params)
@@ -142,7 +139,7 @@ mnk_obs_byday <- function(d1, d2, ..., quiet = FALSE, limit_download = TRUE) {
   }
 
   # ---
-  # INICIO DE LA LÓGICA DE DESCARGA
+  # DOWNLOAD START
   # ---
 
   total_results <- byday_get_total_results(c(base_params, list(d1=d1, d2=d2)))
