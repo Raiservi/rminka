@@ -282,3 +282,127 @@ test_that("mnk_obs handles a monthly PING failure", {
     expect_equal(nrow(results), 0)
   })
 })
+
+##################################
+
+# TEST 1 – cubre líneas 82-83, 151-152: ping falla (inicial y mensual)
+test_that("pings fallidos devuelven tibble vacío y mensaje", {
+  testthat::local_mocked_bindings(
+    GET = function(...) structure(list(status_code = 500), class = "response"),
+    http_error = function(...) TRUE,
+    status_code = function(...) 500L,
+    .package = "httr"
+  )
+  # ping inicial
+  expect_message(
+    res1 <- rminka:::download_paginated_data(list(q="x"), quiet = FALSE),
+    "PING query failed with code: 500"
+  )
+  expect_equal(res1$count, 0)
+
+  # ping mensual
+  expect_message(
+    res2 <- rminka:::download_month_data(list(), 2024, 5, quiet = FALSE, remaining_limit = 100),
+    "PING query failed for the month of"
+  )
+  expect_equal(res2$count, 0)
+})
+
+# TEST 2 – cubre líneas 101, 107-108, 121: error en página 2 y recorte
+test_that("salta página con error y recorta exceso", {
+  # Parte A: error en página 2 (líneas 107-108)
+  call <- 0
+  testthat::local_mocked_bindings(
+    GET = function(...) { call <<- call + 1; structure(list(), class="response") },
+    http_error = function(...) call == 2,  # solo falla la 2ª
+    content = function(...) list(total_results = 400, results = replicate(200, list(id = 1), simplify = FALSE)),
+    .package = "httr"
+  )
+  expect_message(
+    res_err <- rminka:::download_paginated_data(list(), total_res = 400, quiet = FALSE, numeric_limit = 350),
+    "Error on page 2 - skipping"
+  )
+  expect_equal(res_err$count, 200)  # solo página 1
+
+  # Parte B: entra el break (101) y el recorte (121)
+  testthat::local_mocked_bindings(
+    GET = function(...) structure(list(), class="response"),
+    http_error = function(...) FALSE,
+    content = function(...) list(total_results = 500, results = replicate(200, list(id = 1), simplify = FALSE)),
+    .package = "httr"
+  )
+  res_cut <- rminka:::download_paginated_data(list(), total_res = 500, quiet = TRUE, numeric_limit = 150)
+  expect_equal(res_cut$count, 150)  # recortado a 150
+})
+
+# TEST 3 – cubre líneas 158, 169, 179: mensajes mes sin datos y >10k
+test_that("download_month_data muestra mensajes con quiet=FALSE", {
+  testthat::local_mocked_bindings(
+    GET = function(...) structure(list(), class="response"),
+    http_error = function(...) FALSE,
+    content = function(...) list(total_results = 0),
+    .package = "httr"
+  )
+  expect_message(
+    rminka:::download_month_data(list(), 2024, 3, quiet = FALSE, remaining_limit = 100),
+    "No records were found for March 2024"
+  )
+
+  # ahora mes >10k
+  testthat::local_mocked_bindings(
+    content = function(...) list(total_results = 15000),
+    .package = "httr"
+  )
+  testthat::local_mocked_bindings(
+    download_paginated_data = function(...) list(data = tibble::tibble(id = 1), count = 1),
+    .package = "rminka"
+  )
+  msgs <- testthat::capture_messages(
+    rminka:::download_month_data(list(), 2024, 4, quiet = FALSE, remaining_limit = 5)
+  )
+  expect_true(any(grepl("Total > 10,000. Subdividing by DAY", msgs)))
+  expect_true(any(grepl("Downloading day: 1", msgs)))
+})
+
+# TEST 4 – cubre líneas 141, 177, 332, 339-340: límites agotados y mensajes anuales
+test_that("límites agotados paran bucles y muestran mensajes", {
+  # línea 141
+  res1 <- rminka:::download_month_data(list(), 2024, 1, quiet = TRUE, remaining_limit = 0)
+  expect_equal(res1$count, 0)
+
+  # líneas 177: para cuando se agota
+  testthat::local_mocked_bindings(
+    GET = function(...) structure(list(), class="response"),
+    http_error = function(...) FALSE,
+    content = function(...) list(total_results = 15000),
+    .package = "httr"
+  )
+  testthat::local_mocked_bindings(
+    download_paginated_data = function(..., numeric_limit) {
+      n <- min(3, numeric_limit)
+      list(data = tibble::tibble(id = seq_len(n)), count = n)
+    },
+    .package = "rminka"
+  )
+  res2 <- rminka:::download_month_data(list(), 2024, 5, quiet = TRUE, remaining_limit = 3)
+  expect_equal(res2$count, 3)
+
+  # líneas 332, 339-340
+  testthat::local_mocked_bindings(
+    download_month_data = function(...) list(data = tibble::tibble(id = 1:6000), count = 6000),
+    .package = "rminka"
+  )
+  msgs <- testthat::capture_messages(mnk_obs(year = 2024, quiet = FALSE))
+  expect_true(any(grepl("STARTING ANNUAL DOWNLOAD", msgs)))
+  expect_true(any(grepl("Download limit reached", msgs)))
+})
+
+# TEST 5 – cubre línea 371: recorte final de seguridad
+test_that("mnk_obs recorta si una función interna ignora el límite", {
+  testthat::local_mocked_bindings(
+    download_paginated_data = function(...) list(data = tibble::tibble(id = 1:15000), count = 15000),
+    .package = "rminka"
+  )
+  res <- mnk_obs(query = "x", quiet = TRUE, limit_download = TRUE)
+  expect_equal(nrow(res), 10000)
+})
