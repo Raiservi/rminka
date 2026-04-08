@@ -1,24 +1,18 @@
-# ===================================================================
-# CÓDIGO CORREGIDO PARA EL FICHERO: R/mnk_obs_byday.R
-# (CON EL ORDEN DE LAS FUNCIONES CORREGIDO)
-# ===================================================================
 
-# ---
-
-# Helper 1 para byday: hacer un PING
+# Helper
 #' @noRd
 byday_get_total_results <- function(p) {
-  # El operador %||% se define aquí para ser autocontenido
+
   `%||%` <- function(a, b) { if (is.null(a)) b else a }
 
   resp <- httr::GET("https://api.minka-sdg.org/v1/observations", query = c(p, list(per_page = 1)))
   if(httr::http_error(resp)) 0 else httr::content(resp, as="parsed")$total_results %||% 0
 }
 
-# Helper 2 para byday: procesar la lista de resultados de la API
+# Helper 2
 #' @noRd
 byday_process_results <- function(all_results) {
-  # Esta es una copia de la lógica, pero vive solo aquí
+
   `%||%` <- function(a, b) { if (is.null(a)) b else a }
 
   if (length(all_results) == 0) return(tibble::tibble())
@@ -42,7 +36,7 @@ byday_process_results <- function(all_results) {
   )) |> dplyr::bind_rows()
 }
 
-# Helper 3 para byday: la "copia" de mnk_obs para descargar trozos
+# Helper 3
 #' @noRd
 byday_download_chunk <- function(params, total_res, quiet, limit_download) {
   API_MAX_PER_PAGE <- 200
@@ -65,19 +59,46 @@ byday_download_chunk <- function(params, total_res, quiet, limit_download) {
   return(byday_process_results(all_results))
 }
 
-#' @title Download Large Observation Datasets by Date Range
-#' @description A wrapper to handle large date ranges by automatically subdividing requests by month or day to avoid API limits. Does not interfere with `mnk_obs`.
-#' @param d1 Start date ('yyyy-mm-dd').
-#' @param d2 End date ('yyyy-mm-dd').
-#' @param ... Additional query parameters passed to the API (e.g., `user_id`, `project_id`, `bounds`, `annotation`, `quality`, `taxon_name`, etc.). All parameters from `mnk_obs` (except `year`, `month`, `day`) are accepted.
-#' @param quiet Logical. If TRUE, suppress messages.
-#' @param limit_download Logical. If TRUE, limit download to 10,000 records per subdivided request.
-#' @return A `tibble` with observation data.
-#' @importFrom dplyr bind_rows
-#' @importFrom purrr map compact
-#' @importFrom httr GET http_error content
-#' @importFrom lubridate days_in_month
+#' Download Large Observation Datasets by Date Range
+#'
+#' A wrapper around [mnk_obs()] to handle large date ranges by automatically
+#' subdividing requests by month or day to avoid the 10,000 record API limit.
+#' It accepts the same query parameters as [mnk_obs()], except for the
+#' date parameters which are replaced by a date range.
+#'
+#' @param d1 Start date in 'yyyy-mm-dd' format.
+#' @param d2 End date in 'yyyy-mm-dd' format.
+#' @param ... Additional query parameters passed directly to [mnk_obs()].
+#'   All parameters supported by [mnk_obs()] are available here except
+#'   `year`, `month`, and `day`, which are replaced by `d1` and `d2`.
+#'   Common parameters include `taxon_name`, `taxon_id`, `user_id`,
+#'   `project_id`, `place_id`, `query`, `quality`, `geo`, `bounds`,
+#'   `annotation`, `endemic`, `introduced`, and `threatened`. See
+#'   [mnk_obs()] for complete documentation.
+#' @param quiet A logical value. If `TRUE`, all console messages during
+#'   download will be suppressed. Defaults to `FALSE`.
+#' @param limit_download A logical value. If `TRUE` (default), each
+#'   subdivided request is capped at 10,000 records. If `FALSE`,
+#'   attempts to download all matching records.
+#'
+#' @return A `tibble::tibble` containing the downloaded observation data,
+#'   with the same structure as [mnk_obs()].
+#' @seealso [mnk_obs()] for the full list of query parameters.
 #' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Download all observations of a species between two dates
+#' obs <- mnk_obs_byday("2024-03-01", "2024-03-31",
+#' taxon_name = "Diplodus sargus")
+#'
+#' # Use with bounds and quiet mode
+#' barcelona <- c(41.5, 2.3, 41.2, 2.0)
+#' obs_bc <- mnk_obs_byday("2024-01-01", "2024-01-07", bounds = barcelona,
+#' quiet = TRUE)
+#' }
+
+
 mnk_obs_byday <- function(d1, d2, ..., quiet = FALSE, limit_download = TRUE) {
   date1 <- as.Date(d1, format = "%Y-%m-%d"); date2 <- as.Date(d2, format = "%Y-%m-%d")
   if (is.na(date1) || is.na(date2)) stop("Dates d1 and d2 must be in 'yyyy-mm-dd' format.")
@@ -196,17 +217,4 @@ mnk_obs_byday <- function(d1, d2, ..., quiet = FALSE, limit_download = TRUE) {
   if (!quiet) message(paste0("\nOverall process complete! A total of ", format(nrow(final_data), big.mark = ","), " unique records were obtained."))
   return(final_data)
 }
-#
-# library(dplyr)
-# library(tibble)
-# library(jsonlite)
-# library(sf)
-# library(httr)
-# library(stringr)
-# d1 <- "2025-05-15"
-# d2 <- "2025-06-28"
-# project_id <- 420
-# user_id = 4
-# bounds=c(42.20,2.2,38.2,0.6)
-# x <- mnk_obs_byday(d1 = d1, d2 = d2, bounds = bounds )
-# View(x)
+
