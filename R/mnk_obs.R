@@ -295,13 +295,13 @@ mnk_obs <- function(query = NULL, taxon_name = NULL, taxon_id = NULL,
   }
 
   if (!is.null(bounds)) {
-    if (inherits(bounds, "sf")) {
+    if (inherits(bounds, c("sf", "sfc"))) {
       bbox <- sf::st_bbox(bounds)
       processed_bounds <- list(
-        swlng = bbox["xmin"],
-        swlat = bbox["ymin"],
-        nelng = bbox["xmax"],
-        nelat = bbox["ymax"]
+        swlng = as.numeric(bbox[["xmin"]]),
+        swlat = as.numeric(bbox[["ymin"]]),
+        nelng = as.numeric(bbox[["xmax"]]),
+        nelat = as.numeric(bbox[["ymax"]])
       )
     } else {
       if (!is.numeric(bounds) || length(bounds)!= 4) {

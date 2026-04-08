@@ -1,12 +1,12 @@
-# This file is part of the standard setup for testthat.
-# It is recommended that you do not modify it.
-#
-# Where should you do additional test configuration?
-# Learn more about the roles of various files in:
-# * https://r-pkgs.org/testing-design.html#sec-tests-files-overview
-# * https://testthat.r-lib.org/articles/special-files.html
-
 library(testthat)
 library(rminka)
+
+# Grabar mocks si no existen
+# options(httptest.mock.fail = FALSE)
+
+# FORZAR un user-agent estándar para evitar bloqueos de la API
+# httr::set_config(
+#   httr::user_agent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36")
+# )
 
 test_check("rminka")

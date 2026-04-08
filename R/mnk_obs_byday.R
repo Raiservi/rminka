@@ -92,9 +92,14 @@ mnk_obs_byday <- function(d1, d2, ..., quiet = FALSE, limit_download = TRUE) {
 
   if (!is.null(base_params$bounds)) {
     bounds <- base_params$bounds
-    if (inherits(bounds, "sf")) {
+    if (inherits(bounds, c("sf", "sfc"))) {
       bbox <- sf::st_bbox(bounds)
-      processed_bounds <- list(swlng = bbox["xmin"], swlat = bbox["ymin"], nelng = bbox["xmax"], nelat = bbox["ymax"])
+      processed_bounds <- list(
+        swlng = as.numeric(bbox[["xmin"]]),
+        swlat = as.numeric(bbox[["ymin"]]),
+        nelng = as.numeric(bbox[["xmax"]]),
+        nelat = as.numeric(bbox[["ymax"]])
+      )
     } else {
       if (!is.numeric(bounds) || length(bounds) != 4) {
         stop("'bounds' must be a numeric vector of length 4: c(nelat, nelng, swlat, swlng)")
