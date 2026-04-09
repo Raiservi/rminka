@@ -144,30 +144,29 @@ places[,1:6]
 
 ```{r places_sf, include = TRUE , echo=TRUE}
 
-#library(rminka)
+
 library(sf)
 library(leaflet)
-library(dplyr)
 
-# 1. descarga la geometría
+
+# 1. Downloading the geometry 
 place <- mnk_place_sf(253)
 
-# 2. añade las columnas con la informacion obtenida en la anterior funcion
-
-
+# 2. Adding information from previos function
 place <- place |>
   mutate(
     name = places[2,3],
     id = places[2,1]
   )
 
+#Finding the map limits
 b <- st_bbox(place)
 xmin <- as.numeric(b[1]) # xmin
 ymin <- as.numeric(b[2]) # ymin
 xmax <- as.numeric(b[3]) # xmax
 ymax <- as.numeric(b[4]) # ymax
 
-# 5. mapa
+# Drawing the map
 leaflet(place) |>
   addProviderTiles("OpenStreetMap", group = "OSM") |>
   addProviderTiles("Esri.WorldImagery", group = "Satélite") |>
@@ -182,4 +181,53 @@ leaflet(place) |>
   ) |>
   addLayersControl(baseGroups = c("Satélite", "OSM")) |>
   fitBounds(xmin, ymin, xmax, ymax)
+```
+* mnk_places_sf
+
+
+```{r places_obs, include = TRUE , echo=TRUE}
+
+
+library(sf)
+library(leaflet)
+
+obs_place <- mnk_place_obs(place_id= 253, year = 2025, month = 2)
+
+obs_place
+
+
+obs_sf <- obs_place |>
+  # 1. quédate solo con lo que necesitas (añade taxon_name si no lo tienes)
+  transmute(
+    id,
+    taxon_name,                    # si no existe, créala antes con mutate(taxon_name = "...")
+    observed_on = as.Date(observed_on),
+    latitude,
+    longitude,
+    positional_accuracy
+  ) |>
+  # 2. elimina filas sin coordenadas
+  filter(!is.na(latitude), !is.na(longitude)) |>
+  # 3. convierte a puntos WGS84. remove = FALSE mantiene lat/lon como columnas
+  st_as_sf(coords = c("longitude", "latitude"), crs = 4326, remove = FALSE)
+
+leaflet() |>
+  addProviderTiles("Esri.WorldImagery", group = "Satélite") |>
+  addProviderTiles("OpenStreetMap", group = "OSM") |>
+  addPolygons(
+    data = place,
+    color = "#2c7fb8", weight = 2, fillOpacity = 0.1,
+    label = ~name
+  ) |>
+  addMarkers(
+    data = obs_sf,
+    popup = ~paste0(
+      "<b>", taxon_name, "</b><br>",
+      "ID: ", id, "<br>",
+      "Fecha: ", observed_on
+    ),
+    clusterOptions = markerClusterOptions()
+  ) |>
+  addLayersControl(baseGroups = c("Satélite", "OSM"))
+
 ```
