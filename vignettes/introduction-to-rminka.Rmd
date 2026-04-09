@@ -48,13 +48,14 @@ These functions are designed to be used together. For queries that span multiple
 > It is recommended to set the `quality` argument to `"research"` in order to 
 get more reliable data that has been validated by several contributors.
 
-### Project Queries
+
 
 A set of complementary  functions to find projects and their associated observations.
 
-**- Project Queries ** 
+### Project Queries 
 
-* mnk_proj_byname 
+- **<u>mnk_proj_byname</u>**
+
   Finds a project's ID using an approximate project name.
 ```{r project1, include = TRUE , echo=TRUE}
 prj_names <- mnk_proj_byname("2025")
@@ -66,7 +67,8 @@ prj_names
 kable(prj_names[,c(1:2)])
 
 ```
-* mnk_proj_info
+- **<u>mnk_proj_info</u>**
+ 
    Retrieves detailed project information using its known ID.
 ```{r project_info, include = TRUE , echo=TRUE}
 
@@ -85,9 +87,9 @@ prj_info_us <- mnk_proj_info(419, users = TRUE)
 prj_info_us
 
 ```
-  
-* mnk_proj_obs *
-   
+
+  - **<u>mnk_proj_obs</u>**
+
 Retrieves 
 
 ```{r project_obs:proj, include = TRUE , echo=TRUE}
@@ -98,10 +100,10 @@ prj_obs[2:14]
 
 ```
 
-**- User Queries ** 
-  
-* mnk_user_byname 
 
+### User Queries  
+  
+ - **<u>mnk_user_byname</u>**
 
 ```{r user_name, include = TRUE , echo=TRUE}
 
@@ -111,8 +113,8 @@ user_name
 
 ```
 
-* mnk_user_proj 
-
+ - **<u>mnk_user_proj</u>**
+ 
 ```{r user_project, include = TRUE , echo=TRUE}
 
 user_project <- mnk_user_proj(6)
@@ -120,7 +122,8 @@ user_project <- mnk_user_proj(6)
 user_project
 
 ```
-* mnk_user_obs 
+
+ - **<u> mnk_user_obs</u>**
 
 ```{r user_obs, include = TRUE , echo=TRUE}
 
@@ -129,9 +132,11 @@ user_obs <- mnk_user_obs(user_id=6, year = 2025, month = 8)
 user_obs
 
 ```
-**- Place Queries ** 
 
-* mnk_places_byname 
+
+### - Place Queries
+
+ - **<u>mnk_places_byname</u>**
 
 ```{r places_byname, include = TRUE , echo=TRUE}
 
@@ -139,11 +144,10 @@ places <- mnk_places_byname("Forum")
 places[,1:6]
 
 ```
-* mnk_places_sf
 
+ - **<u>mnk_places_sf</u>**
 
 ```{r places_sf, include = TRUE , echo=TRUE}
-
 
 library(sf)
 library(leaflet)
@@ -182,11 +186,10 @@ leaflet(place) |>
   addLayersControl(baseGroups = c("Satélite", "OSM")) |>
   fitBounds(xmin, ymin, xmax, ymax)
 ```
-* mnk_places_sf
 
-
+ - **<u>mnk_places_obs</u>**
+ 
 ```{r places_obs, include = TRUE , echo=TRUE}
-
 
 library(sf)
 library(leaflet)
@@ -197,7 +200,7 @@ obs_place
 
 
 obs_sf <- obs_place |>
-  # 1. quédate solo con lo que necesitas (añade taxon_name si no lo tienes)
+  # 1. Selecting 
   transmute(
     id,
     taxon_name,                    # si no existe, créala antes con mutate(taxon_name = "...")
