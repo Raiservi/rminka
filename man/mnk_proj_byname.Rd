@@ -10,10 +10,12 @@ mnk_proj_byname(query)
 \item{query}{A string that is contained in the project name.}
 }
 \value{
-A data frame with all the projects that contain the string with some details of those projects.
+A data frame with all the projects that contain the string with some
+details of those projects.
 }
 \description{
-Get information on Minka projects selected by a string contained in the project name.
+Get information on Minka projects selected by a string contained
+in the project name.
 }
 \examples{
 \dontrun{

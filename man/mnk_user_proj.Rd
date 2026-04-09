@@ -7,7 +7,8 @@
 mnk_user_proj(id_user)
 }
 \arguments{
-\item{id_user}{(numeric): A single integer number corresponding to the ID_user}
+\item{id_user}{(numeric): A single integer number corresponding to the
+ID_user}
 }
 \value{
 A tibble where each row is a project and the columns

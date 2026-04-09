@@ -15,12 +15,14 @@ navbar:
     reference:
       text: Reference
       href: reference/index.html
+    articles:
+      text: Articles
     changelog:
       text: Changelog
       menu:
-        - text: News (Changelog)
+                - text: News (Changelog)
           href: news/index.html
-        - text: Releases
+                - text: Releases
           href: https://github.com/raiservi/rminka/releases
     github:
       icon: fab fa-github
@@ -28,42 +30,42 @@ navbar:
       aria-label: Repositorio en GitHub
 
 reference:
-  - title: Project Queries
+    - title: Project Queries
     desc: >
       A set of complementary functions to find projects and their associated
       observations.
     contents:
-      - mnk_proj_byname
-      - mnk_proj_info
-      - mnk_proj_obs
-  - title: User Queries
+            - mnk_proj_byname
+            - mnk_proj_info
+            - mnk_proj_obs
+    - title: User Queries
     desc: >
       Functions to find users and their contributed observations.
     contents:
-      - mnk_user_byname
-      - mnk_user_proj
-      - mnk_user_obs
-  - title: Place Queries
+            - mnk_user_byname
+            - mnk_user_proj
+            - mnk_user_obs
+    - title: Place Queries
     desc: >
       Functions to find places and retrieve their spatial data and their
       associated observations.
     contents:
-      - mnk_places_byname
-      - mnk_place_sf
-      - mnk_place_obs
-  - title: Observation Queries
+            - mnk_place_byname
+            - mnk_place_sf
+            - mnk_place_obs
+    - title: Observation Queries
     desc: >
       A variety of functions to fetch observation data based on different
       parameters.
     contents:
-      - mnk_obs_id
-      - mnk_obs
-      - mnk_obs_byday
-  - title: Auxiliary functions
+            - mnk_obs_id
+            - mnk_obs
+            - mnk_obs_byday
+    - title: Auxiliary functions
     desc: >
       A set of functions with different utilities that complement Minka's
       observational data and help in processing them when used in other R packages
       (`vegan`, `dismo`, `labdsv` or others).
     contents:
-      - get_wrm_tax
-      - shrt_name
+            - get_wrm_tax
+            - shrt_name

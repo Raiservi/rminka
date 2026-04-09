@@ -39,11 +39,13 @@ date parameters which are replaced by a date range.
 \examples{
 \dontrun{
 # Download all observations of a species between two dates
-obs <- mnk_obs_byday("2024-03-01", "2024-03-31", taxon_name = "Diplodus sargus")
+obs <- mnk_obs_byday("2024-03-01", "2024-03-31",
+taxon_name = "Diplodus sargus")
 
 # Use with bounds and quiet mode
 barcelona <- c(41.5, 2.3, 41.2, 2.0)
-obs_bc <- mnk_obs_byday("2024-01-01", "2024-01-07", bounds = barcelona, quiet = TRUE)
+obs_bc <- mnk_obs_byday("2024-01-01", "2024-01-07", bounds = barcelona,
+quiet = TRUE)
 }
 }
 \seealso{

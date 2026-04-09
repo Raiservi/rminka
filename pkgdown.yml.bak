@@ -1,0 +1,43 @@
+## Archivo: _pkgdown.yml (Versión corregida y completa)
+
+url: https://raiservi.github.io/rminka/
+
+template:
+  bootstrap: 5
+  bootswatch: sandstone
+
+navbar:
+  # Define el orden de los elementos en la barra de navegación
+  structure:
+    left: [intro, reference, changelog]
+    right: [search, github]
+
+  # Define el contenido de cada elemento
+  components:
+    # Botón para la página de inicio (el README)
+    intro:
+      text: "Get Started"
+      href: articles/introduction-to-rminka.html
+
+    # Botón para la referencia de funciones
+    reference:
+      text: "Reference"
+      href: reference/index.html
+
+    # Botón para las viñetas (si tienes más en el futuro)
+    articles:
+      text: "Articles"
+
+    changelog:
+      text: "Changelog"
+      menu:
+        - text: "News (Changelog)"
+          href: news/index.html
+        - text: "Releases"
+          href: https://github.com/raiservi/rminka/releases
+
+    # El icono de GitHub a la derecha
+    github:
+      icon: fa-github
+      href: https://github.com/raiservi/rminka/
+      aria-label: "Repositorio en GitHub"

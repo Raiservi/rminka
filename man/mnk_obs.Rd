@@ -26,9 +26,11 @@ mnk_obs(
 )
 }
 \arguments{
-\item{query}{A generic query string for the 'q' parameter in the API. The exact behavior is not specified by the API documentation.}
+\item{query}{A generic query string for the 'q' parameter in the API. The
+exact behavior is not specified by the API documentation.}
 
-\item{taxon_name}{A character string for the taxon name (common or scientific).}
+\item{taxon_name}{A character string for the taxon name (common or
+scientific).}
 
 \item{taxon_id}{A numeric ID for the taxon.}
 
@@ -40,15 +42,19 @@ mnk_obs(
 
 \item{endemic}{A logical value (`TRUE`/`FALSE`). Filter for endemic species.}
 
-\item{introduced}{A logical value (`TRUE`/`FALSE`). Filter for introduced species.}
+\item{introduced}{A logical value (`TRUE`/`FALSE`). Filter for introduced
+species.}
 
-\item{threatened}{A logical value (`TRUE`/`FALSE`). Filter for threatened species.}
+\item{threatened}{A logical value (`TRUE`/`FALSE`). Filter for threatened
+species.}
 
 \item{quality}{A character string. Must be either "casual" or "research".}
 
-\item{geo}{A logical value. If `TRUE`, filters for observations with geographic coordinates.}
+\item{geo}{A logical value. If `TRUE`, filters for observations with
+geographic coordinates.}
 
-\item{annotation}{A numeric vector of length 2 (`c(term_id, term_value_id)`). The exact IDs for terms and values are not specified.}
+\item{annotation}{A numeric vector of length 2 (`c(term_id, term_value_id)`).
+The exact IDs for terms and values are not specified.}
 
 \item{year}{A numeric value for the year.}
 
@@ -56,14 +62,19 @@ mnk_obs(
 
 \item{day}{A numeric value for the day (1-31).}
 
-\item{bounds}{An object representing a bounding box. Can be an `sf` object or a numeric vector of 4 elements in the order: `c(nelat, nelng, swlat, swlng)`.}
+\item{bounds}{An object representing a bounding box. Can be an `sf` object or
+a numeric vector of 4 elements in the order: `c(nelat, nelng, swlat, swlng)`.}
 
-\item{quiet}{A logical value. If `TRUE`, all console messages during download will be suppressed. Defaults to `FALSE`.}
+\item{quiet}{A logical value. If `TRUE`, all console messages during download
+will be suppressed. Defaults to `FALSE`.}
 
-\item{limit_download}{A logical value. If `TRUE` (default), the download is capped at 10,000 records. If `FALSE`, it attempts to download all matching records.}
+\item{limit_download}{A logical value. If `TRUE` (default), the download is
+capped at 10,000 records. If `FALSE`, it attempts to download all matching
+records.}
 }
 \value{
-A `tibble::tibble` containing the downloaded observation data, or an empty tibble if no data is found or an error occurs.
+A `tibble::tibble` containing the downloaded observation data, or an
+empty tibble if no data is found or an error occurs.
 }
 \description{
 This function provides a high-level interface to download observation data from
@@ -72,11 +83,13 @@ subdividing large queries by month or day.
 }
 \examples{
 \dontrun{
-# Download up to 10,000 observations of "Diplodus sargus" for August 2025 (default limit)
+# Download up to 10,000 observations of "Diplodus sargus" for August 2025
+(default limit)
 d_sargus <- mnk_obs(taxon_name = "Diplodus sargus", year = 2025, month = 8)
 
-# Attempt to download ALL observations from a project for the entire year 2024
-project_data <- mnk_obs(project_id = 419, year = 2024, limit_download = FALSE)
+# Attempt to download ALL observations from a project for the entire year
+2024
+project_data <- mnk_obs(project_id = 419, year = 2024,limit_download = FALSE)
 
 # Download threatened species quietly (up to 10,000)
 threatened_data <- mnk_obs(threatened = TRUE, quiet = TRUE)
