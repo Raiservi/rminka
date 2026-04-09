@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
 library(dplyr)
 library(jsonlite)
 library(httr)
-#library(leaflet)
+library(leaflet)
 #library(magick)
 library(rminka)
 library(tibble)
