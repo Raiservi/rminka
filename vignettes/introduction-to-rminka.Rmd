@@ -144,29 +144,42 @@ places[,1:6]
 
 ```{r places_sf, include = TRUE , echo=TRUE}
 
+#library(rminka)
 library(sf)
 library(leaflet)
+library(dplyr)
 
+# 1. descarga la geometría
 place <- mnk_place_sf(253)
 
+# 2. añade las columnas con la informacion obtenida en la anterior funcion
 
+
+place <- place |>
+  mutate(
+    name = places[2,3],
+    id = places[2,1]
+  )
+
+b <- st_bbox(place)
+xmin <- as.numeric(b[1]) # xmin
+ymin <- as.numeric(b[2]) # ymin
+xmax <- as.numeric(b[3]) # xmax
+ymax <- as.numeric(b[4]) # ymax
+
+# 5. mapa
 leaflet(place) |>
-  addProviderTiles("Esri.WorldImagery", group = "Satélite") |>
   addProviderTiles("OpenStreetMap", group = "OSM") |>
+  addProviderTiles("Esri.WorldImagery", group = "Satélite") |>
   addPolygons(
     color = "#2c7fb8",
     weight = 2,
     opacity = 1,
     fillOpacity = 0.2,
-    label = places$name,
-    popup = paste0("<b>", places$name, "</b><br>ID: ", places$place_id),
+    label = ~name,
+    popup = ~paste0("<b>", name, "</b><br>ID: ", id),
     highlightOptions = highlightOptions(weight = 3, bringToFront = TRUE)
   ) |>
   addLayersControl(baseGroups = c("Satélite", "OSM")) |>
-  fitBounds(
-    lng1 = st_bbox(place)$xmin,
-    lat1 = st_bbox(place)$ymin,
-    lng2 = st_bbox(place)$xmax,
-    lat2 = st_bbox(place)$ymax
-  )
+  fitBounds(xmin, ymin, xmax, ymax)
 ```
