@@ -234,3 +234,31 @@ leaflet() |>
   addLayersControl(baseGroups = c("Satélite", "OSM"))
 
 ```
+
+
+### - Observation Queries
+
+ - **<u>mnk_obs_id</u>**
+
+```{r obs_id, include = TRUE , echo=TRUE}
+
+obs_id <- mnk_obs_id(id = 553028)
+
+obs_id
+
+```
+
+ - **<u>mnk_obs</u>**
+ 
+```{r obs, include = TRUE , echo=TRUE}
+
+obs <- mnk_obs(taxon_name= "Diplodus sargus", year=2025, user_id=6)
+
+obs[,c(1,21,2,10,11,16,28)]
+
+
+```
+ - **<u>mnk_obs_byday</u>**
+ 
+ 
+
