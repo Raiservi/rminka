@@ -61,9 +61,9 @@ prj_names <- mnk_proj_byname("2025")
 
 prj_names 
 
-#In detail:
+#Para hacer la tabla mas leible usamos `kable`
 
-kable(prj_names[,c(1:5)])
+kable(prj_names[,c(1:2)])
 
 ```
 * mnk_proj_info
@@ -74,31 +74,34 @@ prj_info <- mnk_proj_info(420)
 
 prj_info
 
-kable(as.data.frame(prj_info))
-
 ```
-It´s posible to known the users subscrived in this projects chnging de parameter 'user = TRUE'  and the function gives a list of the id users.
 
-```{r project_info_users, include = TRUE , echo=TRUE}
+It´s posible to known the users subscribed in this projects changing de parameter 'user = TRUE'  and the function gives a list of the id users.
+
+```{r project_info_proj, include = TRUE , echo=TRUE}
 
 prj_info_us <- mnk_proj_info(419, users = TRUE)
 
 prj_info_us
 
-kable(t(as.data.frame(prj_info_us)))
-
 ```
-
   
-**- mnk_proj_obs **
+* mnk_proj_obs *
    
+Retrieves 
 
-kable(as.data.frame(obs_prj))
+```{r project_obs:proj, include = TRUE , echo=TRUE}
+
+prj_obs <- mnk_proj_obs(419, year= 2025, month=5)
+
+prj_obs[2:14]
+
 ```
 
 **- User Queries ** 
   
 * mnk_user_byname 
+
 
 ```{r user_name, include = TRUE , echo=TRUE}
 
@@ -106,7 +109,6 @@ user_name <- mnk_user_byname("ramon")
 
 user_name
 
-kable(as.data.frame(user_name))
 ```
 
 * mnk_user_proj 
@@ -117,4 +119,56 @@ user_project <- mnk_user_proj(6)
 
 user_project
 
-kable(as.data.frame(user_project))
+```
+* mnk_user_obs 
+
+```{r user_obs, include = TRUE , echo=TRUE}
+
+user_obs <- mnk_user_obs(user_id=6, year = 2025, month = 8)
+
+user_obs
+
+```
+**- Place Queries ** 
+
+* mnk_places_byname 
+
+```{r places_byname, include = TRUE , echo=TRUE}
+
+places <- mnk_places_byname("Forum")
+places[,1:6]
+
+```
+* mnk_places_sf
+
+
+```{r places_sf, include = TRUE , echo=TRUE}
+
+library(rminka)
+library(sf)
+library(leaflet)
+
+
+place <- mnk_place_sf(253)
+
+
+leaflet(place) |>
+  addProviderTiles("Esri.WorldImagery", group = "Satélite") |>
+  addProviderTiles("OpenStreetMap", group = "OSM") |>
+  addPolygons(
+    color = "#2c7fb8",
+    weight = 2,
+    opacity = 1,
+    fillOpacity = 0.2,
+    label = places$name,
+    popup = paste0("<b>", places$name, "</b><br>ID: ", places$place_id),
+    highlightOptions = highlightOptions(weight = 3, bringToFront = TRUE)
+  ) |>
+  addLayersControl(baseGroups = c("Satélite", "OSM")) |>
+  fitBounds(
+    lng1 = st_bbox(place)$xmin,
+    lat1 = st_bbox(place)$ymin,
+    lng2 = st_bbox(place)$xmax,
+    lat2 = st_bbox(place)$ymax
+  )
+```
