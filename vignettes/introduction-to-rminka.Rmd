@@ -144,11 +144,6 @@ places[,1:6]
 
 ```{r places_sf, include = TRUE , echo=TRUE}
 
-library(rminka)
-library(sf)
-library(leaflet)
-
-
 place <- mnk_place_sf(253)
 
 

@@ -27,6 +27,7 @@ RoxygenNote: 7.3.3
 Suggests:
     httptest,
     knitr,
+    leaflet,
     mockery,
     rmarkdown,
     testthat (>= 3.0.0)

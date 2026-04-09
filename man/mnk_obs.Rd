@@ -84,12 +84,11 @@ subdividing large queries by month or day.
 \examples{
 \dontrun{
 # Download up to 10,000 observations of "Diplodus sargus" for August 2025
-(default limit)
+# (default limit)
 d_sargus <- mnk_obs(taxon_name = "Diplodus sargus", year = 2025, month = 8)
 
-# Attempt to download ALL observations from a project for the entire year
-2024
-project_data <- mnk_obs(project_id = 419, year = 2024,limit_download = FALSE)
+# Attempt to download ALL observations from a project for the entire year 2024
+project_data <- mnk_obs(project_id = 419, year = 2024, limit_download = FALSE)
 
 # Download threatened species quietly (up to 10,000)
 threatened_data <- mnk_obs(threatened = TRUE, quiet = TRUE)
