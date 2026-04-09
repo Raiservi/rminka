@@ -52,7 +52,7 @@ get more reliable data that has been validated by several contributors.
 
 A set of complementary  functions to find projects and their associated observations.
 
-### Project Queries 
+### - Project Queries 
 
 - **<u>mnk_proj_byname</u>**
 
@@ -101,7 +101,7 @@ prj_obs[2:14]
 ```
 
 
-### User Queries  
+### - User Queries  
   
  - **<u>mnk_user_byname</u>**
 
@@ -175,10 +175,10 @@ leaflet(place) |>
   addProviderTiles("OpenStreetMap", group = "OSM") |>
   addProviderTiles("Esri.WorldImagery", group = "Satélite") |>
   addPolygons(
-    color = "#2c7fb8",
+    color = "#2c4fb8",
     weight = 2,
     opacity = 1,
-    fillOpacity = 0.2,
+    fillOpacity = 0.4,
     label = ~name,
     popup = ~paste0("<b>", name, "</b><br>ID: ", id),
     highlightOptions = highlightOptions(weight = 3, bringToFront = TRUE)
@@ -219,7 +219,7 @@ leaflet() |>
   addProviderTiles("OpenStreetMap", group = "OSM") |>
   addPolygons(
     data = place,
-    color = "#2c7fb8", weight = 2, fillOpacity = 0.1,
+    color = "#2c4fb8", weight = 2, fillOpacity = 0.4,
     label = ~name
   ) |>
   addMarkers(
@@ -252,13 +252,78 @@ obs_id
  
 ```{r obs, include = TRUE , echo=TRUE}
 
-obs <- mnk_obs(taxon_name= "Diplodus sargus", year=2025, user_id=6)
+#In this example don´t show messages in console (quiet= TRUE)
 
-obs[,c(1,21,2,10,11,16,28)]
+obs <- mnk_obs(taxon_name= "Diplodus sargus", year=2025, user_id=6,quiet = TRUE)
 
+obs[,c(1,21,2,10,11,16,27)]
+
+
+obs_sf_pl <- obs |>
+  
+  # Selecting the interesting fields
+  
+  transmute(
+    id,
+    taxon_name,                     
+    observed_on = as.Date(observed_on),
+    latitude,
+    longitude,
+    url_picture,
+    uri,
+    user_login
+  ) |>
+  
+  # 2. Deleting rows without spatial coordinates
+  
+  filter(!is.na(latitude), !is.na(longitude)) |>
+  
+  # 3. Convert fiels to spatial points  WGS84. 
+  
+  st_as_sf(coords = c("longitude", "latitude"), crs = 4326, remove = FALSE)
+
+  # 4. Drawing map with leaflet
+
+leaflet() |>
+  addProviderTiles("Esri.WorldImagery", group = "Satélite") |>
+  addProviderTiles("OpenStreetMap", group = "OSM") |>
+  addCircleMarkers(
+    data = obs_sf_pl,
+    radius = 6,
+    stroke = FALSE,          # sin borde
+    fillOpacity = 0.9,
+    fillColor = "red",
+    popup = ~paste0(
+      "<b>", taxon_name, "</b><br>",
+      "Obs ID: ", id, "<br>",
+      "User name: ", user_login, "<br>",
+      "Date: ", observed_on, "<br>",
+      "Specie: ", taxon_name, "<br>",
+      "<img src='", url_picture, "' width='100' style='border-radius:5px; margin:1px 0;'>","<br>", # To show the picture
+      "<a href='", uri, "' target='_blank'>View in Minka-sdg.com</a>"
+
+
+    )
+  ) |>
+  addLayersControl(baseGroups = c("Satélite", "OSM"))
 
 ```
+
  - **<u>mnk_obs_byday</u>**
  
+ ### - Auxiliary functions
+
+ - **<u>get_wrm_tax</u>**
+ 
+```{r get_tax, include = TRUE , echo=TRUE}
+
+
+taxonomy <- rminka::get_wrm_tax("Diplodus sargus")
+
+taxonomy
+
+```
+ 
+ - **<u>shrt_name</u>**
  
 
