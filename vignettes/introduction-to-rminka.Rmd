@@ -318,9 +318,6 @@ leaflet() |>
 ```{r get_tax, include = TRUE , echo=TRUE}
 
 
-taxonomy <- rminka::get_wrm_tax("Diplodus sargus")
-
-taxonomy
 
 ```
  
