@@ -29,42 +29,34 @@ library(tibble)
 library(knitr)
 ```
 
-## About
 
-`rminka` is a wrapper for Minka APIs for accessing the observations.
+This document introduces you to rminka basic set of tools, and shows you how to 
+apply them to obtain your desired information.
+Once you’ve installed, read vignette("rminka") to learn more.
 
+We will develop an example based on a project: Biomarato Tarragona. 
+The example will focus on this project and one of its participants, Ramon Servitje. 
+As the example progresses, we will use the different types of functions from the package.
 
-## Installation
-
-The easiest way to get `rminka` is to install from github repository with `pak`: 
-
-```{r install, eval = FALSE, echo= TRUE}
-pak::pak("Raiservi/rminka")
-```
-
-## Quickstart guide
-
-These functions are designed to be used together. For queries that span multiple years, you can easily loop through the years of interest, run the appropriate function, and then combine the resulting tibbles with `dplyr::bind_rows()`.
-> It is recommended to set the `quality` argument to `"research"` in order to 
-get more reliable data that has been validated by several contributors.
-
-
-
-A set of complementary  functions to find projects and their associated observations.
 
 ### - Project Queries 
 
 - **<u>mnk_proj_byname</u>**
 
-  Finds a project's ID using an approximate project name.
+Initially, only the project name is known, so a search will be performed to find 
+the project ID (project_id). The `mnk_proj_byname` function will be used for this purpose. 
+A generic search will be conducted using the text "biomarato 2025".
+
+
+
 ```{r project1, include = TRUE , echo=TRUE}
-prj_names <- mnk_proj_byname("2025")
+prj_names <- mnk_proj_byname("biomarato 2025")
 
 prj_names 
 
-#Para hacer la tabla mas leible usamos `kable`
+# For this example 
 
-kable(prj_names[,c(1:2)])
+prj_names[,c(1:2)]
 
 ```
 - **<u>mnk_proj_info</u>**
@@ -72,13 +64,14 @@ kable(prj_names[,c(1:2)])
    Retrieves detailed project information using its known ID.
 ```{r project_info, include = TRUE , echo=TRUE}
 
-prj_info <- mnk_proj_info(420)
+prj_info <- mnk_proj_info(419)
 
 prj_info
 
 ```
 
-It´s posible to known the users subscribed in this projects changing de parameter 'user = TRUE'  and the function gives a list of the id users.
+It´s posible to known the users subscribed in this projects changing de parameter 
+'user = TRUE'  and the function gives a list of the id users.
 
 ```{r project_info_proj, include = TRUE , echo=TRUE}
 
@@ -156,35 +149,27 @@ library(leaflet)
 # 1. Downloading the geometry 
 place <- mnk_place_sf(253)
 
-# 2. Adding information from previos function
+# 2. Adding information to the layer  from previous function
 place <- place |>
   mutate(
     name = places[2,3],
-    id = places[2,1]
   )
 
-#Finding the map limits
-b <- st_bbox(place)
-xmin <- as.numeric(b[1]) # xmin
-ymin <- as.numeric(b[2]) # ymin
-xmax <- as.numeric(b[3]) # xmax
-ymax <- as.numeric(b[4]) # ymax
+# 3. Drawing the map
+ forum_sf <-leaflet(place) |>
+                addProviderTiles("OpenStreetMap", group = "OSM") |>
+                addProviderTiles("Esri.WorldImagery", group = "Satélite") |>
+                addPolygons(
+                  color = "#2c4fb8",
+                  weight = 2,
+                  opacity = 1,
+                  fillOpacity = 0.4,
+                  label = ~name, # information added from previous function
+                  highlightOptions = highlightOptions(weight = 3, bringToFront = TRUE)
+                ) |>
+                addLayersControl(baseGroups = c("Satélite", "OSM")) 
+ forum_sf
 
-# Drawing the map
-leaflet(place) |>
-  addProviderTiles("OpenStreetMap", group = "OSM") |>
-  addProviderTiles("Esri.WorldImagery", group = "Satélite") |>
-  addPolygons(
-    color = "#2c4fb8",
-    weight = 2,
-    opacity = 1,
-    fillOpacity = 0.4,
-    label = ~name,
-    popup = ~paste0("<b>", name, "</b><br>ID: ", id),
-    highlightOptions = highlightOptions(weight = 3, bringToFront = TRUE)
-  ) |>
-  addLayersControl(baseGroups = c("Satélite", "OSM")) |>
-  fitBounds(xmin, ymin, xmax, ymax)
 ```
 
  - **<u>mnk_places_obs</u>**
@@ -214,14 +199,7 @@ obs_sf <- obs_place |>
   # 3. convierte a puntos WGS84. remove = FALSE mantiene lat/lon como columnas
   st_as_sf(coords = c("longitude", "latitude"), crs = 4326, remove = FALSE)
 
-leaflet() |>
-  addProviderTiles("Esri.WorldImagery", group = "Satélite") |>
-  addProviderTiles("OpenStreetMap", group = "OSM") |>
-  addPolygons(
-    data = place,
-    color = "#2c4fb8", weight = 2, fillOpacity = 0.4,
-    label = ~name
-  ) |>
+forum_sf |>
   addMarkers(
     data = obs_sf,
     popup = ~paste0(
@@ -258,6 +236,7 @@ obs <- mnk_obs(taxon_name= "Diplodus sargus", year=2025, user_id=6,quiet = TRUE)
 
 obs[,c(1,21,2,10,11,16,27)]
 
+obs
 
 obs_sf_pl <- obs |>
   
@@ -299,7 +278,7 @@ leaflet() |>
       "User name: ", user_login, "<br>",
       "Date: ", observed_on, "<br>",
       "Specie: ", taxon_name, "<br>",
-      "<img src='", url_picture, "' width='100' style='border-radius:5px; margin:1px 0;'>","<br>", # To show the picture
+      "<img src='",url_picture, "' width='100' style='border-radius:5px; margin:1px 0;'>","<br>", # To show the picture
       "<a href='", uri, "' target='_blank'>View in Minka-sdg.com</a>"
 
 
@@ -313,14 +292,5 @@ leaflet() |>
  
  ### - Auxiliary functions
 
- - **<u>get_wrm_tax</u>**
- 
-```{r get_tax, include = TRUE , echo=TRUE}
-
-
-
-```
- 
- - **<u>shrt_name</u>**
  
 
