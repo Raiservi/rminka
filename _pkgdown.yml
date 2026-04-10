@@ -65,5 +65,8 @@ reference:
       observational data and help in processing them when used in other R packages
       (`vegan`, `dismo`, `labdsv` or others).
     contents:
+      - export_mnk_qgis
+      - mnk_obs_sf
       - get_wrm_tax
       - shrt_name
+

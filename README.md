@@ -49,7 +49,20 @@ API](https://api.minka-sdg.org/v1/docs/), providing a consistent set of
 functions to help you query and retrieve biodiversity data. The
 package’s functions are grouped by the type of data they return:
 
-**a) Project Queries:** A set of complementary functions to find
+**a) User Queries:** Functions to find users and their contributed
+observations.
+
+- `mnk_user_byname()`: Finds a user’s ID ( user_id) from their
+  approximate login name.
+- `mnk_user_info()`: Retrieves detailed user information using its known
+  ID (user_id)
+- `mnk_user_proj()`: Find the projects to which a user has explicitly
+  subscribed based on their user_id.
+- `mnk_user_obs()`: Retrieves all observations contributed by that user
+  for a given year ( all the year or only a specific month) from their
+  user_id.
+
+**b) Project Queries:** A set of complementary functions to find
 projects and their associated observations.
 
 - `mnk_proj_byname()`: Finds a project’s ID (project_id) using an
@@ -58,17 +71,6 @@ projects and their associated observations.
   known ID (project_id).
 - `mnk_proj_obs()`: Fetches all observations for a specific year within
   that project.
-
-**b) User Queries:** Functions to find users and their contributed
-observations.
-
-- `mnk_user_byname()`: Finds a user’s ID ( user_id) from their
-  approximate login name.
-- `mnk_user_proj()`: Find the projects to which a user has explicitly
-  subscribed based on their user_id.
-- `mnk_user_obs()`: Retrieves all observations contributed by that user
-  for a given year ( all the year or only a specific month) from their
-  user_id.
 
 **c) Place Queries:** Functions to find places and retrieve their
 spatial data.
@@ -79,7 +81,7 @@ spatial data.
   place_id, ready for plotting with packages like `ggplot2` or
   `leaflet`.
 - `mnk_place_obs()`: Retrieves all observations for a place for a given
-  year ( all the year or only a specific month) from their place_id .
+  year (all the year or only a specific month) from their place_id .
 
 **d) Observation Queries:** A variety of functions to fetch observation
 data based on different parameters.
@@ -95,6 +97,15 @@ data based on different parameters.
 that complement Minka’s observational data and help in processing them
 when used in other R packages (`vegan`, `dismo`, `labdsv` or others).
 
+- `export_mk_qgis()`: Converts one or more `sf` layers with different
+  geometry types (points and polygons) to GeoPackage (.gpkg) format
+  usualy used in Qgis. By default, it uses CRS=4326 (WGS 84), but the
+  same function can transform to a different CRS.
+- `mnk_obs_sf()`: This function converts a Minka observation tibble into
+  a geometric sf layer. The same function allows you to select what
+  information it will contain (none by default). It also uses CRS=4326
+  (WGS 84) by default, but the same function can transform it to a
+  different CRS.
 - `get_wrm_tax()`: Retrieves the complete taxonomy and additional data
   (e.g., marine or terrestrial ) from
   [WoRMS](https://www.marinespecies.org/) for a given scientific name.
