@@ -2,24 +2,38 @@
 % Please edit documentation in R/mnk_proj_byname.R
 \name{mnk_proj_byname}
 \alias{mnk_proj_byname}
-\title{Information on Minka projects}
+\title{Search Minka Projects by Name}
 \usage{
 mnk_proj_byname(query)
 }
 \arguments{
-\item{query}{A string that is contained in the project name.}
+\item{query}{a single character string contained in the project name.}
 }
 \value{
-A data frame with all the projects that contain the string with some
-details of those projects.
+A tibble with one row per matching project. Returns an empty tibble
+with zero rows if no matches are found. Columns are:
+\describe{
+  \item{id}{Project identifier, integer.}
+  \item{title}{Project title, character.}
+  \item{place_id}{Associated place identifier, integer or `NA`.}
+  \item{slug}{URL slug, character.}
+  \item{created_at}{Creation timestamp, POSIXct.}
+  \item{updated_at}{Last update timestamp, POSIXct.}
+  \item{project_type}{Project type, character.}
+  \item{description}{Project description, character.}
+}
 }
 \description{
-Get information on Minka projects selected by a string contained
-in the project name.
+Retrieves projects whose title contains a given string from the
+Minka API.
+}
+\details{
+Queries the \code{/v1/projects/autocomplete} endpoint. This
+function is mainly used to obtain the project identifier for other functions.
 }
 \examples{
 \dontrun{
-mnk_obs <- mnk_proj_byname(query="Biomarato 2025")
-mnk_obs_id(m_obs$id[1])
+# Search for projects containing "Biomarato 2025"
+mnk_proj_byname(query = "Biomarato 2025")
 }
 }

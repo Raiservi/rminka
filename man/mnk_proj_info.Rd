@@ -7,43 +7,51 @@
 mnk_proj_info(project_id = NULL, grpid = NULL, users = FALSE)
 }
 \arguments{
-\item{project_id}{A single character string or number representing the unique
-Minka project ID.}
+\item{project_id}{a single character string or number representing the unique
+Minka project identifier.}
 
-\item{grpid}{The group identifier (slug) or ID for the project.}
+\item{grpid}{a single character string or number representing the group
+identifier (slug) for the project.}
 
-\item{users}{A logical value (`TRUE` or `FALSE`). If `TRUE`, the function
-returns a tibble containing only the IDs of users subscribed to the project.
-If `FALSE` (the default), it returns a list with the main project information.}
+\item{users}{logical. If TRUE, returns a tibble with subscribed user IDs. If
+FALSE (default), returns a list with project details.}
 }
 \value{
-By default, a list containing key details about the project.
-If `users = TRUE`, it returns a `tibble` with a single column `id_users`
-containing the numeric IDs of subscribed users.
-If the project is not found or a network error occurs, it returns `NULL`
-and prints a message.
+If `users = FALSE` (default), a list with project metadata. If
+`users = TRUE`, a tibble with one column `id_users`. Returns `NULL`
+invisibly if the project is not found or on network error. List elements
+are:
+\describe{
+\item{id}{Project identifier, integer.}
+\item{title}{Project title, character.}
+\item{created_at}{Creation timestamp, character in ISO 8601 format.}
+\item{subscrib_users}{Number of subscribed users, integer.}
+\item{place_id}{Associated place identifier, integer or `NA`.}
+\item{slug}{URL slug, character.}
+\item{description}{Project description, character.}
+}
 }
 \description{
-This function downloads information for a specific Minka project using either
+Retrieves information for a specific Minka project using either
 its unique `project_id` or its group identifier (`grpid`).
 }
 \details{
-You must provide either a `project_id` or a `grpid`. If you don't know the
-ID, you can use the `mnk_proj_byname()` function to find it.
+You must provide either `project_id` or `grpid`. If you do not know
+the identifier, use \code{\link{mnk_proj_byname}} to find it.
 
-A Minka `grpid` or slug is typically the project name formatted as a single
-string with words separated by hyphens (e.g., 'biomarato-barcelona-2025').
-You can find it in the URL of the project's page on the Minka website.
+A Minka `grpid` or slug is typically the project name formatted with
+hyphens (e.g., 'biomarato-barcelona-2025'). You can find it in the URL of
+the project's page.
 }
 \examples{
 \dontrun{
-# First, find a project ID
+# First find the project ID
 mnk_proj_byname("Biomarato Barcelona 2025")
 
-# Get main information for project ID '420'
+# Get main information for project ID 420
 mnk_proj_info(project_id = "420")
 
-# Get only the subscriber IDs for the same project
+# Get only subscriber IDs
 mnk_proj_info(project_id = "420", users = TRUE)
 }
 }
