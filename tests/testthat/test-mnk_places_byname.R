@@ -1,16 +1,3 @@
-
-skip_if_not_installed("mockery")
-
-library(testthat)
-library(httr)
-library(jsonlite)
-library(purrr)
-library(dplyr)
-library(tibble)
-library(stringr)
-
-
-
 mock_response_json_success_multiple <- '{
   "results": [
     {"id":"123", "slug":"area-marina-sant-feliu", "name":"Area marina Sant Feliu", "display_name":"Area marina Sant Feliu de Guíxols", "location":"41.7597741479,3.0226481505", "bbox_area":0.005301438053870476},
@@ -26,7 +13,6 @@ mock_response_json_malformed_for_parsing <- '{"error": "bad json", "results": ['
 mock_response_json_no_results_key <- '{"some_other_key": "some_value"}'
 mock_response_json_empty_results <- '{"results": []}'
 
-
 test_that("mnk_places_byname throws error for invalid query", {
   expect_error(mnk_places_byname(NULL), "You must provide a non-empty 'query' string.")
   expect_error(mnk_places_byname(""), "You must provide a non-empty 'query' string.")
@@ -37,7 +23,7 @@ test_that("mnk_places_byname throws error for invalid query", {
 test_that("mnk_places_byname returns a tibble for a valid query", {
   mock_httr_GET <- function(url = NULL,..., path = NULL, as) {
     query_param_encoded <- stringr::str_extract(path, "(?<=q=).*")
-    query_param <- URLdecode(query_param_encoded)
+    query_param <- utils::URLdecode(query_param_encoded)
     response_content <- if (grepl("Area marina Sant Feliu", query_param, ignore.case = TRUE)) {
       mock_response_json_success_multiple
     } else {
@@ -60,7 +46,7 @@ test_that("mnk_places_byname returns a tibble for a valid query", {
 test_that("mnk_places_byname handles no results from API", {
   mock_httr_GET <- function(url = NULL,..., path = NULL, as) {
     query_param_encoded <- stringr::str_extract(path, "(?<=q=).*")
-    query_param <- URLdecode(query_param_encoded)
+    query_param <- utils::URLdecode(query_param_encoded)
     response_content <- if (grepl("No existente", query_param, ignore.case = TRUE)) {
       mock_response_json_empty_results
     } else {
@@ -91,27 +77,23 @@ test_that("mnk_places_byname handles API HTTP error", {
 test_that("mnk_places_byname handles malformed JSON or missing 'results' key", {
   mock_httr_GET <- function(url = NULL,..., path = NULL, as) {
     query_param_encoded <- stringr::str_extract(path, "(?<=q=).*")
-    query_param <- URLdecode(query_param_encoded)
+    query_param <- utils::URLdecode(query_param_encoded)
     response_content <- switch(query_param,
                                "Malformed JSON" = mock_response_json_malformed_for_parsing,
                                "No results key" = mock_response_json_no_results_key,
                                "Malformed location" = '{"results": [{"location": "invalid"}]}',
                                "Location no numeric" = '{"results": [{"location": "41.78,abc"}]}',
-                               stop("Mock malformed no configurado")
+                               stop("Mock malformed not configured")
     )
     return(structure(list(status_code = 200L, headers = list("Content-Type" = "application/json"), content = charToRaw(response_content)), class = c("response", "handle")))
   }
 
   with_mocked_bindings(GET = mock_httr_GET,.package = "httr", {
-
     expect_error(mnk_places_byname("Malformed JSON"))
-
-
     expect_message(result <- mnk_places_byname("No results key"), "No places found for your query.")
     expect_null(result)
-
-
     expect_error(suppressWarnings(mnk_places_byname("Malformed location")), "Invalid 'location' format")
     expect_error(suppressWarnings(mnk_places_byname("Location no numeric")), "Invalid 'location' format")
   })
+
 })

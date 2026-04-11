@@ -1,14 +1,3 @@
-skip_if_not_installed("mockery")
-
-
-library(testthat)
-library(httr)
-library(jsonlite)
-library(stringr)
-library(tibble)
-library(purrr)
-
-
 test_that("mnk_proj_byname throws error for invalid query", {
   expect_error(mnk_proj_byname(NULL), "You must provide a single, non-empty, non-NA character 'query' for the project search.")
   expect_error(mnk_proj_byname(NA_character_), "You must provide a single, non-empty, non-NA character 'query' for the project search.")
@@ -16,7 +5,6 @@ test_that("mnk_proj_byname throws error for invalid query", {
   expect_error(mnk_proj_byname("   "), "You must provide a single, non-empty, non-NA character 'query' for the project search.")
   expect_error(mnk_proj_byname(c("query1", "query2")), "You must provide a single query string. Only one query is accepted.")
 })
-
 
 test_that("mnk_proj_byname handles API HTTP errors", {
   mock_httr_GET <- function(url = NULL, ..., path = NULL, as) {
@@ -31,7 +19,7 @@ test_that("mnk_proj_byname handles API HTTP errors", {
       class(response_obj) <- c("response", "handle")
       return(response_obj)
     } else {
-      stop("Mock no configurado para esta URL en el test de error HTTP: ", full_url)
+      stop("Mock not configured for this URL in HTTP error test: ", full_url)
     }
   }
 
@@ -45,12 +33,11 @@ test_that("mnk_proj_byname handles API HTTP errors", {
   )
 })
 
-
 test_that("mnk_proj_byname handles empty or null API response", {
   mock_httr_GET <- function(url = NULL, ..., path = NULL, as) {
     full_url <- if (!is.null(url) && !is.null(path)) paste0(url, path) else url
     if (grepl("q=empty_response", full_url)) {
-      # Simula una respuesta con cuerpo vacío
+      # Simulates a response with empty body
       response_obj <- list(
         url = full_url,
         status_code = 200L,
@@ -60,7 +47,7 @@ test_that("mnk_proj_byname handles empty or null API response", {
       class(response_obj) <- c("response", "handle")
       return(response_obj)
     } else if (grepl("q=null_response", full_url)) {
-      # Simula una respuesta cuyo cuerpo es el JSON 'null'
+      # Simulates a response whose body is JSON 'null'
       response_obj <- list(
         url = full_url,
         status_code = 200L,
@@ -70,7 +57,7 @@ test_that("mnk_proj_byname handles empty or null API response", {
       class(response_obj) <- c("response", "handle")
       return(response_obj)
     } else {
-      stop("Mock no configurado URL test respuesta vacía/nula: ", full_url)
+      stop("Mock not configured for empty/null response test URL: ", full_url)
     }
   }
 
@@ -87,9 +74,8 @@ test_that("mnk_proj_byname handles empty or null API response", {
   )
 })
 
-
 test_that("mnk_proj_byname handles JSON with no projects found", {
-  # Simula una respuesta con una lista de resultados vacía
+  # Simulates a response with an empty results list
   mock_response_json <- '{"results": []}'
 
   mock_httr_GET <- function(url = NULL, ..., path = NULL, as) {
@@ -104,7 +90,7 @@ test_that("mnk_proj_byname handles JSON with no projects found", {
       class(response_obj) <- c("response", "handle")
       return(response_obj)
     } else {
-      stop("Mock no configurado esta URL test de no proyectos: ", full_url)
+      stop("Mock not configured for no-projects test URL: ", full_url)
     }
   }
 
@@ -113,7 +99,7 @@ test_that("mnk_proj_byname handles JSON with no projects found", {
     .package = "httr",
     {
       expect_message(result <- mnk_proj_byname("no_projects"), regexp = "No projects found for query 'no_projects'.")
-      expect_s3_class(result, "data.frame") # Devuelve un tibble/data.frame vacío
+      expect_s3_class(result, "data.frame") # Returns an empty tibble/data.frame
       expect_equal(nrow(result), 0)
     }
   )
@@ -154,7 +140,7 @@ test_that("mnk_proj_byname returns a tibble with specific columns for a valid qu
       class(response_obj) <- c("response", "handle")
       return(response_obj)
     } else {
-      stop("Mock no configurado para esta URL en el test de exito: ", full_url)
+      stop("Mock not configured for success test URL: ", full_url)
     }
   }
 
@@ -164,25 +150,19 @@ test_that("mnk_proj_byname returns a tibble with specific columns for a valid qu
     {
       result <- mnk_proj_byname("Proyecto Test")
 
-
       expect_s3_class(result, "tbl_df")
       expect_equal(nrow(result), 2)
 
-
-      columnas_esperadas <- c("id", "title", "place_id", "slug", "created_at",
-                              "updated_at", "project_type", "description")
-      expect_equal(sort(names(result)), sort(columnas_esperadas))
-
+      expected_columns <- c("id", "title", "place_id", "slug", "created_at",
+                            "updated_at", "project_type", "description")
+      expect_equal(sort(names(result)), sort(expected_columns))
 
       expect_equal(result$title, c("Proyecto Test A", "Proyecto Test B"))
       expect_equal(result$id, c(101, 102))
 
-
       expect_equal(result$place_id, c(901, NA_integer_))
-
 
       expect_equal(result$description, c("Descripción del Proyecto A", NA_character_))
     }
   )
 })
-

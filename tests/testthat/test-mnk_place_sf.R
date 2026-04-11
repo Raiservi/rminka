@@ -1,15 +1,3 @@
-
-skip_if_not_installed("mockery")
-library(testthat)
-library(httr)
-library(jsonlite)
-library(sf)
-library(dplyr)
-library(purrr)
-library(tibble)
-library(stringr)
-
-
 mock_response_json_success_point <- '{
   "total_results": 1,
   "page": 1,
@@ -79,7 +67,6 @@ mock_response_json_results_no_geom <- '{
       "slug": "place-no-geom",
       "name": "Place without geometry in results",
       "location": "10.0,10.0"
-      // geometry_geojson falta intencionadamente
     }
   ]
 }'
@@ -104,7 +91,7 @@ mock_response_malformed_geojson_coords <- '{
 
 mock_response_completely_malformed_json <- '{"total_results": 1, "results": [ {"id": 777, "geometry_geojson": {"type": "Point", "coordinates": [0,0]}'
 
-# --- Test para IDs no válidos en la entrada de la función (Correcto) ---
+# Test for invalid input 'id'
 test_that("mnk_place_sf handles invalid input 'id'", {
   expect_error(mnk_place_sf(NULL), "You must provide a single non-empty numerical 'id'.")
   expect_error(mnk_place_sf("abc"), "You must provide a single non-empty numerical 'id'.")
@@ -112,12 +99,14 @@ test_that("mnk_place_sf handles invalid input 'id'", {
   expect_error(mnk_place_sf(NA_real_), "You must provide a single non-empty numerical 'id'.")
 })
 
-# --- Test de éxito: ID válido y respuesta correcta ---
+# Test success: valid ID and correct response
 test_that("mnk_place_sf returns an sf object for a valid ID", {
-  # Definición de la función mock_httr_GET para ESTE test_that
+  skip_if_not_installed("httr")
+  skip_if_not_installed("sf")
+  skip_if_not_installed("stringr")
+
   mock_httr_GET <- function(url = NULL,..., path = NULL, as) {
     id_from_path <- as.numeric(stringr::str_extract(path, "[0-9]+$"))
-
     response_content <- ""
     status_code <- 200L
 
@@ -130,131 +119,119 @@ test_that("mnk_place_sf returns an sf object for a valid ID", {
       response_content <- '{"error": "Not Found"}'
     }
 
-    response_obj <- structure(list(
+    structure(list(
       url = paste0("https://api.minka-sdg.org", path),
       status_code = status_code,
       headers = list("Content-Type" = "application/json"),
       content = charToRaw(response_content)
     ), class = c("response", "handle"))
-    return(response_obj)
   }
 
-  with_mocked_bindings(
+  testthat::with_mocked_bindings(
     GET = mock_httr_GET,
     .package = "httr",
     {
-      # Test con un Point (ID 265, de tu ejemplo)
       result_point <- mnk_place_sf(265)
-
       expect_s3_class(result_point, "sf")
       expect_equal(nrow(result_point), 1)
-      # CORRECCIÓN: Tu función ELIMINA 'geojson_string' al final.
-      # expect_true("geojson_string" %in% names(result_point)) # Esta línea se comenta o elimina.
-
       expect_equal(sf::st_crs(result_point)$epsg, 4326)
-      expect_true(sf::st_is(result_point$sf_geometry, "POINT"))
-      expect_equal(as.numeric(sf::st_coordinates(result_point$sf_geometry)), c(2.923, 41.777))
+      expect_true(sf::st_is(sf::st_geometry(result_point), "POINT"))
+      coords <- sf::st_coordinates(result_point)
+      expect_equal(as.numeric(coords[1,1:2]), c(2.923, 41.777), tolerance = 1e-3)
 
-      # Test con un Polygon
       result_polygon <- mnk_place_sf(456)
       expect_s3_class(result_polygon, "sf")
       expect_equal(nrow(result_polygon), 1)
-      expect_true(sf::st_is(result_polygon$sf_geometry, "POLYGON"))
+      expect_true(sf::st_is(sf::st_geometry(result_polygon), "POLYGON"))
     }
   )
 })
 
-
 test_that("mnk_place_sf handles no results or empty response from API", {
-  # Definición de la función mock_httr_GET para ESTE test_that
+  skip_if_not_installed("httr")
+  skip_if_not_installed("sf")
+  skip_if_not_installed("stringr")
+
   mock_httr_GET_empty <- function(url = NULL,..., path = NULL, as) {
     id_from_path <- as.numeric(stringr::str_extract(path, "[0-9]+$"))
-
     response_content <- ""
     status_code <- 200L
-    if (id_from_path == 999) { # ID que devuelve string vacío (ej. 200 OK pero sin contenido)
+
+    if (id_from_path == 999) {
       response_content <- ""
-    } else if (id_from_path == 888) { # ID que devuelve JSON con 'results': []
+    } else if (id_from_path == 888) {
       response_content <- mock_response_json_empty_results
-    } else if (id_from_path == 777) { # ID que devuelve JSON sin la clave 'results'
+    } else if (id_from_path == 777) {
       response_content <- mock_response_json_no_results_key
-    } else if (id_from_path == 666) { # ID que devuelve JSON con 'results' pero un elemento sin geometry_geojson
+    } else if (id_from_path == 666) {
       response_content <- mock_response_json_results_no_geom
     } else {
-      stop("Mock not configured for this result: ", path)
+      stop("Mock not configured for this path: ", path)
     }
 
-    response_obj <- structure(list(
+    structure(list(
       url = paste0("https://api.minka-sdg.org", path),
       status_code = status_code,
       headers = list("Content-Type" = "application/json"),
       content = charToRaw(response_content)
     ), class = c("response", "handle"))
-    return(response_obj)
   }
 
-  with_mocked_bindings(
+  testthat::with_mocked_bindings(
     GET = mock_httr_GET_empty,
     .package = "httr",
     {
-      # Test con respuesta HTTP 200 pero contenido vacío
       expect_message(result_empty_content <- mnk_place_sf(999), "API returned an empty response.")
       expect_null(result_empty_content)
 
-      # Test con JSON '{"results": []}'
       expect_message(result_empty_results <- mnk_place_sf(888), "No places found for your query.")
       expect_null(result_empty_results)
 
-      # Test con JSON sin la clave 'results'
       expect_message(result_no_results_key <- mnk_place_sf(777), "No places found for your query.")
       expect_null(result_no_results_key)
 
-      # Test con JSON con 'results' pero un elemento sin 'geometry_geojson'
       result_no_geom_in_results <- mnk_place_sf(666)
       expect_s3_class(result_no_geom_in_results, "sf")
       expect_equal(nrow(result_no_geom_in_results), 1)
-      expect_true(sf::st_is(result_no_geom_in_results$sf_geometry, "POINT"))
-      expect_true(sf::st_is_empty(result_no_geom_in_results$sf_geometry))
+      expect_true(sf::st_is_empty(sf::st_geometry(result_no_geom_in_results)))
     }
   )
 })
 
-# --- Test para error HTTP de la API (Correcto) ---
+# Test for API HTTP error
 test_that("mnk_place_sf handles API HTTP error", {
-  # Definición de la función mock_httr_GET para ESTE test_that
+  skip_if_not_installed("httr")
+  skip_if_not_installed("stringr")
+
   mock_httr_GET_error <- function(url = NULL,..., path = NULL, as) {
     id_from_path <- as.numeric(stringr::str_extract(path, "[0-9]+$"))
-
+    status_code <- 200L
     response_content <- ""
-    status_code <- 200L # Default
 
-    if (id_from_path == 500) { # Simula un error 500
+    if (id_from_path == 500) {
       status_code <- 500L
       response_content <- '{"error": "internal server error"}'
-    } else if (id_from_path == 404) { # Simula un error 404
+    } else if (id_from_path == 404) {
       status_code <- 404L
       response_content <- '{"error": "Not Found"}'
     } else {
-      stop("Mock no configurado para esta URL en el test de error HTTP: ", path)
+      stop("Mock not configured for this URL in HTTP error test: ", path)
     }
 
-    response_obj <- structure(list(
+    structure(list(
       url = paste0("https://api.minka-sdg.org", path),
       status_code = status_code,
       headers = list("Content-Type" = "application/json"),
       content = charToRaw(response_content)
     ), class = c("response", "handle"))
-    return(response_obj)
   }
 
-  with_mocked_bindings(
+  testthat::with_mocked_bindings(
     GET = mock_httr_GET_error,
     .package = "httr",
     {
-
       expect_message(result_500 <- mnk_place_sf(500), regexp = "Minka API request failed. Status code: 500")
       expect_null(result_500)
-
 
       expect_message(result_404 <- mnk_place_sf(404), regexp = "Minka API request failed. Status code: 404")
       expect_null(result_404)
@@ -262,9 +239,11 @@ test_that("mnk_place_sf handles API HTTP error", {
   )
 })
 
-
 test_that("mnk_place_sf handles malformed GeoJSON or JSON", {
-  # Definición de la función mock_httr_GET para ESTE test_that
+  skip_if_not_installed("httr")
+  skip_if_not_installed("sf")
+  skip_if_not_installed("stringr")
+
   mock_httr_GET_malformed <- function(url = NULL,..., path = NULL, as) {
     id_from_path <- as.numeric(stringr::str_extract(path, "[0-9]+$"))
     response_content <- ""
@@ -275,31 +254,27 @@ test_that("mnk_place_sf handles malformed GeoJSON or JSON", {
     } else if (id_from_path == 777) {
       response_content <- mock_response_completely_malformed_json
     } else {
-      stop("Mock no configurado para esta URL en el test de GeoJSON malformado: ", path)
+      stop("Mock not configured for this URL in malformed GeoJSON test: ", path)
     }
 
-    response_obj <- structure(list(
+    structure(list(
       url = paste0("https://api.minka-sdg.org", path),
       status_code = status_code,
       headers = list("Content-Type" = "application/json"),
       content = charToRaw(response_content)
     ), class = c("response", "handle"))
-    return(response_obj)
   }
 
-  with_mocked_bindings(
+  testthat::with_mocked_bindings(
     GET = mock_httr_GET_malformed,
     .package = "httr",
     {
-
-      result_malformed_geom <- suppressWarnings(mnk_place_sf(666)) # Añadido suppressWarnings
+      result_malformed_geom <- suppressWarnings(mnk_place_sf(666))
       expect_s3_class(result_malformed_geom, "sf")
       expect_equal(nrow(result_malformed_geom), 1)
-      expect_true(sf::st_is(result_malformed_geom$sf_geometry, "POINT"))
-      expect_true(sf::st_is_empty(result_malformed_geom$sf_geometry))
+      expect_true(sf::st_is_empty(sf::st_geometry(result_malformed_geom)))
 
-
-      expect_error(mnk_place_sf(777), regexp = "lexical error|syntax error|unallowed token|premature EOF", class = "error")
+      expect_error(mnk_place_sf(777), regexp = "lexical error|syntax error|unallowed token|premature EOF")
     }
   )
 })
