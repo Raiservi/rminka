@@ -67,7 +67,7 @@ mnk_user_info <- function(id_user) {
     return(invisible(NULL))
   }
 
-  response_content <- httr::content(response, as = "text", encoding = "UTF-8")
+  response_content <- httr::content(response, as = "text", encoding = "UTF-8",type = "application/json")
   if (nchar(response_content) == 0 || identical(response_content, "null")) {
     message("API returned an empty or null response for user: ", id_for_msg, ".")
     return(invisible(NULL))

@@ -80,7 +80,7 @@ mnk_proj_info <- function(project_id = NULL, grpid = NULL, users = FALSE) {
     return(invisible(NULL))
   }
 
-  response_content <- httr::content(response, as = "text", encoding = "UTF-8")
+  response_content <- httr::content(response, as = "text", encoding = "UTF-8",type = "application/json")
   if (nchar(response_content) == 0 || response_content == "null") {
     message("API returned an empty or null response for project: ", id_for_msg, ".")
     return(invisible(NULL))
