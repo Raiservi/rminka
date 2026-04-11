@@ -41,6 +41,7 @@ reference:
       Functions to find users and their contributed observations.
     contents:
       - mnk_user_byname
+      - mnk_user_info
       - mnk_user_proj
       - mnk_user_obs
   - title: Place Queries
