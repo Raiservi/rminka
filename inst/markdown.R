@@ -152,3 +152,11 @@ leaflet() |>
   addLayersControl(baseGroups = c("Satélite", "OSM"))
 
 export_qgis(observaciones = forum_obs_sf , zona =place, file = "Estudio_forum.gpkg")
+
+#==================================================================================
+
+shrt <-shrt_name (c("Diplodus sargus sargus", "Diplodus vulgaris", "Diplodus cervinus"))
+shrt
+shrt2 <-shrt <-shrt_name ("Diplodus sargus")
+shrt2
+

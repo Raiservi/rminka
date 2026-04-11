@@ -1,30 +1,28 @@
-#' Generate a Short Name from a Scientific Name
-#'
-#' From a full scientific name, this function creates a
-#' standard abbreviation by taking the first three letters of each word, in
-#' lowercase, and joining them with a period.
-#'
-#' @param scientific_name A character string or vector of character strings with
-#' the scientific names.
-#' @return A character string or vector of character strings with the
-#' abbreviations.
-
-#' @examples\dontrun{
+#' @title Generate Short Name from Scientific Name
+#' @description Creates a standardized abbreviation from a scientific name by
+#'   taking the first three letters of each word, converting to lowercase, and
+#'   joining with periods. Accepts names with one to three words.
+#' @param scientific_name a character vector of scientific names. Each element
+#'   must contain one to three words. Cannot contain `NA` or empty strings.
+#' @return A character vector of the same length as `scientific_name`. Each
+#'   element contains the abbreviation formed by the first three lowercase
+#'   letters of each word, separated by periods. For example, "Diplodus sargus"
+#'   returns "dip.sar" and "Diplodus sargus sargus" returns "dip.sar.sar".
+#'   Signals an error if input is not character, is empty, contains `NA`, or
+#'   has more than three words.
+#' @examples
+#' \dontrun{
 #' shrt_name("Diplodus sargus")
 #' shrt_name("Diplodus sargus sargus")
-#' shrt_name(c("Diplodus cervinus", "Diplodus vulgaris","Diplodus sargus"))
+#' shrt_name(c("Diplodus cervinus", "Diplodus vulgaris", "Diplodus sargus"))
 #' }
 #' @export
-#'
 
 shrt_name <- function(scientific_name) {
-
-
 
   if (is.numeric(scientific_name)) {
     stop("Input cannot be a number. Please provide a character string.", call. = FALSE)
   }
-
 
   if (any(is.na(scientific_name) | stringr::str_trim(scientific_name) == "")) {
     stop("Input cannot contain NA or empty strings.", call. = FALSE)
@@ -38,7 +36,6 @@ shrt_name <- function(scientific_name) {
   if (any(word_counts < 1 | word_counts > 3)) {
     stop("Each scientific name must contain between 1 and 3 words.", call. = FALSE)
   }
-
 
   result <- stringr::str_to_lower(scientific_name) %>%
     stringr::str_trim() %>%
