@@ -78,7 +78,7 @@ based on different parameters.
 **e) Auxiliary functions:**  A set of functions with different utilities that complement Minka's observational data and help in processing them when used in 
 other R packages (`vegan`, `dismo`, `labdsv` or others).
 
-*   `export_mk_qgis()`: Converts one or more `sf` layers with 
+*   `export_mnk_qgis()`: Converts one or more `sf` layers with 
 different geometry types (points and polygons) to GeoPackage (.gpkg) format usualy used in Qgis. 
 By default, it uses CRS=4326 (WGS 84), but the same function can transform to a
 different CRS.

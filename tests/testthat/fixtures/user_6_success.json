@@ -1,0 +1,29 @@
+{
+  "total_results": 1,
+  "page": 1,
+  "per_page": 1,
+  "results": [
+    {
+      "id": 6,
+      "login": "ramonservitje",
+      "spam": false,
+      "suspended": false,
+      "created_at": "2022-04-16T15:47:14+00:00",
+      "login_autocomplete": "ramonservitje",
+      "login_exact": "ramonservitje",
+      "name": "",
+      "name_autocomplete": "",
+      "orcid": null,
+      "icon": "/attachments/users/icons/6-thumb.jpg?1658326226",
+      "observations_count": 1259,
+      "identifications_count": 70,
+      "journal_posts_count": 0,
+      "activity_count": 1329,
+      "species_count": 336,
+      "universal_search_rank": 1259,
+      "roles": [],
+      "site_id": 1,
+      "icon_url": "/attachments/users/icons/6-medium.jpg?1658326226"
+    }
+  ]
+}
