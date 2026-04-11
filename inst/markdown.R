@@ -166,3 +166,5 @@ mnk_user_proj(6)
 mnk_user_obs(user_id=6, year=2025, month=8)
 
 mnk_user_info(6)
+
+mnk_user_byname(query="xavier")

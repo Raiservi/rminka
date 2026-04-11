@@ -2,27 +2,35 @@
 % Please edit documentation in R/mnk_user_byname.R
 \name{mnk_user_byname}
 \alias{mnk_user_byname}
-\title{Search Minka user by part of login name}
+\title{Search Minka Users by Login Name}
 \usage{
 mnk_user_byname(query)
 }
 \arguments{
-\item{query}{A string that is contained in the the user login name.}
+\item{query}{a single character string contained in the user login name.}
 }
 \value{
-A data frame with all some details of the differents users  that
-contains the string.
+A tibble with one row per matching user. Returns an empty tibble with
+zero rows if no matches are found. Columns are:
+\describe{
+  \item{id}{User identifier, integer.}
+  \item{login}{Username, character.}
+  \item{name}{Full name, character.}
+  \item{observations_count}{Number of observations, integer.}
+  \item{created_at}{Account creation timestamp, POSIXct.}
+}
 }
 \description{
-Get information on a specific Minka user selected by  a string
-contained in the user login name.
+Retrieves users whose login name contains a given string from the
+Minka API.
 }
 \details{
-This fucntion is mainly used for obtain the user id and use this id
-for other functions.
+Queries the \code{/v1/users/autocomplete} endpoint. This function is
+mainly used to obtain the user identifier for other functions.
 }
 \examples{
 \dontrun{
-m_obs <- mnk_user_byname(query="xavier")
+# Search for users whose login contains "xavier"
+mnk_user_byname(query = "xavier")
 }
 }
