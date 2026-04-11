@@ -160,3 +160,5 @@ shrt
 shrt2 <-shrt <-shrt_name ("Diplodus sargus")
 shrt2
 
+mnk_user_proj(6)
+

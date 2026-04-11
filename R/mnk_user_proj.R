@@ -1,22 +1,26 @@
-#' @title Projects subscribed by a Minka user
-#' @description Retrieves the projects to which a user is subscribed from the
-#' Minka page web, and returns them as a tibble.
-#' @param id_user (numeric): A single integer number corresponding to the
-#' ID_user
-#' @return A tibble where each row is a project and the columns
-#' contain relevant information about the project.
-#' Returns an empty tibble if there are no projects or if an error occurs.
+#' @title Projects Subscribed by a Minka User
+#' @description Retrieves projects to which a user is explicitly subscribed
+#'   from Minka and returns project metadata as a tibble.
+#' @param id_user a single integer or numeric value identifying the user.
+#' @return Retrieves projects to which a user is explicitly subscribed from
+#'   Minka and returns project metadata as a tibble.
+#' \describe{
+#'   \item{id}{Project identifier, integer.}
+#'   \item{title}{Project title, character.}
+#'   \item{description}{Project description, character.}
+#'   \item{slug}{URL slug, character.}
+#'   \item{icon}{Icon URL, character.}
+#'   \item{place_id}{Associated place identifier, integer or `NA`.}
+#'   \item{created_at}{Creation date, character in ISO 8601 format(yyyy-mm-dd).}
+#' }
+#' @examples
+#' \dontrun{
+#' mnk_user_proj(6)
+#' }
 #' @export
-#'
-#' @examples \dontrun{
-#' # It´s necesary to known the project_id
-#' projects_for_user_6 <- mnk_user_proj(6)
-#' print(projects_for_user_6)
-#'}
-#'
 
 mnk_user_proj <- function(id_user) {
-  # Validación básica del input (manteniendo la robustez de la última versión)
+
   if (is.null(id_user) || length(id_user)!= 1 ||!is.numeric(id_user) || is.na(id_user)) {
     stop("You must provide a single, non-NA numeric 'id_user'.")
   }
@@ -25,17 +29,14 @@ mnk_user_proj <- function(id_user) {
 
   response <- httr::GET(api_url)
 
-
   if (httr::http_error(response)) {
     message("Minka API request failed. Status: ", httr::status_code(response))
     return(tibble::tibble())
   }
 
-
   content <- httr::content(response, as = "parsed")
 
   if (is.list(content) && !is.null(content$results)) {
-
 
     purrr::map_dfr(content$results, ~tibble::tibble(
       id = .x$id %||% NA_integer_,
@@ -53,5 +54,3 @@ mnk_user_proj <- function(id_user) {
   }
 
 }
-
-

@@ -2,28 +2,32 @@
 % Please edit documentation in R/mnk_user_proj.R
 \name{mnk_user_proj}
 \alias{mnk_user_proj}
-\title{Projects subscribed by a Minka user}
+\title{Projects Subscribed by a Minka User}
 \usage{
 mnk_user_proj(id_user)
 }
 \arguments{
-\item{id_user}{(numeric): A single integer number corresponding to the
-ID_user}
+\item{id_user}{a single integer or numeric value identifying the user.}
 }
 \value{
-A tibble where each row is a project and the columns
-contain relevant information about the project.
-Returns an empty tibble if there are no projects or if an error occurs.
+Retrieves projects to which a user is explicitly subscribed from
+  Minka and returns project metadata as a tibble.
+\describe{
+  \item{id}{Project identifier, integer.}
+  \item{title}{Project title, character.}
+  \item{description}{Project description, character.}
+  \item{slug}{URL slug, character.}
+  \item{icon}{Icon URL, character.}
+  \item{place_id}{Associated place identifier, integer or `NA`.}
+  \item{created_at}{Creation date, character in ISO 8601 format(yyyy-mm-dd).}
+}
 }
 \description{
-Retrieves the projects to which a user is subscribed from the
-Minka page web, and returns them as a tibble.
+Retrieves projects to which a user is explicitly subscribed
+  from Minka and returns project metadata as a tibble.
 }
 \examples{
 \dontrun{
-# It´s necesary to known the project_id
-projects_for_user_6 <- mnk_user_proj(6)
-print(projects_for_user_6)
+mnk_user_proj(6)
 }
-
 }

@@ -2,27 +2,31 @@
 % Please edit documentation in R/shrt_name.R
 \name{shrt_name}
 \alias{shrt_name}
-\title{Generate a Short Name from a Scientific Name}
+\title{Generate Short Name from Scientific Name}
 \usage{
 shrt_name(scientific_name)
 }
 \arguments{
-\item{scientific_name}{A character string or vector of character strings with
-the scientific names.}
+\item{scientific_name}{a character vector of scientific names. Each element
+must contain one to three words. Cannot contain `NA` or empty strings.}
 }
 \value{
-A character string or vector of character strings with the
-abbreviations.
+A character vector of the same length as `scientific_name`. Each
+  element contains the abbreviation formed by the first three lowercase
+  letters of each word, separated by periods. For example, "Diplodus sargus"
+  returns "dip.sar" and "Diplodus sargus sargus" returns "dip.sar.sar".
+  Signals an error if input is not character, is empty, contains `NA`, or
+  has more than three words.
 }
 \description{
-From a full scientific name, this function creates a
-standard abbreviation by taking the first three letters of each word, in
-lowercase, and joining them with a period.
+Creates a standardized abbreviation from a scientific name by
+  taking the first three letters of each word, converting to lowercase, and
+  joining with periods. Accepts names with one to three words.
 }
 \examples{
 \dontrun{
 shrt_name("Diplodus sargus")
 shrt_name("Diplodus sargus sargus")
-shrt_name(c("Diplodus cervinus", "Diplodus vulgaris","Diplodus sargus"))
+shrt_name(c("Diplodus cervinus", "Diplodus vulgaris", "Diplodus sargus"))
 }
 }
