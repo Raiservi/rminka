@@ -128,7 +128,8 @@ forum_sf |>
 
 obs <- mnk_obs(taxon_name= "Diplodus sargus", year=2025, user_id=6, quiet = TRUE)
 
-obs
+mnk_user_info(4)
+
 
 
 
@@ -163,3 +164,5 @@ shrt2
 mnk_user_proj(6)
 
 mnk_user_obs(user_id=6, year=2025, month=8)
+
+mnk_user_info(6)

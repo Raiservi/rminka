@@ -7,35 +7,43 @@
 mnk_user_info(id_user)
 }
 \arguments{
-\item{id_user}{A single atomic value (numeric or character) representing the
-Minka user ID.}
+\item{id_user}{a single atomic value, numeric or character, representing the
+user identifier.}
 }
 \value{
-A named list containing key details about the user:
-\code{id}, \code{login}, \code{name}, \code{created_at},
-\code{observations_count}, \code{identifications_count},
-\code{species_count}, \code{activity_count}, \code{journal_posts_count},
-\code{orcid}, \code{icon_url}, \code{site_id}, \code{roles}, \code{spam},
-\code{suspended}, \code{universal_search_rank}.
-
-If the user is not found or a network error occurs, the function returns
-\code{NULL} invisibly and emits a message.
+A tibble with one row containing user metadata, or `NULL` invisibly
+if the user is not found or a network error occurs. Columns are:
+\describe{
+\item{id}{User identifier, integer.}
+\item{login}{Username, character.}
+\item{name}{Full name, character.}
+\item{created_at}{Account creation timestamp, POSIXct.}
+\item{observations_count}{Number of observations, integer.}
+\item{identifications_count}{Number of identifications, integer.}
+\item{species_count}{Number of observed species, integer.}
+\item{activity_count}{Activity score, integer.}
+\item{journal_posts_count}{Number of journal posts, integer.}
+\item{orcid}{ORCID identifier, character or `NA`.}
+\item{icon_url}{URL of profile image, character.}
+\item{site_id}{Site identifier, integer.}
+\item{roles}{List-column with user roles, list.}
+\item{spam}{Spam flag, logical.}
+\item{suspended}{Suspended flag, logical.}
+\item{universal_search_rank}{Search rank, integer.}
+}
 }
 \description{
-Retrieves public profile information for a Minka user from the Minka API.
+Retrieves public profile information for a user from the Minka
+API.
 }
 \details{
-The function queries the \code{/v1/users/{id}} endpoint of the Minka API
-(\url{https://api.minka-sdg.org}). The \code{id_user} corresponds to the
-numeric identifier visible in Minka profile URLs (e.g.,
-\url{https://minka-sdg.org/users/6}).
+Queries the \code{/v1/users/{id}} endpoint. The \code{id_user}
+corresponds to the identifier in profile URLs such as
+\url{https://minka-sdg.org/users/6}.
 }
 \examples{
 \dontrun{
-# Get information for user ID 6
-mnk_user_info(6)
-
-# Using a character ID
-mnk_user_info("6")
+# Information about user_id 4 (xasalvador)
+mnk_user_info(4)
 }
 }

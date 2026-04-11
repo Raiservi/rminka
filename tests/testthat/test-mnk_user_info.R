@@ -1,4 +1,4 @@
-test_that("returns correct list for existing user", {
+test_that("returns correct tibble for existing user", {
   skip_if_not_installed("httr")
   json <- '{"total_results":1,"results":[{"id":6,"login":"ramonservitje","spam":false,"suspended":false,"created_at":"2022-04-16T15:47:14+00:00","observations_count":1259,"identifications_count":70,"activity_count":1329,"species_count":336,"icon_url":"/attachments/users/icons/6-medium.jpg?1658326226"}]}'
   testthat::local_mocked_bindings(
@@ -6,7 +6,8 @@ test_that("returns correct list for existing user", {
     .package = "httr"
   )
   res <- mnk_user_info(6)
-  expect_type(res, "list")
+  expect_s3_class(res, "tbl_df")
+  expect_equal(nrow(res), 1)
   expect_equal(res$id, 6)
   expect_equal(res$login, "ramonservitje")
   expect_equal(res$observations_count, 1259)
@@ -64,6 +65,7 @@ test_that("accepts character id", {
     .package = "httr"
   )
   res <- mnk_user_info("6")
+  expect_s3_class(res, "tbl_df")
   expect_equal(res$id, 6)
 })
 
@@ -119,14 +121,14 @@ test_that("applies default values for missing fields", {
   expect_true(is.na(res$name))
   expect_true(is.na(res$orcid))
   expect_true(is.na(res$observations_count))
-  expect_equal(res$roles, list())
+  expect_equal(res$roles[[1]], list())
 })
 
 test_that("encodes special characters in user id", {
   skip_if_not_installed("httr")
   called_path <- NULL
   testthat::local_mocked_bindings(
-    GET = function(url, path, ...) {
+    GET = function(url, path,...) {
       called_path <<- path
       structure(list(status_code=200L, content=charToRaw('{"results":[{"id":1}]}')), class="response")
     },

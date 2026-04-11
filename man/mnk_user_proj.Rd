@@ -10,8 +10,8 @@ mnk_user_proj(id_user)
 \item{id_user}{a single integer or numeric value identifying the user.}
 }
 \value{
-Retrieves projects to which a user is explicitly subscribed from
-  Minka and returns project metadata as a tibble.
+A tibble with one row per subscribed project. Returns an empty
+  tibble with zero rows if the user has no subscriptions. Columns are:
 \describe{
   \item{id}{Project identifier, integer.}
   \item{title}{Project title, character.}
@@ -19,7 +19,7 @@ Retrieves projects to which a user is explicitly subscribed from
   \item{slug}{URL slug, character.}
   \item{icon}{Icon URL, character.}
   \item{place_id}{Associated place identifier, integer or `NA`.}
-  \item{created_at}{Creation date, character in ISO 8601 format(yyyy-mm-dd).}
+  \item{created_at}{Creation date, character in ISO 8601 format.}
 }
 }
 \description{
