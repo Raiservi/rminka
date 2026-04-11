@@ -1,6 +1,5 @@
 test_that("converts data frame to sf POINT with selected columns", {
   skip_if_not_installed("sf")
-  skip_if_not_installed("dplyr")
 
   df <- data.frame(
     id = 1:2,
@@ -81,6 +80,7 @@ test_that("errors when latitude or longitude are missing", {
 
 test_that("accepts tidyselect helpers", {
   skip_if_not_installed("sf")
+  skip_if_not_installed("tidyselect")
   df <- data.frame(
     id = 1,
     latitude = 41,
@@ -89,7 +89,7 @@ test_that("accepts tidyselect helpers", {
     taxon_rank = "species",
     other = "x"
   )
-  out <- mnk_obs_sf(df, starts_with("taxon_"))
+  out <- mnk_obs_sf(df, tidyselect::starts_with("taxon_"))
   expect_true(all(c("taxon_name", "taxon_rank") %in% names(out)))
   expect_false("other" %in% names(out))
 })

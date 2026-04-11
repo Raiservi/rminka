@@ -46,7 +46,6 @@ test_that("passes all optional parameters correctly", {
 })
 
 test_that("requires user_id and year", {
-  # mensajes de R cambian con locale, usamos regex parcial
   expect_error(mnk_user_obs(year = 2024), "user_id.*missing")
   expect_error(mnk_user_obs(user_id = 123), "year.*missing")
 })

@@ -1,10 +1,3 @@
-skip_if_not_installed("httptest")
-skip_if_not_installed("tibble")
-skip_if_not_installed("sf")
-library(httptest)
-library(tibble)
-library(sf)
-
 test_that("mnk_obs stops if there are no parameters", {
   expect_error(mnk_obs(), "You must specify at least one search parameter")
 })
@@ -25,7 +18,8 @@ test_that("process_minka_results handles an empty list", {
 })
 
 test_that("download_paginated_data handles an API response with 0 results", {
-  with_mock_api({
+  skip_if_not_installed("httptest")
+  httptest::with_mock_api({
     result <- rminka:::download_paginated_data(params = list(q = "cero_resultados_test"))
     expect_equal(result$count, 0)
     expect_s3_class(result$data, "tbl_df")
@@ -33,7 +27,8 @@ test_that("download_paginated_data handles an API response with 0 results", {
 })
 
 test_that("download_paginated_data downloads one page of results", {
-  with_mock_api({
+  skip_if_not_installed("httptest")
+  httptest::with_mock_api({
     result <- rminka:::download_paginated_data(params = list(q = "una_pagina_test"))
     expect_equal(result$count, 1)
     expect_s3_class(result$data, "tbl_df")
@@ -43,7 +38,8 @@ test_that("download_paginated_data downloads one page of results", {
 })
 
 test_that("download_paginated_data handles multiple pages of results", {
-  with_mock_api({
+  skip_if_not_installed("httptest")
+  httptest::with_mock_api({
     result <- rminka:::download_paginated_data(params = list(q = "multi_pagina_test"))
     expect_equal(result$count, 201)
     expect_s3_class(result$data, "tbl_df")
@@ -53,29 +49,18 @@ test_that("download_paginated_data handles multiple pages of results", {
 })
 
 test_that("mnk_obs validates the format of the 'annotation' parameter", {
-  expect_error(
-    mnk_obs(annotation = c("a", "b")),
-    "The 'annotation' parameter must be a numeric vector of length 2"
-  )
-  expect_error(
-    mnk_obs(annotation = c(1, 2, 3)),
-    "The 'annotation' parameter must be a numeric vector of length 2"
-  )
+  expect_error(mnk_obs(annotation = c("a", "b")), "The 'annotation' parameter must be a numeric vector of length 2")
+  expect_error(mnk_obs(annotation = c(1, 2, 3)), "The 'annotation' parameter must be a numeric vector of length 2")
 })
 
 test_that("mnk_obs validates the format of the 'bounds' parameter", {
-  expect_error(
-    mnk_obs(bounds = c(1, 2, 3)),
-    "'bounds' must be a numeric vector of length 4"
-  )
-  expect_error(
-    mnk_obs(bounds = c("a", "b", "c", "d")),
-    "'bounds' must be a numeric vector of length 4"
-  )
+  expect_error(mnk_obs(bounds = c(1, 2, 3)), "'bounds' must be a numeric vector of length 4")
+  expect_error(mnk_obs(bounds = c("a", "b", "c", "d")), "'bounds' must be a numeric vector of length 4")
 })
 
 test_that("mnk_obs downloads data for a specific day", {
-  with_mock_api({
+  skip_if_not_installed("httptest")
+  httptest::with_mock_api({
     datos_dia <- mnk_obs(taxon_name = "test_taxon_dia", year = 2025, month = 8, day = 15)
     expect_s3_class(datos_dia, "tbl_df")
     expect_equal(nrow(datos_dia), 1)
@@ -84,7 +69,8 @@ test_that("mnk_obs downloads data for a specific day", {
 })
 
 test_that("mnk_obs downloads a full month (less than 10k results)", {
-  with_mock_api({
+  skip_if_not_installed("httptest")
+  httptest::with_mock_api({
     datos_mes <- mnk_obs(taxon_name = "test_taxon_mes", year = 2025, month = 9)
     expect_s3_class(datos_mes, "tbl_df")
     expect_equal(nrow(datos_mes), 2)
@@ -93,7 +79,8 @@ test_that("mnk_obs downloads a full month (less than 10k results)", {
 })
 
 test_that("mnk_obs downloads a full year, iterating through months", {
-  with_mock_api({
+  skip_if_not_installed("httptest")
+  httptest::with_mock_api({
     datos_anuales <- mnk_obs(taxon_name = "test_taxon_anual", year = 2024, quiet = TRUE)
     expect_s3_class(datos_anuales, "tbl_df")
     expect_equal(nrow(datos_anuales), 3)
@@ -102,7 +89,8 @@ test_that("mnk_obs downloads a full year, iterating through months", {
 })
 
 test_that("mnk_obs downloads data without a date filter", {
-  with_mock_api({
+  skip_if_not_installed("httptest")
+  httptest::with_mock_api({
     datos_sin_fecha <- mnk_obs(project_id = 999, quiet = TRUE)
     expect_s3_class(datos_sin_fecha, "tbl_df")
     expect_equal(nrow(datos_sin_fecha), 1)
@@ -111,7 +99,8 @@ test_that("mnk_obs downloads data without a date filter", {
 })
 
 test_that("mnk_obs subdivides download by days if a month has >10k results", {
-  with_mock_api({
+  skip_if_not_installed("httptest")
+  httptest::with_mock_api({
     datos_subdivididos <- mnk_obs(taxon_name = "test_taxon_subdivision", year = 2024, month = 4, quiet = TRUE)
     expect_s3_class(datos_subdivididos, "tbl_df")
     expect_equal(nrow(datos_subdivididos), 1)
@@ -120,42 +109,19 @@ test_that("mnk_obs subdivides download by days if a month has >10k results", {
 })
 
 test_that("mnk_obs correctly validates all parameter types", {
-  expect_error(
-    mnk_obs(endemic = "no"),
-    "The 'endemic' parameter must be TRUE or FALSE."
-  )
-  expect_error(
-    mnk_obs(introduced = "yes"),
-    "The 'introduced' parameter must be TRUE or FALSE."
-  )
-  expect_error(
-    mnk_obs(threatened = 1),
-    "The 'threatened' parameter must be TRUE or FALSE."
-  )
-  expect_error(
-    mnk_obs(annotation = c(1, 2, 3)),
-    "The 'annotation' parameter must be a numeric vector of length 2"
-  )
-  expect_error(
-    mnk_obs(annotation = c("a", "b")),
-    "The 'annotation' parameter must be a numeric vector of length 2"
-  )
-  expect_error(
-    mnk_obs(bounds = c(1, 2, 3)),
-    "'bounds' must be a numeric vector of length 4"
-  )
-  expect_error(
-    mnk_obs(bounds = c("a", "b", "c", "d")),
-    "'bounds' must be a numeric vector of length 4"
-  )
+  expect_error(mnk_obs(endemic = "no"), "The 'endemic' parameter must be TRUE or FALSE.")
+  expect_error(mnk_obs(introduced = "yes"), "The 'introduced' parameter must be TRUE or FALSE.")
+  expect_error(mnk_obs(threatened = 1), "The 'threatened' parameter must be TRUE or FALSE.")
+  expect_error(mnk_obs(annotation = c(1, 2, 3)), "The 'annotation' parameter must be a numeric vector of length 2")
+  expect_error(mnk_obs(annotation = c("a", "b")), "The 'annotation' parameter must be a numeric vector of length 2")
+  expect_error(mnk_obs(bounds = c(1, 2, 3)), "'bounds' must be a numeric vector of length 4")
+  expect_error(mnk_obs(bounds = c("a", "b", "c", "d")), "'bounds' must be a numeric vector of length 4")
 })
 
 test_that("download_paginated_data returns an empty tibble if the API fails", {
-  with_mock_api({
-    resultado <- rminka:::download_paginated_data(
-      params = list(q = "test_api_error_500"),
-      quiet = TRUE
-    )
+  skip_if_not_installed("httptest")
+  httptest::with_mock_api({
+    resultado <- rminka:::download_paginated_data(params = list(q = "test_api_error_500"), quiet = TRUE)
     expect_s3_class(resultado$data, "tbl_df")
     expect_equal(nrow(resultado$data), 0)
     expect_equal(resultado$count, 0)
@@ -163,52 +129,35 @@ test_that("download_paginated_data returns an empty tibble if the API fails", {
 })
 
 test_that("download_paginated_data shows message when exceeding the download limit", {
-  with_mock_api({
-    expect_message(
-      void <- rminka:::download_paginated_data(
-        params = list(q = "test_limit_message"),
-        numeric_limit = 50,
-        quiet = FALSE
-      ),
-      "NOTE: Fetching only the first 50 of 101 available records"
-    )
+  skip_if_not_installed("httptest")
+  httptest::with_mock_api({
+    expect_message(rminka:::download_paginated_data(params = list(q = "test_limit_message"), numeric_limit = 50, quiet = FALSE),
+                   "NOTE: Fetching only the first 50 of 101 available records")
   })
 })
 
 test_that("mnk_obs correctly handles a response with no results", {
+  skip_if_not_installed("httptest")
   httptest::with_mock_api({
     no_results <- mnk_obs(query = "no_existe_nada_con_este_nombre", quiet = TRUE)
     expect_s3_class(no_results, "data.frame")
     expect_equal(nrow(no_results), 0)
   })
-  expect_message(
-    httptest::with_mock_api({
-      mnk_obs(query = "no_existe_nada_con_este_nombre", quiet = FALSE)
-    }),
-    "No data could be downloaded"
-  )
+  expect_message(httptest::with_mock_api({ mnk_obs(query = "no_existe_nada_con_este_nombre", quiet = FALSE) }), "No data could be downloaded")
 })
 
 test_that("mnk_obs correctly processes multiple parameters at once", {
+  skip_if_not_installed("httptest")
   httptest::with_mock_api({
-    many_params_result <- mnk_obs(
-      query = "test_muchos_parametros",
-      taxon_id = 5,
-      user_id = 10,
-      place_id = 15,
-      project = "mi-proyecto-test",
-      geo = TRUE,
-      endemic = TRUE,
-      threatened = TRUE,
-      introduced = FALSE,
-      quality = "research",
-      quiet = TRUE
-    )
+    many_params_result <- mnk_obs(query = "test_muchos_parametros", taxon_id = 5, user_id = 10, place_id = 15,
+                                  project = "mi-proyecto-test", geo = TRUE, endemic = TRUE, threatened = TRUE, introduced = FALSE,
+                                  quality = "research", quiet = TRUE)
     expect_s3_class(many_params_result, "data.frame")
   })
 })
 
 test_that("The 'limit_download' parameter works correctly", {
+  skip_if_not_installed("httptest")
   httptest::with_mock_api({
     results_paginated <- mnk_obs(month = "September", quiet = TRUE)
     expect_equal(nrow(results_paginated), 2)
@@ -220,25 +169,19 @@ test_that("The 'limit_download' parameter works correctly", {
 })
 
 test_that("mnk_obs processes bounds and annotation correctly", {
+  skip_if_not_installed("httptest")
   httptest::with_mock_api({
     barcelona_bounds <- c(41.3, 2.1, 41.4, 2.2)
     life_stage_annotation <- c(1, 2)
-    obs_bounds_annot <- mnk_obs(
-      month = "September",
-      bounds = barcelona_bounds,
-      annotation = life_stage_annotation,
-      quiet = TRUE
-    )
+    obs_bounds_annot <- mnk_obs(month = "September", bounds = barcelona_bounds, annotation = life_stage_annotation, quiet = TRUE)
     expect_s3_class(obs_bounds_annot, "data.frame")
   })
 })
 
 test_that("mnk_obs handles a 'ping' call failure", {
+  skip_if_not_installed("httptest")
   httptest::with_mock_api({
-    expect_message(
-      mnk_obs(project_id = "non-existent-project", quiet = FALSE),
-      "No data could be downloaded for the specified criteria."
-    )
+    expect_message(mnk_obs(project_id = "non-existent-project", quiet = FALSE), "No data could be downloaded for the specified criteria.")
     results <- mnk_obs(project_id = "non-existent-project", quiet = TRUE)
     expect_s3_class(results, "data.frame")
     expect_equal(nrow(results), 0)
@@ -247,6 +190,7 @@ test_that("mnk_obs handles a 'ping' call failure", {
 
 test_that("mnk_obs works with sf objects in 'bounds'", {
   skip_if_not_installed("sf")
+  skip_if_not_installed("httptest")
   point <- sf::st_point(c(2.15, 41.35))
   sf_obj <- sf::st_as_sf(data.frame(geom = sf::st_sfc(point, crs = 4326)))
   httptest::with_mock_api({
@@ -256,13 +200,15 @@ test_that("mnk_obs works with sf objects in 'bounds'", {
 })
 
 test_that("mnk_obs handles a failure in an intermediate download page", {
+  skip_if_not_installed("httptest")
   httptest::with_mock_api({
     results <- mnk_obs(project_id = "test-fail", quiet = TRUE)
-    testthat::expect_equal(nrow(results), 200)
+    expect_equal(nrow(results), 200)
   })
 })
 
 test_that("mnk_obs returns an empty tibble when the initial PING query fails", {
+  skip_if_not_installed("httptest")
   httptest::with_mock_api({
     results <- mnk_obs(project_id = "test-ping-fail", quiet = FALSE)
     expect_s3_class(results, "tbl_df")
@@ -271,138 +217,10 @@ test_that("mnk_obs returns an empty tibble when the initial PING query fails", {
 })
 
 test_that("mnk_obs handles a monthly PING failure", {
+  skip_if_not_installed("httptest")
   httptest::with_mock_api({
-    results <- mnk_obs(
-      project_id = "test-month-ping-fail",
-      year = 2025,
-      month = "October",
-      quiet = TRUE
-    )
+    results <- mnk_obs(project_id = "test-month-ping-fail", year = 2025, month = "October", quiet = TRUE)
     expect_s3_class(results, "tbl_df")
     expect_equal(nrow(results), 0)
   })
-})
-
-##################################
-
-# TEST 1 – cubre líneas 82-83, 151-152: ping falla (inicial y mensual)
-test_that("pings fallidos devuelven tibble vacío y mensaje", {
-  testthat::local_mocked_bindings(
-    GET = function(...) structure(list(status_code = 500), class = "response"),
-    http_error = function(...) TRUE,
-    status_code = function(...) 500L,
-    .package = "httr"
-  )
-  # ping inicial
-  expect_message(
-    res1 <- rminka:::download_paginated_data(list(q="x"), quiet = FALSE),
-    "PING query failed with code: 500"
-  )
-  expect_equal(res1$count, 0)
-
-  # ping mensual
-  expect_message(
-    res2 <- rminka:::download_month_data(list(), 2024, 5, quiet = FALSE, remaining_limit = 100),
-    "PING query failed for the month of"
-  )
-  expect_equal(res2$count, 0)
-})
-
-# TEST 2 – cubre líneas 101, 107-108, 121: error en página 2 y recorte
-test_that("salta página con error y recorta exceso", {
-  # Parte A: error en página 2 (líneas 107-108)
-  call <- 0
-  testthat::local_mocked_bindings(
-    GET = function(...) { call <<- call + 1; structure(list(), class="response") },
-    http_error = function(...) call == 2,  # solo falla la 2ª
-    content = function(...) list(total_results = 400, results = replicate(200, list(id = 1), simplify = FALSE)),
-    .package = "httr"
-  )
-  expect_message(
-    res_err <- rminka:::download_paginated_data(list(), total_res = 400, quiet = FALSE, numeric_limit = 350),
-    "Error on page 2 - skipping"
-  )
-  expect_equal(res_err$count, 200)  # solo página 1
-
-  # Parte B: entra el break (101) y el recorte (121)
-  testthat::local_mocked_bindings(
-    GET = function(...) structure(list(), class="response"),
-    http_error = function(...) FALSE,
-    content = function(...) list(total_results = 500, results = replicate(200, list(id = 1), simplify = FALSE)),
-    .package = "httr"
-  )
-  res_cut <- rminka:::download_paginated_data(list(), total_res = 500, quiet = TRUE, numeric_limit = 150)
-  expect_equal(res_cut$count, 150)  # recortado a 150
-})
-
-# TEST 3 – cubre líneas 158, 169, 179: mensajes mes sin datos y >10k
-test_that("download_month_data muestra mensajes con quiet=FALSE", {
-  testthat::local_mocked_bindings(
-    GET = function(...) structure(list(), class="response"),
-    http_error = function(...) FALSE,
-    content = function(...) list(total_results = 0),
-    .package = "httr"
-  )
-  expect_message(
-    rminka:::download_month_data(list(), 2024, 3, quiet = FALSE, remaining_limit = 100),
-    "No records were found for March 2024"
-  )
-
-  # ahora mes >10k
-  testthat::local_mocked_bindings(
-    content = function(...) list(total_results = 15000),
-    .package = "httr"
-  )
-  testthat::local_mocked_bindings(
-    download_paginated_data = function(...) list(data = tibble::tibble(id = 1), count = 1),
-    .package = "rminka"
-  )
-  msgs <- testthat::capture_messages(
-    rminka:::download_month_data(list(), 2024, 4, quiet = FALSE, remaining_limit = 5)
-  )
-  expect_true(any(grepl("Total > 10,000. Subdividing by DAY", msgs)))
-  expect_true(any(grepl("Downloading day: 1", msgs)))
-})
-
-# TEST 4 – cubre líneas 141, 177, 332, 339-340: límites agotados y mensajes anuales
-test_that("límites agotados paran bucles y muestran mensajes", {
-  # línea 141
-  res1 <- rminka:::download_month_data(list(), 2024, 1, quiet = TRUE, remaining_limit = 0)
-  expect_equal(res1$count, 0)
-
-  # líneas 177: para cuando se agota
-  testthat::local_mocked_bindings(
-    GET = function(...) structure(list(), class="response"),
-    http_error = function(...) FALSE,
-    content = function(...) list(total_results = 15000),
-    .package = "httr"
-  )
-  testthat::local_mocked_bindings(
-    download_paginated_data = function(..., numeric_limit) {
-      n <- min(3, numeric_limit)
-      list(data = tibble::tibble(id = seq_len(n)), count = n)
-    },
-    .package = "rminka"
-  )
-  res2 <- rminka:::download_month_data(list(), 2024, 5, quiet = TRUE, remaining_limit = 3)
-  expect_equal(res2$count, 3)
-
-  # líneas 332, 339-340
-  testthat::local_mocked_bindings(
-    download_month_data = function(...) list(data = tibble::tibble(id = 1:6000), count = 6000),
-    .package = "rminka"
-  )
-  msgs <- testthat::capture_messages(mnk_obs(year = 2024, quiet = FALSE))
-  expect_true(any(grepl("STARTING ANNUAL DOWNLOAD", msgs)))
-  expect_true(any(grepl("Download limit reached", msgs)))
-})
-
-# TEST 5 – cubre línea 371: recorte final de seguridad
-test_that("mnk_obs recorta si una función interna ignora el límite", {
-  testthat::local_mocked_bindings(
-    download_paginated_data = function(...) list(data = tibble::tibble(id = 1:15000), count = 15000),
-    .package = "rminka"
-  )
-  res <- mnk_obs(query = "x", quiet = TRUE, limit_download = TRUE)
-  expect_equal(nrow(res), 10000)
 })

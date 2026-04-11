@@ -37,7 +37,7 @@ test_that("mnk_proj_byname handles empty or null API response", {
   mock_httr_GET <- function(url = NULL, ..., path = NULL, as) {
     full_url <- if (!is.null(url) && !is.null(path)) paste0(url, path) else url
     if (grepl("q=empty_response", full_url)) {
-      # Simulates a response with empty body
+
       response_obj <- list(
         url = full_url,
         status_code = 200L,
@@ -47,7 +47,7 @@ test_that("mnk_proj_byname handles empty or null API response", {
       class(response_obj) <- c("response", "handle")
       return(response_obj)
     } else if (grepl("q=null_response", full_url)) {
-      # Simulates a response whose body is JSON 'null'
+
       response_obj <- list(
         url = full_url,
         status_code = 200L,
@@ -75,7 +75,7 @@ test_that("mnk_proj_byname handles empty or null API response", {
 })
 
 test_that("mnk_proj_byname handles JSON with no projects found", {
-  # Simulates a response with an empty results list
+
   mock_response_json <- '{"results": []}'
 
   mock_httr_GET <- function(url = NULL, ..., path = NULL, as) {
@@ -99,7 +99,7 @@ test_that("mnk_proj_byname handles JSON with no projects found", {
     .package = "httr",
     {
       expect_message(result <- mnk_proj_byname("no_projects"), regexp = "No projects found for query 'no_projects'.")
-      expect_s3_class(result, "data.frame") # Returns an empty tibble/data.frame
+      expect_s3_class(result, "data.frame")
       expect_equal(nrow(result), 0)
     }
   )

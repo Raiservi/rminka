@@ -30,7 +30,8 @@ Suggests:
     leaflet,
     mockery,
     rmarkdown,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    tidyselect
 URL: https://github.com/Raiservi/rminka, https://raiservi.github.io/rminka/
 BugReports: https://github.com/Raiservi/rminka/issues
 Config/testthat/edition: 3
