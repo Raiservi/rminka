@@ -14,7 +14,6 @@
 #'
 #' @return An sf object of type POINT with the selected attributes.
 #' @export
-
 mnk_obs_sf <- function(data, ..., crs = 4326, keep_coords = TRUE) {
   if (!inherits(data, "data.frame")) {
     stop("`data` must be a data.frame or tibble")

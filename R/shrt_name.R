@@ -17,7 +17,6 @@
 #' shrt_name(c("Diplodus cervinus", "Diplodus vulgaris", "Diplodus sargus"))
 #' }
 #' @export
-
 shrt_name <- function(scientific_name) {
 
   if (is.numeric(scientific_name)) {

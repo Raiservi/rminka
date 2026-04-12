@@ -24,7 +24,6 @@
 #' place_data_aug_2025 <- mnk_place_obs(place_id = 123, year = 2025, month = 8,
 #' limit_download = FALSE)
 #' }
-
 mnk_place_obs <- function(place_id, year, month = NULL, day = NULL, quiet = FALSE, limit_download = TRUE) {
 
   mnk_obs(
