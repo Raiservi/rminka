@@ -75,7 +75,7 @@ projects and their associated observations.
 **c) Place Queries:** Functions to find places and retrieve their
 spatial data.
 
-- `mnk_places_byname()`: Finds the place´s ID (place_id) for a location
+- `mnk_place_byname()`: Finds the place´s ID (place_id) for a location
   using an approximate place name.
 - `mnk_place_sf()`: Returns the `sf` geometry for a place given its
   place_id, ready for plotting with packages like `ggplot2` or
@@ -97,7 +97,7 @@ data based on different parameters.
 that complement Minka’s observational data and help in processing them
 when used in other R packages (`vegan`, `dismo`, `labdsv` or others).
 
-- `export_mk_qgis()`: Converts one or more `sf` layers with different
+- `export_mnk_qgis()`: Converts one or more `sf` layers with different
   geometry types (points and polygons) to GeoPackage (.gpkg) format
   usualy used in Qgis. By default, it uses CRS=4326 (WGS 84), but the
   same function can transform to a different CRS.

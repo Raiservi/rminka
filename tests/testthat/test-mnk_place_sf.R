@@ -92,13 +92,12 @@ mock_response_malformed_geojson_coords <- '{
 mock_response_completely_malformed_json <- '{"total_results": 1, "results": [ {"id": 777, "geometry_geojson": {"type": "Point", "coordinates": [0,0]}'
 
 
-test_that("mnk_place_sf handles invalid input 'id'", {
-  expect_error(mnk_place_sf(NULL), "You must provide a single non-empty numerical 'id'.")
-  expect_error(mnk_place_sf("abc"), "You must provide a single non-empty numerical 'id'.")
-  expect_error(mnk_place_sf(c(1, 2)), "You must provide a single non-empty numerical 'id'.")
-  expect_error(mnk_place_sf(NA_real_), "You must provide a single non-empty numerical 'id'.")
+test_that("mnk_place_sf handles invalid input 'place_id'", {
+  expect_error(mnk_place_sf(NULL), "You must provide a single non-empty numerical 'place_id'")
+  expect_error(mnk_place_sf("abc"), "You must provide a single non-empty numerical 'place_id'")
+  expect_error(mnk_place_sf(c(1, 2)), "You must provide a single non-empty numerical 'place_id'")
+  expect_error(mnk_place_sf(NA_real_), "You must provide a single non-empty numerical 'place_id'")
 })
-
 
 test_that("mnk_place_sf returns an sf object for a valid ID", {
   skip_if_not_installed("httr")

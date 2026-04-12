@@ -4,22 +4,31 @@
 \alias{mnk_place_sf}
 \title{Get the sf geometry of a Minka place}
 \usage{
-mnk_place_sf(id)
+mnk_place_sf(place_id, crs = 4326)
 }
 \arguments{
-\item{id}{A single integer number id for a Minka place
-This id_place number is unique for each Minka place}
+\item{place_id}{a single integer id for a Minka place. This id is unique for
+each Minka place.}
+
+\item{crs}{coordinate reference system for the output geometry, as an EPSG
+code or anything accepted by `sf::st_crs()`. Defaults to `4326`.}
 }
 \value{
-A tibble with the sf geometry place
+An `sf` object with the place geometry. Returns `NULL` invisibly on
+network error or empty response.
 }
 \description{
-Gets the geometry in sf format of a Minka
-place given its id_place.The CRS of the resulting geometry is
-CRS = 4326 (WGS84)
+Retrieve the geometry of a Minka place as an `sf` object given
+its `place_id`. The GeoJSON returned by the Minka API is always in
+EPSG:4326 (WGS84). By default the function returns the geometry in this
+CRS, but you can request a different output CRS.
 }
 \examples{
 \dontrun{
-sf_sant_feliu <- mnk_place_sf(id= 265)
+# WGS84 (default)
+sf_sant_feliu <- mnk_place_sf(place_id = 265)
+
+# Reprojected to ETRS89 / UTM zone 31N
+sf_sant_feliu_25831 <- mnk_place_sf(place_id = 265, crs = 25831)
 }
 }

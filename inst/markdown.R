@@ -168,3 +168,45 @@ mnk_user_obs(user_id=6, year=2025, month=8)
 mnk_user_info(6)
 
 mnk_user_byname(query="xavier")
+
+
+mnk_place_sf <- function(place_id, crs = 4326) {
+
+  if (!is.numeric(place_id) || length(place_id)!= 1 || is.na(place_id)) {
+    stop("You must provide a single non-empty numerical 'place_id'.", call. = FALSE)
+  }
+
+  if (missing(crs) || is.null(crs)) crs <- 4326
+
+  base_url <- "https://api.minka-sdg.org"
+  q_path <- paste0("/v1/places/", as.character(place_id))
+
+  response <- httr::GET(base_url, path = q_path)
+
+  if (httr::http_error(response)) {
+    message("Minka API request failed. Status code: ", httr::status_code(response))
+    return(invisible(NULL))
+  }
+
+  response_content <- httr::content(response, as = "text", encoding = "UTF-8")
+  if (nchar(response_content) == 0) {
+    message("API returned an empty response.")
+    return(invisible(NULL))
+  }
+
+  parsed_json <- jsonlite::fromJSON(response_content, simplifyVector = FALSE)
+
+  if (is.null(parsed_json$results) || length(parsed_json$results) == 0) {
+    message("No places found for your query.")
+    return(invisible(NULL))
+  }
+
+  final_tibble <- purrr::map_dfr(parsed_json$results, function(x) {
+    tibble::tibble(
+      geojson_string = as.character(jsonlite::toJSON(x$geometry_geojson, auto_unbox = TRUE))
+    )
+  })
+
+  return (final_tibble)
+
+}

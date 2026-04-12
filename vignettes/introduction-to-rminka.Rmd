@@ -29,7 +29,6 @@ library(tibble)
 library(knitr)
 ```
 
-
 This document introduces you to rminka basic set of tools, and shows you how to 
 apply them to obtain your desired information.
 Once you’ve installed, read vignette("rminka") to learn more.
@@ -129,18 +128,18 @@ user_obs
 
 ### - Place Queries
 
- - **<u>mnk_places_byname</u>**
+ - **<u>mnk_place_byname</u>**
 
-```{r places_byname, include = TRUE , echo=TRUE}
+```{r place_byname, include = TRUE , echo=TRUE}
 
-places <- mnk_places_byname("Forum")
+places <- mnk_place_byname("Forum")
 places[,1:6]
 
 ```
 
- - **<u>mnk_places_sf</u>**
+ - **<u>mnk_place_sf</u>**
 
-```{r places_sf, include = TRUE , echo=TRUE}
+```{r place_sf, include = TRUE , echo=TRUE}
 
 library(sf)
 library(leaflet)

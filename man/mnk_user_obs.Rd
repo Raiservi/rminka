@@ -69,12 +69,10 @@ Downloads observations for a specific user, filtered by year
 }
 \examples{
 \dontrun{
-# Download the first 10.000 observations for user 6 (xasalva) in the complete
-year 2024
+# Download the first 10,000 observations for user 6 (xasalva) in 2024
 mnk_user_obs(user_id = 6, year = 2024)
 
-# Download all observations for August 2025 without record cap
-mnk_user_obs(user_id = 5678, year = 2025, month = 8,
-  limit_download = FALSE)
+# Download all observations for August 2024 without record cap
+mnk_user_obs(user_id = 6, year = 2024, month = 8, limit_download = FALSE)
 }
 }

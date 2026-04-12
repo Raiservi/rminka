@@ -13,14 +13,14 @@ mnk_proj_byname(query)
 A tibble with one row per matching project. Returns an empty tibble
 with zero rows if no matches are found. Columns are:
 \describe{
-  \item{id}{Project identifier, integer.}
-  \item{title}{Project title, character.}
-  \item{place_id}{Associated place identifier, integer or `NA`.}
-  \item{slug}{URL slug, character.}
-  \item{created_at}{Creation timestamp, POSIXct.}
-  \item{updated_at}{Last update timestamp, POSIXct.}
-  \item{project_type}{Project type, character.}
-  \item{description}{Project description, character.}
+\item{id}{Project identifier, integer.}
+\item{title}{Project title, character.}
+\item{place_id}{Associated place identifier, integer or `NA`.}
+\item{slug}{URL slug, character.}
+\item{created_at}{Creation timestamp, character.}
+\item{updated_at}{Last update timestamp, character.}
+\item{project_type}{Project type, character.}
+\item{description}{Project description, character.}
 }
 }
 \description{

@@ -49,7 +49,7 @@ reference:
       Functions to find places and retrieve their spatial data and their
       associated observations.
     contents:
-      - mnk_places_byname
+      - mnk_place_byname
       - mnk_place_sf
       - mnk_place_obs
   - title: Observation Queries
