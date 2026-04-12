@@ -2,52 +2,59 @@
 % Please edit documentation in R/mnk_obs_byday.R
 \name{mnk_obs_byday}
 \alias{mnk_obs_byday}
-\title{Download Large Observation Datasets by Date Range}
+\title{Download Minka Observations by Date Range}
 \usage{
 mnk_obs_byday(d1, d2, ..., quiet = FALSE, limit_download = TRUE)
 }
 \arguments{
-\item{d1}{Start date in 'yyyy-mm-dd' format.}
+\item{d1}{start date in 'yyyy-mm-dd' format.}
 
-\item{d2}{End date in 'yyyy-mm-dd' format.}
+\item{d2}{end date in 'yyyy-mm-dd' format.}
 
-\item{...}{Additional query parameters passed directly to [mnk_obs()].
-All parameters supported by [mnk_obs()] are available here except
-`year`, `month`, and `day`, which are replaced by `d1` and `d2`.
-Common parameters include `taxon_name`, `taxon_id`, `user_id`,
-`project_id`, `place_id`, `query`, `quality`, `geo`, `bounds`,
-`annotation`, `endemic`, `introduced`, and `threatened`. See
-[mnk_obs()] for complete documentation.}
+\item{...}{
+  Arguments passed on to \code{\link[=mnk_obs]{mnk_obs}}
+  \describe{
+    \item{\code{query}}{a generic query string for the 'q' parameter.}
+    \item{\code{taxon_name}}{a character string with the taxon name (common or
+scientific).}
+    \item{\code{taxon_id}}{a numeric ID for the taxon.}
+    \item{\code{user_id}}{a numeric ID for a specific user.}
+    \item{\code{project_id}}{a numeric ID for a specific project.}
+    \item{\code{place_id}}{a numeric ID for a specific place.}
+    \item{\code{endemic}}{a logical value. Filters for endemic species.}
+    \item{\code{introduced}}{a logical value. Filters for introduced species.}
+    \item{\code{threatened}}{a logical value. Filters for threatened species.}
+    \item{\code{quality}}{a character string. Must be 'casual' or 'research'.}
+    \item{\code{geo}}{a logical value. If TRUE, filters for observations with coordinates.}
+    \item{\code{annotation}}{a numeric vector of length 2 (term_id, term_value_id).}
+    \item{\code{bounds}}{a bounding box. Accepts an sf object with CRS EPSG:4326
+(WGS84) or a numeric vector c(nelat, nelng, swlat, swlng).}
+  }}
 
-\item{quiet}{A logical value. If `TRUE`, all console messages during
-download will be suppressed. Defaults to `FALSE`.}
+\item{quiet}{a logical value. If TRUE, suppresses console messages.}
 
-\item{limit_download}{A logical value. If `TRUE` (default), each
-subdivided request is capped at 10,000 records. If `FALSE`,
-attempts to download all matching records.}
+\item{limit_download}{a logical value. If TRUE (default), each subdivided
+request is capped at 10,000 records.}
 }
 \value{
-A `tibble::tibble` containing the downloaded observation data,
-  with the same structure as [mnk_obs()].
+a tibble with one row per observation and the same columns
+  documented in \code{\link{mnk_obs}}. Returns an empty tibble if no
+  data is found.
 }
 \description{
-A wrapper around [mnk_obs()] to handle large date ranges by automatically
-subdividing requests by month or day to avoid the 10,000 record API limit.
-It accepts the same query parameters as [mnk_obs()], except for the
-date parameters which are replaced by a date range.
+Downloads observation data from the Minka API for a specified date range.
+Subdivides requests by month or day automatically to avoid the 10,000
+record API limit.
 }
 \examples{
 \dontrun{
-# Download all observations of a species between two dates
+# Download observations between two dates
 obs <- mnk_obs_byday("2024-03-01", "2024-03-31",
 taxon_name = "Diplodus sargus")
 
-# Use with bounds and quiet mode
+# Use with bounds (must be EPSG:4326)
 barcelona <- c(41.5, 2.3, 41.2, 2.0)
-obs_bc <- mnk_obs_byday("2024-01-01", "2024-01-07", bounds = barcelona,
-quiet = TRUE)
+obs_bc <- mnk_obs_byday("2024-01-01", "2024-01-07",
+bounds = barcelona, quiet = TRUE)
 }
-}
-\seealso{
-[mnk_obs()] for the full list of query parameters.
 }

@@ -246,6 +246,17 @@ download_month_data <- function(base_params, year, current_month, quiet = FALSE,
 #' }
 #' Returns an empty tibble if no data is found.
 #' @export
+#' @examples
+#' \dontrun{
+#' # Download firts 10.000 observations of taxon  from a project in 2025
+#' obs <- mnk_obs(project_id = 417, year = 2025,
+#' taxon_name = "Diplodus sargus" )
+#'
+#' # Download all records in 2024 from a user using bounds
+#' barcelona <- c(41.5, 2.3, 41.2, 2.0)
+#' obs_bc <- mnk_obs( year=2024, user_login = "xasalvador",
+#' bounds = barcelona, quiet = TRUE, limit_dowload = FALSE)
+#' }
 mnk_obs <- function(query = NULL, taxon_name = NULL, taxon_id = NULL,
                     user_id = NULL, project_id = NULL, place_id = NULL,
                     endemic = NULL, introduced = NULL, threatened = NULL,
