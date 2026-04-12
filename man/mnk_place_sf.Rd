@@ -2,33 +2,48 @@
 % Please edit documentation in R/mnk_place_sf.R
 \name{mnk_place_sf}
 \alias{mnk_place_sf}
-\title{Get the sf geometry of a Minka place}
+\title{Get Minka Place as sf Object}
 \usage{
 mnk_place_sf(place_id, crs = 4326)
 }
 \arguments{
-\item{place_id}{a single integer id for a Minka place. This id is unique for
-each Minka place.}
+\item{place_id}{a single integer identifier for a Minka place. Each place has
+a unique identifier.}
 
-\item{crs}{coordinate reference system for the output geometry, as an EPSG
-code or anything accepted by `sf::st_crs()`. Defaults to `4326`.}
+\item{crs}{coordinate reference system for the output geometry, supplied as
+an EPSG code or any value accepted by \code{sf::st_crs()}. Defaults to
+\code{4326}.}
 }
 \value{
-An `sf` object with the place geometry. Returns `NULL` invisibly on
-network error or empty response.
+An \code{sf} object with one row per place and the following columns.
+Returns \code{NULL} invisibly if the request fails or the response is empty:
+\describe{
+  \item{place_id}{Place identifier, integer.}
+  \item{name}{Place name, character.}
+  \item{display_name}{Full display name, character.}
+  \item{slug}{URL slug, character.}
+  \item{uuid}{Universally unique identifier, character.}
+  \item{place_type}{Type of place, character or \code{NA}.}
+  \item{admin_level}{Administrative level, integer or \code{NA}.}
+  \item{bbox_area}{Bounding box area, numeric.}
+  \item{location}{Centroid as "lat,lon" string, character.}
+  \item{geometry}{Simple feature geometry (POINT, POLYGON or MULTIPOLYGON),
+  CRS 4326 unless transformed.}
+}
 }
 \description{
-Retrieve the geometry of a Minka place as an `sf` object given
-its `place_id`. The GeoJSON returned by the Minka API is always in
-EPSG:4326 (WGS84). By default the function returns the geometry in this
-CRS, but you can request a different output CRS.
+Retrieve a Minka place as a simple features (`sf`) object given
+its `place_id`. The function queries the Minka API and returns the place
+boundary geometry together with descriptive metadata. The source GeoJSON is
+always in EPSG:4326 (WGS 84). By default the output retains this CRS, but an
+alternative CRS may be requested.
 }
 \examples{
 \dontrun{
-# WGS84 (default)
-sf_sant_feliu <- mnk_place_sf(place_id = 265)
+# Retrieve place 253 in WGS 84
+place <- mnk_place_sf(place_id = 253)
 
-# Reprojected to ETRS89 / UTM zone 31N
-sf_sant_feliu_25831 <- mnk_place_sf(place_id = 265, crs = 25831)
+# Retrieve the same place reprojected to ETRS89 / UTM zone 31N
+place_25831 <- mnk_place_sf(place_id = 253, crs = 25831)
 }
 }
