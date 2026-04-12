@@ -50,8 +50,10 @@ mnk_place_sf <- function(place_id, crs = 4326) {
     return(invisible(NULL))
   }
 
-  response_content <- httr::content(response, as = "text", encoding = "UTF-8")
-  if (nchar(response_content) == 0) {
+  response_content <- rawToChar(response$content)
+  response_content <- enc2utf8(response_content)
+
+  if (!nzchar(response_content)) {
     message("API returned an empty response.")
     return(invisible(NULL))
   }
