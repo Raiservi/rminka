@@ -82,7 +82,7 @@ mnk_place_sf <- function(place_id, crs = 4326) {
 
   sf_object <- final_tibble %>%
     dplyr::mutate(
-      geometry = purrr::map(geojson_string, function(raw_string) {
+      geometry = purrr::map(final_tibble$geojson_string, function(raw_string) {
         if (is.na(raw_string) || raw_string == "null" || raw_string == "") {
           return(sf::st_point())
         }
@@ -97,7 +97,7 @@ mnk_place_sf <- function(place_id, crs = 4326) {
         })
       })
     ) %>%
-    dplyr::select(-geojson_string) %>%
+    dplyr::select(-"geojson_string") %>%
     sf::st_as_sf(sf_column_name = "geometry", crs = 4326)
 
   if (!identical(suppressWarnings(as.numeric(crs)), 4326)) {
