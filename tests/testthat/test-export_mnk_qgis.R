@@ -84,13 +84,13 @@ test_that("removes non-geometry list columns", {
 })
 
 test_that("errors when no layers provided", {
-  expect_error(export_mnk_qgis(), "Provide at least one sf object")
+  expect_error(export_mnk_qgis(file = tempfile()), "Provide at least one sf object")
 })
 
 test_that("errors when layers are unnamed", {
   skip_if_not_installed("sf")
   pts <- sf::st_as_sf(data.frame(id = 1, x = 0, y = 0), coords = c("x","y"), crs = 4326)
-  expect_error(export_mnk_qgis(pts), "All inputs must be named")
+  expect_error(export_mnk_qgis(pts, file = tempfile()), "All inputs must be named")
 })
 
 test_that("errors when object is not sf", {
@@ -134,4 +134,12 @@ test_that("errors when file cannot be removed", {
   )
   expect_error(export_mnk_qgis(pts = pts, file = tmp, overwrite = TRUE),
                "Cannot remove existing file")
+})
+
+test_that("errors when file is missing", {
+  skip_if_not_installed("sf")
+  pts <- sf::st_as_sf(data.frame(id = 1, x = 0, y = 0),
+                      coords = c("x","y"), crs = 4326)
+
+  expect_error(export_mnk_qgis(pts = pts), "You must provide a 'file' path")
 })

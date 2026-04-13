@@ -2,13 +2,13 @@
 #' @description Downloads observations for a specific user, filtered by year
 #'   and optionally by month and day. This is a convenience wrapper for
 #'   \code{\link{mnk_obs}}.
-#' @param user_id a user identifier, either numeric ID or character login.
-#' @param year the year to query, as a single integer.
-#' @param month optional month to filter, integer from 1 to 12. Defaults to
+#' @param user_id A user identifier, either numeric ID or character login.
+#' @param year The year to query, as a single integer.
+#' @param month Optional month to filter, integer from 1 to 12. Defaults to
 #'   `NULL`.
-#' @param day optional day to filter, integer from 1 to 31. Defaults to `NULL`.
-#' @param quiet logical; if `TRUE`, suppresses console messages.
-#' @param limit_download logical; if `TRUE` (default), caps each query
+#' @param day Optional day to filter, integer from 1 to 31. Defaults to `NULL`.
+#' @param quiet Logical; if `TRUE`, suppresses console messages.
+#' @param limit_download Logical; if `TRUE` (default), caps each query
 #'   subdivision at 10,000 records. If `FALSE`, attempts to retrieve all
 #'   records.
 #' @return A tibble with one row per observation. Returns an empty tibble with

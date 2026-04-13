@@ -2,56 +2,48 @@
 % Please edit documentation in R/mnk_proj_info.R
 \name{mnk_proj_info}
 \alias{mnk_proj_info}
-\title{Get Information About a Specific Minka Project}
+\title{Get Metadata for a Minka Project}
 \usage{
-mnk_proj_info(project_id = NULL, grpid = NULL, users = FALSE)
+mnk_proj_info(project_id = NULL, grpid = NULL)
 }
 \arguments{
-\item{project_id}{a single character string or number representing the unique
+\item{project_id}{A single character string or number representing the unique
 Minka project identifier.}
 
-\item{grpid}{a single character string or number representing the group
+\item{grpid}{A single character string or number representing the group
 identifier (slug) for the project.}
-
-\item{users}{logical. If TRUE, returns a tibble with subscribed user IDs. If
-FALSE (default), returns a list with project details.}
 }
 \value{
-If `users = FALSE` (default), a list with project metadata. If
-`users = TRUE`, a tibble with one column `id_users`. Returns `NULL`
-invisibly if the project is not found or on network error. List elements
-are:
+A single-row \code{tibble} with project metadata. If the project is
+  not found, returns an empty tibble with the same column structure.
+  Columns are:
 \describe{
-\item{id}{Project identifier, integer.}
-\item{title}{Project title, character.}
-\item{created_at}{Creation timestamp, character in ISO 8601 format.}
-\item{subscrib_users}{Number of subscribed users, integer.}
-\item{place_id}{Associated place identifier, integer or `NA`.}
-\item{slug}{URL slug, character.}
-\item{description}{Project description, character.}
+  \item{id}{Project identifier, integer.}
+  \item{title}{Project title, character.}
+  \item{created_at}{Creation timestamp, character in ISO 8601 format.}
+  \item{subscrib_users}{Total number of subscribed users, integer.}
+  \item{place_id}{Associated place identifier, integer or \code{NA}.}
+  \item{slug}{URL slug, character.}
+  \item{description}{Project description, character.}
 }
 }
 \description{
-Retrieves information for a specific Minka project using either
-its unique `project_id` or its group identifier (`grpid`).
+Retrieves detailed information for a specific Minka project
+  using either its unique \code{project_id} or its group identifier (\code{grpid}).
 }
 \details{
-You must provide either `project_id` or `grpid`. If you do not know
-the identifier, use \code{\link{mnk_proj_byname}} to find it.
-
-A Minka `grpid` or slug is typically the project name formatted with
-hyphens (e.g., 'biomarato-barcelona-2025'). You can find it in the URL of
-the project's page.
+You must provide either \code{project_id} or \code{grpid}. If you
+  do not know the identifier, use \code{\link{mnk_proj_byname}} to find it.
+  A Minka \code{grpid} or slug is typically the project name formatted with
+  hyphens (e.g., 'biomarato-barcelona-2025'). You can find it in the URL of
+  the project's page.
 }
 \examples{
 \dontrun{
-# First find the project ID
-mnk_proj_byname("Biomarato Barcelona 2025")
+# Get metadata for project ID 420
+mnk_proj_info(project_id = 420)
 
-# Get main information for project ID 420
-mnk_proj_info(project_id = "420")
-
-# Get only subscriber IDs
-mnk_proj_info(project_id = "420", users = TRUE)
+# Get metadata using the project slug
+mnk_proj_info(grpid = "biomarato-barcelona-2025")
 }
 }

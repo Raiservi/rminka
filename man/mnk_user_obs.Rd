@@ -14,18 +14,18 @@ mnk_user_obs(
 )
 }
 \arguments{
-\item{user_id}{a user identifier, either numeric ID or character login.}
+\item{user_id}{A user identifier, either numeric ID or character login.}
 
-\item{year}{the year to query, as a single integer.}
+\item{year}{The year to query, as a single integer.}
 
-\item{month}{optional month to filter, integer from 1 to 12. Defaults to
+\item{month}{Optional month to filter, integer from 1 to 12. Defaults to
 `NULL`.}
 
-\item{day}{optional day to filter, integer from 1 to 31. Defaults to `NULL`.}
+\item{day}{Optional day to filter, integer from 1 to 31. Defaults to `NULL`.}
 
-\item{quiet}{logical; if `TRUE`, suppresses console messages.}
+\item{quiet}{Logical; if `TRUE`, suppresses console messages.}
 
-\item{limit_download}{logical; if `TRUE` (default), caps each query
+\item{limit_download}{Logical; if `TRUE` (default), caps each query
 subdivision at 10,000 records. If `FALSE`, attempts to retrieve all
 records.}
 }

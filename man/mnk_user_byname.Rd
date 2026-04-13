@@ -7,11 +7,11 @@
 mnk_user_byname(query)
 }
 \arguments{
-\item{query}{a single character string contained in the user login name.}
+\item{query}{A single character string contained in the user login name.}
 }
 \value{
-A tibble with one row per matching user. Returns an empty tibble with
-zero rows if no matches are found. Columns are:
+A tibble with one row per matching user. If no matches are found,
+it returns an empty tibble with the same column structure. Columns are:
 \describe{
   \item{id}{User identifier, integer.}
   \item{login}{Username, character.}

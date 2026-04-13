@@ -8,8 +8,10 @@
 #' @param... One or more objects of class \code{sf}. Each object must be named;
 #' the name is used as the layer name in the GeoPackage (e.g.,
 #' \code{export_mnk_qgis(points = pts, polygons = polys)}).
-#' @param file Character. Path to the output GeoPackage. Default is
-#' \code{"datos_qgis.gpkg"}. The \code{.gpkg} extension is added if missing.
+#' @param file Character. Path to the output GeoPackage. It is highly
+#' recommended to provide a full path. If a simple filename is provided, it will
+#' be saved in the current working directory. The \code{.gpkg} extension is
+#' added if missing.
 #' @param crs CRS to transform to before writing. Accepts anything valid for
 #' \code{sf::st_transform()} (e.g., \code{4326} or \code{"EPSG:4326"}).
 #' Default is \code{4326} (WGS 84).
@@ -53,15 +55,21 @@
 #' }
 #'
 #' @export
-export_mnk_qgis <- function(..., file = "datos_qgis.gpkg", crs = 4326, overwrite = TRUE) {
+export_mnk_qgis <- function(..., file = NULL, crs = 4326, overwrite = TRUE) {
+
+  if (is.null(file)) {
+    stop("You must provide a 'file' path.", call. = FALSE)
+  }
+
   # collect layers
   layers <- list(...)
   if (length(layers) == 0L) {
     stop("Provide at least one sf object.", call. = FALSE)
   }
+
   layer_names <- names(layers)
   if (is.null(layer_names) || any(!nzchar(layer_names))) {
-    stop("All inputs must be named: export_mnk_qgis(points = pts, polygons = polys).",
+    stop("All inputs must be named: export_mnk_qgis(pnts_name = pts, polyg_name = polys).",
          call. = FALSE)
   }
 
@@ -88,26 +96,21 @@ export_mnk_qgis <- function(..., file = "datos_qgis.gpkg", crs = 4326, overwrite
       stop("Object '", nm, "' is not an sf object.", call. = FALSE)
     }
 
-    # transform CRS
     x <- sf::st_transform(x, crs)
-
-    # drop Z/M
     x <- sf::st_zm(x, drop = TRUE, what = "ZM")
 
-    # repair geometries (quietly)
     if (any(!sf::st_is_valid(x))) {
       x <- suppressWarnings(sf::st_make_valid(x))
     }
 
-    # drop non-geometry list-columns (GDAL cannot write them)
+    # Limpieza de columnas de lista (Correcto uso de vapply)
     is_list_col <- vapply(x, is.list, logical(1))
     is_sfc_col <- vapply(x, inherits, logical(1), what = "sfc")
-    drop_cols <- is_list_col &!is_sfc_col
+    drop_cols <- is_list_col & !is_sfc_col
     if (any(drop_cols)) {
-      x <- x[,!drop_cols, drop = FALSE]
+      x <- x[, !drop_cols, drop = FALSE]
     }
 
-    # write layer
     sf::st_write(
       obj = x,
       dsn = file,
@@ -119,5 +122,6 @@ export_mnk_qgis <- function(..., file = "datos_qgis.gpkg", crs = 4326, overwrite
     )
   }
 
-  invisible(normalizePath(file, winslash = "/"))
+  # Retorno invisible de la ruta normalizada (Buena práctica [2])
+  invisible(normalizePath(file, winslash = "/", mustWork = FALSE))
 }

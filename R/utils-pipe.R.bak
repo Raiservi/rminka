@@ -12,3 +12,15 @@
 #' @param rhs A function call using the magrittr semantics.
 #' @return The result of calling `rhs(lhs)`.
 NULL
+
+#' Null-coalescing operator
+#'
+#' See \code{rlang::\link[rlang:op-null-default]{\%||\%}} for details.
+#'
+#' @name null-default
+#' @aliases %||%
+#' @rdname null-default
+#' @keywords internal
+#' @importFrom rlang %||%
+NULL
+

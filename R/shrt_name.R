@@ -2,7 +2,7 @@
 #' @description Creates a standardized abbreviation from a scientific name by
 #'   taking the first three letters of each word, converting to lowercase, and
 #'   joining with periods. Accepts names with one to three words.
-#' @param scientific_name a character vector of scientific names. Each element
+#' @param scientific_name A character vector of scientific names. Each element
 #'   must contain one to three words. Cannot contain `NA` or empty strings.
 #' @return A character vector of the same length as `scientific_name`. Each
 #'   element contains the abbreviation formed by the first three lowercase
@@ -11,11 +11,9 @@
 #'   Signals an error if input is not character, is empty, contains `NA`, or
 #'   has more than three words.
 #' @examples
-#' \dontrun{
 #' shrt_name("Diplodus sargus")
 #' shrt_name("Diplodus sargus sargus")
 #' shrt_name(c("Diplodus cervinus", "Diplodus vulgaris", "Diplodus sargus"))
-#' }
 #' @export
 shrt_name <- function(scientific_name) {
 

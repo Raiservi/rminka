@@ -33,6 +33,7 @@
 #' # Get data for a genus
 #' get_wrm_tax("Diplodus")
 #' }
+<<<<<<< HEAD
 #' @importFrom httr GET http_error status_code content
 #' @importFrom jsonlite fromJSON
 #' @importFrom tibble tibble
@@ -41,6 +42,13 @@ get_wrm_tax <- function(scientific_name) {
       length(scientific_name)!= 1 || nchar(trimws(scientific_name)) == 0) {
     stop("'scientific_name' must be a single non-empty character string.",
          call. = FALSE)
+=======
+#' @export
+get_wrm_tax <- function(scientific_name) {
+
+  if (is.null(scientific_name) ||!is.character(scientific_name) || length(scientific_name)!= 1 || nchar(trimws(scientific_name)) == 0) {
+    stop("'scientific_name' must be a single non-empty character string.")
+>>>>>>> fa45026d5a4daf919c50b93813a35158f0a48e73
   }
 
   encoded_name <- gsub(" ", "%20", scientific_name)

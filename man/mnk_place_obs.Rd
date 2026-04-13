@@ -31,7 +31,37 @@ capped at 10,000 records per query subdivision. If `FALSE`, it attempts to
 download all records.}
 }
 \value{
-A `tibble::tibble` containing the downloaded observation data.
+A tibble with one row per observation. Returns an empty tibble with
+  zero rows if no observations match the query. Columns are:
+\describe{
+  \item{id}{Observation identifier, integer.}
+  \item{observed_on}{Observation date, character in YYYY-MM-DD format.}
+  \item{year}{Year of observation, integer.}
+  \item{month}{Month of observation, integer.}
+  \item{week}{ISO week number, integer.}
+  \item{day}{Day of month, integer.}
+  \item{hour}{Hour of observation, integer.}
+  \item{created_at}{Record creation timestamp, character in ISO 8601 format.}
+  \item{updated_at}{Record update timestamp, character in ISO 8601 format.}
+  \item{latitude}{Decimal latitude, numeric.}
+  \item{longitude}{Decimal longitude, numeric.}
+  \item{positional_accuracy}{Coordinate uncertainty in meters, integer.}
+  \item{geoprivacy}{Geoprivacy flag, logical.}
+  \item{obscured}{Obscured coordinates flag, logical.}
+  \item{uri}{Observation url in Minka, character.}
+  \item{url_picture}{URL of observation image in Minka, character.}
+  \item{quality_grade}{Data quality grade, character.}
+  \item{taxon_id}{Taxon identifier, integer.}
+  \item{taxon_name}{Scientific name, character.}
+  \item{taxon_rank}{Taxonomic rank, character.}
+  \item{taxon_min_ancestry}{Minimal ancestry string, character.}
+  \item{taxon_endemic}{Endemic flag, logical.}
+  \item{taxon_threatened}{Threatened flag, logical.}
+  \item{taxon_introduced}{Introduced flag, logical.}
+  \item{taxon_native}{Native flag, logical.}
+  \item{user_id}{Observer identifier, integer.}
+  \item{user_login}{Observer login, character.}
+}
 }
 \description{
 This is a convenience wrapper for \code{\link{mnk_obs}} to

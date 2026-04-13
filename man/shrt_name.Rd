@@ -7,7 +7,7 @@
 shrt_name(scientific_name)
 }
 \arguments{
-\item{scientific_name}{a character vector of scientific names. Each element
+\item{scientific_name}{A character vector of scientific names. Each element
 must contain one to three words. Cannot contain `NA` or empty strings.}
 }
 \value{
@@ -24,9 +24,7 @@ Creates a standardized abbreviation from a scientific name by
   joining with periods. Accepts names with one to three words.
 }
 \examples{
-\dontrun{
 shrt_name("Diplodus sargus")
 shrt_name("Diplodus sargus sargus")
 shrt_name(c("Diplodus cervinus", "Diplodus vulgaris", "Diplodus sargus"))
-}
 }
