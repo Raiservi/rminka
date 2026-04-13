@@ -4,8 +4,8 @@
 #' @details Queries the \code{/v1/users/autocomplete} endpoint. This function is
 #' mainly used to obtain the user identifier for other functions.
 #' @param query A single character string contained in the user login name.
-#' @return A tibble with one row per matching user. Returns an empty tibble with
-#' zero rows if no matches are found. Columns are:
+#' @return A tibble with one row per matching user. If no matches are found,
+#' it returns an empty tibble with the same column structure. Columns are:
 #' \describe{
 #'   \item{id}{User identifier, integer.}
 #'   \item{login}{Username, character.}
@@ -29,11 +29,19 @@ mnk_user_byname <- function(query) {
   base_url <- "https://api.minka-sdg.org"
   api_path <- "v1/users/autocomplete"
 
+  empty_res <- tibble::tibble(
+    id = integer(),
+    login = character(),
+    name = character(),
+    observations_count = integer(),
+    created_at = as.POSIXct(character())
+  )
+
   response <- httr::GET(base_url, path = api_path, query = list(q = query))
 
   if (httr::http_error(response)) {
     message("Minka API request failed. Status: ", httr::status_code(response))
-    return(tibble::tibble())
+    return(empty_res)
   }
 
   content <- httr::content(response, as = "parsed")
@@ -48,6 +56,6 @@ mnk_user_byname <- function(query) {
     ))
   } else {
     message("API response was not in the expected format (missing a 'results' list).")
-    return(tibble::tibble())
+    return(empty_res)
   }
 }

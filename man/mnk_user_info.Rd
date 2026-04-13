@@ -11,8 +11,9 @@ mnk_user_info(id_user)
 user identifier.}
 }
 \value{
-A tibble with one row containing user metadata, or `NULL` invisibly
-if the user is not found or a network error occurs. Columns are:
+A tibble with one row containing user metadata. If no matches are
+found, it returns an empty tibble with the same column structure.
+Columns are:
 \describe{
 \item{id}{User identifier, integer.}
 \item{login}{Username, character.}
@@ -43,7 +44,7 @@ corresponds to the identifier in profile URLs such as
 }
 \examples{
 \dontrun{
-# Information about user_id 4 (xasalvador)
+# Information about user_id 4
 mnk_user_info(4)
 }
 }

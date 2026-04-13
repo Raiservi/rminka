@@ -6,8 +6,9 @@
 #' \url{https://minka-sdg.org/users/6}.
 #' @param id_user A single atomic value, numeric or character, representing the
 #' user identifier.
-#' @return A tibble with one row containing user metadata, or `NULL` invisibly
-#' if the user is not found or a network error occurs. Columns are:
+#' @return A tibble with one row containing user metadata. If no matches are
+#' found, it returns an empty tibble with the same column structure.
+#' Columns are:
 #' \describe{
 #' \item{id}{User identifier, integer.}
 #' \item{login}{Username, character.}
@@ -28,7 +29,7 @@
 #' }
 #' @examples
 #' \dontrun{
-#' # Information about user_id 4 (xasalvador)
+#' # Information about user_id 4
 #' mnk_user_info(4)
 #' }
 #' @export
@@ -37,9 +38,28 @@ mnk_user_info <- function(id_user) {
   if (missing(id_user) || is.null(id_user)) {
     stop("'id_user' must be provided.", call. = FALSE)
   }
-  if (!is.atomic(id_user) || length(id_user)!= 1) {
+  if (!is.atomic(id_user) || length(id_user) != 1) {
     stop("'id_user' must be a single character string or number.", call. = FALSE)
   }
+
+  na_res <- tibble::tibble(
+    id = NA_integer_,
+    login = NA_character_,
+    name = NA_character_,
+    created_at = as.POSIXct(NA),
+    observations_count = NA_integer_,
+    identifications_count = NA_integer_,
+    species_count = NA_integer_,
+    activity_count = NA_integer_,
+    journal_posts_count = NA_integer_,
+    orcid = NA_character_,
+    icon_url = NA_character_,
+    site_id = NA_integer_,
+    roles = list(NULL),
+    spam = NA,
+    suspended = NA,
+    universal_search_rank = NA_integer_
+  )
 
   id_for_msg <- as.character(id_user)
   base_url <- "https://api.minka-sdg.org"
@@ -52,28 +72,26 @@ mnk_user_info <- function(id_user) {
     return(NULL)
   })
 
-  if (is.null(response)) {
-    return(invisible(NULL))
+  if (is.null(response) || httr::http_error(response)) {
+    if (!is.null(response)) {
+      message("Minka API request failed. Status code: ", httr::status_code(response))
+    }
+    return(na_res)
   }
 
-  if (httr::http_error(response)) {
-    message("Minka API request failed. Status code: ", httr::status_code(response))
-    return(invisible(NULL))
-  }
+  response_content <- httr::content(response, as = "text", encoding = "UTF-8")
 
-  response_content <- rawToChar(response$content)
-  response_content <- enc2utf8(response_content)
-
-  if (!nzchar(response_content) || identical(response_content, "null")) {
-    message("API returned an empty or null response for user: ", id_for_msg, ".")
-    return(invisible(NULL))
+  if (!nzchar(response_content) || response_content == "null") {
+    message("API returned an empty response for user: ", id_for_msg, ".")
+    return(na_res)
   }
 
   xx <- jsonlite::fromJSON(response_content, simplifyVector = FALSE)
   if (is.null(xx$results) || length(xx$results) == 0) {
     message("No user details found for id_user = ", id_for_msg, ".")
-    return(invisible(NULL))
+    return(na_res)
   }
+
   user_data <- xx$results[[1]]
 
   output <- tibble::tibble(
@@ -90,11 +108,10 @@ mnk_user_info <- function(id_user) {
     icon_url = user_data$icon_url %||% NA_character_,
     site_id = user_data$site_id %||% NA_integer_,
     roles = list(user_data$roles %||% list()),
-    spam = user_data$spam %||% NA,
-    suspended = user_data$suspended %||% NA,
+    spam = as.logical(user_data$spam %||% NA),
+    suspended = as.logical(user_data$suspended %||% NA),
     universal_search_rank = user_data$universal_search_rank %||% NA_integer_
   )
-
 
   return(output)
 }

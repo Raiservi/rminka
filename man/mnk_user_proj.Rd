@@ -7,11 +7,12 @@
 mnk_user_proj(id_user)
 }
 \arguments{
-\item{id_user}{a single integer or numeric value identifying the user.}
+\item{id_user}{A single integer or numeric value identifying the user.}
 }
 \value{
-A tibble with one row per subscribed project. Returns an empty
-  tibble with zero rows if the user has no subscriptions. Columns are:
+A tibble with one row per subscribed project. If no
+  subscriptions are found or an error occurs, it returns an empty tibble
+  with the same column structure. Columns are:
 \describe{
   \item{id}{Project identifier, integer.}
   \item{title}{Project title, character.}
