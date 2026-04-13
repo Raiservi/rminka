@@ -2,26 +2,50 @@
 % Please edit documentation in R/mnk_obs_id.R
 \name{mnk_obs_id}
 \alias{mnk_obs_id}
-\title{Information on a specific observation
-Get information on a specific observation by observation id.}
+\title{Get Minka Observation Details}
 \usage{
 mnk_obs_id(id, meta = FALSE)
 }
 \arguments{
-\item{id}{A single integer number for a Minka observation record.}
+\item{id}{a single integer. The Minka observation identifier.}
 
-\item{meta}{Downloand metadata.}
+\item{meta}{a logical value. Reserved for future use. Currently ignored.}
 }
 \value{
-A dataframe with all details on a given record
+a one-row tibble with the observation data. The result is the
+  flattened JSON response from the Minka API and contains more than 160
+  columns covering taxon, user, photos, identifications, and quality
+  metrics. Key fields include:
+  \describe{
+    \item{id}{observation identifier, integer.}
+    \item{uuid}{unique identifier, character.}
+    \item{observed_on}{observation date, character.}
+    \item{created_at}{creation date, character.}
+    \item{updated_at}{last update, character.}
+    \item{quality_grade}{quality grade, character.}
+    \item{latitude}{latitude in WGS84, numeric.}
+    \item{longitude}{longitude in WGS84, numeric.}
+    \item{taxon.id}{taxon identifier, integer.}
+    \item{taxon.name}{scientific name, character.}
+    \item{taxon.rank}{taxonomic rank, character.}
+    \item{user.id}{observer identifier, integer.}
+    \item{user.login}{observer login, character.}
+    \item{photos}{list column with photo metadata.}
+    \item{identifications}{list column with identifications.}
+  }
+  Returns `NULL` invisibly if the observation is not found or the request
+  fails.
 }
 \description{
-Information on a specific observation
-Get information on a specific observation by observation id.
+Retrieves full details for a single Minka observation by its identifier.
+Queries the Minka API and returns the complete record flattened into a
+tibble.
 }
 \examples{
 \dontrun{
-m_obs <- mnk_prj_obs(420, year = 2025)
-mnk_obs_id(m_obs$id[1])
+obs <- mnk_obs_id(6475)
+obs$id
+obs$taxon.name
+obs$quality_grade
 }
 }

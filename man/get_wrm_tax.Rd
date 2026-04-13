@@ -2,35 +2,45 @@
 % Please edit documentation in R/get_wrm_tax.R
 \name{get_wrm_tax}
 \alias{get_wrm_tax}
-\title{Get complete taxonomy from WoRMS as a flat tibble}
+\title{Get WoRMS Taxonomy}
 \usage{
 get_wrm_tax(scientific_name)
 }
 \arguments{
-\item{scientific_name}{A string with the scientific name to search for.}
+\item{scientific_name}{a character string with the scientific name to
+search for, for example "Diplodus sargus" or "Diplodus".}
 }
 \value{
-A single-row `tibble` containing the taxonomic and habitat information
-for the specified name. Returns `NULL` invisibly if the taxon is not found or
-in case of an API/network error.
+a one-row tibble with taxonomic and habitat flags. Returns
+\code{NULL} invisibly if the taxon is not found or the request fails.
+The tibble contains the following columns:
+\describe{
+\item{valid_AphiaID}{WoRMS AphiaID, integer.}
+\item{valid_name}{accepted scientific name, character.}
+\item{rank}{taxonomic rank, character.}
+\item{kingdom}{kingdom, character.}
+\item{phylum}{phylum, character.}
+\item{class}{class, character.}
+\item{order}{order, character.}
+\item{family}{family, character.}
+\item{genus}{genus, character.}
+\item{isMarine}{marine flag, logical.}
+\item{isBrackish}{brackish flag, logical.}
+\item{isFreshwater}{freshwater flag, logical.}
+\item{isTerrestrial}{terrestrial flag, logical.}
+\item{isExtinct}{extinct flag, logical.}
+}
 }
 \description{
-This function downloads the complete taxonomy from the World
-Register of Marine Species (WoRMS) for a given scientific name or taxon.
-}
-\details{
-You need to provide the exact scientific name (e.g., "Genus species")
-or a higher-level taxon (e.g., "Genus", "Familia"). The function will return
-the information for the first exact match found.
+Downloads taxonomic information from the World Register of Marine Species
+(WoRMS) for a given scientific name. Returns the first exact match found.
 }
 \examples{
 \dontrun{
 # Get data for a species
-diplodus_sargus_df <- get_wrm_tax("Diplodus sargus")
-print(diplodus_sargus_df)
+get_wrm_tax("Diplodus sargus")
 
 # Get data for a genus
-diplodus_genus_df <- get_wrm_tax("Diplodus")
-print(diplodus_genus_df)
+get_wrm_tax("Diplodus")
 }
 }

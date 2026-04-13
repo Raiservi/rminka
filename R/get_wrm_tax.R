@@ -1,39 +1,53 @@
-#' @title Get complete taxonomy from WoRMS as a flat tibble
-#' @description This function downloads the complete taxonomy from the World
-#' Register of Marine Species (WoRMS) for a given scientific name or taxon.
-#' @details You need to provide the exact scientific name (e.g., "Genus species")
-#' or a higher-level taxon (e.g., "Genus", "Familia"). The function will return
-#' the information for the first exact match found.
-#' @param scientific_name A string with the scientific name to search for.
-#' @return A single-row `tibble` containing the taxonomic and habitat information
-#' for the specified name. Returns `NULL` invisibly if the taxon is not found or
-#' in case of an API/network error.
-#' @examples \dontrun{
+##' Get WoRMS Taxonomy
+#'
+#' Downloads taxonomic information from the World Register of Marine Species
+#' (WoRMS) for a given scientific name. Returns the first exact match found.
+#'
+#' @param scientific_name a character string with the scientific name to
+#' search for, for example "Diplodus sargus" or "Diplodus".
+#' @return a one-row tibble with taxonomic and habitat flags. Returns
+#' \code{NULL} invisibly if the taxon is not found or the request fails.
+#' The tibble contains the following columns:
+#' \describe{
+#' \item{valid_AphiaID}{WoRMS AphiaID, integer.}
+#' \item{valid_name}{accepted scientific name, character.}
+#' \item{rank}{taxonomic rank, character.}
+#' \item{kingdom}{kingdom, character.}
+#' \item{phylum}{phylum, character.}
+#' \item{class}{class, character.}
+#' \item{order}{order, character.}
+#' \item{family}{family, character.}
+#' \item{genus}{genus, character.}
+#' \item{isMarine}{marine flag, logical.}
+#' \item{isBrackish}{brackish flag, logical.}
+#' \item{isFreshwater}{freshwater flag, logical.}
+#' \item{isTerrestrial}{terrestrial flag, logical.}
+#' \item{isExtinct}{extinct flag, logical.}
+#' }
+#' @export
+#' @examples
+#' \dontrun{
 #' # Get data for a species
-#' diplodus_sargus_df <- get_wrm_tax("Diplodus sargus")
-#' print(diplodus_sargus_df)
+#' get_wrm_tax("Diplodus sargus")
 #'
 #' # Get data for a genus
-#' diplodus_genus_df <- get_wrm_tax("Diplodus")
-#' print(diplodus_genus_df)
+#' get_wrm_tax("Diplodus")
 #' }
-
+#' @importFrom httr GET http_error status_code content
+#' @importFrom jsonlite fromJSON
+#' @importFrom tibble tibble
 get_wrm_tax <- function(scientific_name) {
-
- #AUX FUNCTION
-
-  `%||%` <- function(a, b) {
-    if (is.null(a)) b else a
+  if (is.null(scientific_name) ||!is.character(scientific_name) ||
+      length(scientific_name)!= 1 || nchar(trimws(scientific_name)) == 0) {
+    stop("'scientific_name' must be a single non-empty character string.",
+         call. = FALSE)
   }
-
-
-  if (is.null(scientific_name) ||!is.character(scientific_name) || length(scientific_name)!= 1 || nchar(trimws(scientific_name)) == 0) {
-    stop("'scientific_name' must be a single non-empty character string.")
-  }
-
 
   encoded_name <- gsub(" ", "%20", scientific_name)
-  api_url <- sprintf("https://www.marinespecies.org/rest/AphiaRecordsByName/%s?like=false&marine_only=false&offset=1", encoded_name)
+  api_url <- sprintf(
+    "https://www.marinespecies.org/rest/AphiaRecordsByName/%s?like=false&marine_only=false&offset=1",
+    encoded_name
+  )
 
   response <- tryCatch({
     httr::GET(url = api_url)
@@ -67,22 +81,21 @@ get_wrm_tax <- function(scientific_name) {
   taxon_data <- parsed_json[[1]]
 
   output_tibble <- tibble::tibble(
-    valid_AphiaID = taxon_data$valid_AphiaID %||% NA_integer_,
-    valid_name = taxon_data$valid_name %||% NA_character_,
-    rank = taxon_data$rank %||% NA_character_,
-    kingdom = taxon_data$kingdom %||% NA_character_,
-    phylum = taxon_data$phylum %||% NA_character_,
-    class = taxon_data$class %||% NA_character_,
-    order = taxon_data$order %||% NA_character_,
-    family = taxon_data$family %||% NA_character_,
-    genus = taxon_data$genus %||% NA_character_,
-    isMarine = as.logical(taxon_data$isMarine %||% NA),
-    isBrackish = as.logical(taxon_data$isBrackish %||% NA),
-    isFreshwater = as.logical(taxon_data$isFreshwater %||% NA),
-    isTerrestrial = as.logical(taxon_data$isTerrestrial %||% NA),
-    isExtinct = as.logical(taxon_data$isExtinct %||% NA)
+    valid_AphiaID = rlang::`%||%`(taxon_data$valid_AphiaID, NA_integer_),
+    valid_name = rlang::`%||%`(taxon_data$valid_name, NA_character_),
+    rank = rlang::`%||%`(taxon_data$rank, NA_character_),
+    kingdom = rlang::`%||%`(taxon_data$kingdom, NA_character_),
+    phylum = rlang::`%||%`(taxon_data$phylum, NA_character_),
+    class = rlang::`%||%`(taxon_data$class, NA_character_),
+    order = rlang::`%||%`(taxon_data$order, NA_character_),
+    family = rlang::`%||%`(taxon_data$family, NA_character_),
+    genus = rlang::`%||%`(taxon_data$genus, NA_character_),
+    isMarine = as.logical(rlang::`%||%`(taxon_data$isMarine, NA)),
+    isBrackish = as.logical(rlang::`%||%`(taxon_data$isBrackish, NA)),
+    isFreshwater = as.logical(rlang::`%||%`(taxon_data$isFreshwater, NA)),
+    isTerrestrial = as.logical(rlang::`%||%`(taxon_data$isTerrestrial, NA)),
+    isExtinct = as.logical(rlang::`%||%`(taxon_data$isExtinct, NA))
   )
 
   return(output_tibble)
- }
-
+}

@@ -2,27 +2,40 @@
 % Please edit documentation in R/mnk_obs_sf.R
 \name{mnk_obs_sf}
 \alias{mnk_obs_sf}
-\title{Convert Minka observations to an sf POINT object}
+\title{Convert Minka Observations to sf}
 \usage{
 mnk_obs_sf(data, ..., crs = 4326, keep_coords = TRUE)
 }
 \arguments{
-\item{data}{A data.frame or tibble with at least `latitude` and `longitude`.}
+\item{data}{a data frame or tibble with at least \code{latitude} and
+\code{longitude} columns, typically from \code{mnk_obs()}.}
 
-\item{...}{Columns to keep, using tidyselect syntax (e.g. `id`, `taxon_name`,
-`starts_with("taxon_")`). Geometry columns are added automatically.}
+\item{...}{columns to retain, using tidyselect syntax. \code{latitude}
+and \code{longitude} are always added for geometry.}
 
-\item{crs}{Coordinate reference system for the output. Default is 4326 (WGS84),
-which works directly with leaflet.}
+\item{crs}{coordinate reference system for the output, defaults to 4326
+(WGS84).}
 
-\item{keep_coords}{Logical. If TRUE, keep `latitude` and `longitude` as
-regular columns in addition to the geometry. Default TRUE.}
+\item{keep_coords}{logical. If TRUE, retains \code{latitude} and
+\code{longitude} as regular columns in addition to geometry.}
 }
 \value{
-An sf object of type POINT with the selected attributes.
+an sf object with POINT geometry (EPSG:4326 by default) and the
+  selected attributes. Returns an empty sf object if no valid coordinates
+  are present.
 }
 \description{
-Takes a tibble returned by `mnk_obs()` and turns it into an sf object,
-keeping only the columns you ask for. Latitude and longitude are always
-used for geometry, and `observed_on` is coerced to Date if present.
+Converts a tibble returned by \code{\link{mnk_obs}} into an sf POINT
+object. Keeps selected columns and coerces \code{observed_on} to Date
+when present.
+}
+\examples{
+\dontrun{
+obs <- mnk_obs(taxon_name = "Parablennius pilicornis", year = 2024)
+obs_sf <- mnk_obs_sf(obs, id, taxon_name, observed_on)
+obs_sf
+}
+}
+\seealso{
+\code{\link{mnk_obs}} for downloading observations.
 }
