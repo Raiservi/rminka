@@ -2,6 +2,7 @@
 
 export("%>%")
 export(export_mnk_qgis)
+export(get_wrm_tax)
 export(mnk_obs)
 export(mnk_obs_byday)
 export(mnk_obs_id)
@@ -18,3 +19,4 @@ export(mnk_user_obs)
 export(mnk_user_proj)
 export(shrt_name)
 importFrom(magrittr,"%>%")
+importFrom(rlang,"%||%")

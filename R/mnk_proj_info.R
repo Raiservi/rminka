@@ -100,14 +100,14 @@ mnk_proj_info <- function(project_id = NULL, grpid = NULL, users = FALSE) {
     }
   }
 
-  output <- list(
-    id = rlang::`%||%`(project_data$id, NA),
-    title = rlang::`%||%`(project_data$title, NA_character_),
-    created_at = rlang::`%||%`(project_data$created_at, NA_character_),
+  tibble::tibble(
+    id = project_data$id %||% NA_integer_,
+    title = project_data$title %||% NA_character_,
+    created_at = project_data$created_at %||% NA_character_,
     subscrib_users = length(user_ids_vec),
-    place_id = rlang::`%||%`(project_data$place_id, NA_integer_),
-    slug = rlang::`%||%`(project_data$slug, NA_character_),
-    description = rlang::`%||%`(project_data$description, NA_character_)
+    place_id = project_data$place_id %||% NA_integer_,
+    slug = project_data$slug %||% NA_character_,
+    description = project_data$description %||% NA_character_
   )
 
   return(output)

@@ -3,7 +3,7 @@
 #' Minka API.
 #' @details Queries the \code{/v1/users/autocomplete} endpoint. This function is
 #' mainly used to obtain the user identifier for other functions.
-#' @param query a single character string contained in the user login name.
+#' @param query A single character string contained in the user login name.
 #' @return A tibble with one row per matching user. Returns an empty tibble with
 #' zero rows if no matches are found. Columns are:
 #' \describe{
@@ -40,13 +40,11 @@ mnk_user_byname <- function(query) {
 
   if (is.list(content) && !is.null(content$results)) {
     purrr::map_dfr(content$results, function(x) tibble::tibble(
-      id = rlang::`%||%`(x$id, NA_integer_),
-      login = rlang::`%||%`(x$login, NA_character_),
-      name = rlang::`%||%`(x$name, NA_character_),
-      observations_count = rlang::`%||%`(x$observations_count, NA_integer_),
-      created_at = lubridate::ymd_hms(
-        rlang::`%||%`(x$created_at, NA_character_), quiet = TRUE
-      )
+      id = x$id %||% NA_integer_,
+      login = x$login %||% NA_character_,
+      name = x$name %||% NA_character_,
+      observations_count = x$observations_count %||% NA_integer_,
+      created_at = lubridate::ymd_hms(x$created_at %||% NA_character_, quiet = TRUE)
     ))
   } else {
     message("API response was not in the expected format (missing a 'results' list).")

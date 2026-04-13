@@ -28,5 +28,7 @@ utils::globalVariables(c(
 #' @return The result of calling `rhs(lhs)`.
 NULL
 
+#' @importFrom rlang %||%
+NULL
 
 

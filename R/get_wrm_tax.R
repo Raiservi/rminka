@@ -17,20 +17,12 @@
 #' diplodus_genus_df <- get_wrm_tax("Diplodus")
 #' print(diplodus_genus_df)
 #' }
-
+#' @export
 get_wrm_tax <- function(scientific_name) {
-
- #AUX FUNCTION
-
-  `%||%` <- function(a, b) {
-    if (is.null(a)) b else a
-  }
-
 
   if (is.null(scientific_name) ||!is.character(scientific_name) || length(scientific_name)!= 1 || nchar(trimws(scientific_name)) == 0) {
     stop("'scientific_name' must be a single non-empty character string.")
   }
-
 
   encoded_name <- gsub(" ", "%20", scientific_name)
   api_url <- sprintf("https://www.marinespecies.org/rest/AphiaRecordsByName/%s?like=false&marine_only=false&offset=1", encoded_name)

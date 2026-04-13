@@ -4,15 +4,17 @@
 \alias{export_mnk_qgis}
 \title{Export sf Minka Objects to a GeoPackage for QGIS}
 \usage{
-export_mnk_qgis(..., file = "datos_qgis.gpkg", crs = 4326, overwrite = TRUE)
+export_mnk_qgis(..., file = NULL, crs = 4326, overwrite = TRUE)
 }
 \arguments{
 \item{...}{One or more objects of class \code{sf}. Each object must be named;
 the name is used as the layer name in the GeoPackage (e.g.,
 \code{export_mnk_qgis(points = pts, polygons = polys)}).}
 
-\item{file}{Character. Path to the output GeoPackage. Default is
-\code{"datos_qgis.gpkg"}. The \code{.gpkg} extension is added if missing.}
+\item{file}{Character. Path to the output GeoPackage. It is highly
+recommended to provide a full path. If a simple filename is provided, it will
+be saved in the current working directory. The \code{.gpkg} extension is
+added if missing.}
 
 \item{crs}{CRS to transform to before writing. Accepts anything valid for
 \code{sf::st_transform()} (e.g., \code{4326} or \code{"EPSG:4326"}).

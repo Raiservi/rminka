@@ -4,7 +4,7 @@
 #' @details Queries the \code{/v1/users/{id}} endpoint. The \code{id_user}
 #' corresponds to the identifier in profile URLs such as
 #' \url{https://minka-sdg.org/users/6}.
-#' @param id_user a single atomic value, numeric or character, representing the
+#' @param id_user A single atomic value, numeric or character, representing the
 #' user identifier.
 #' @return A tibble with one row containing user metadata, or `NULL` invisibly
 #' if the user is not found or a network error occurs. Columns are:
@@ -77,27 +77,24 @@ mnk_user_info <- function(id_user) {
   user_data <- xx$results[[1]]
 
   output <- tibble::tibble(
-    id = rlang::`%||%`(user_data$id, NA_integer_),
-    login = rlang::`%||%`(user_data$login, NA_character_),
-    name = rlang::`%||%`(user_data$name, NA_character_),
-    created_at = lubridate::ymd_hms(
-      rlang::`%||%`(user_data$created_at, NA_character_), quiet = TRUE
-    ),
-    observations_count = rlang::`%||%`(user_data$observations_count, NA_integer_),
-    identifications_count = rlang::`%||%`(user_data$identifications_count, NA_integer_),
-    species_count = rlang::`%||%`(user_data$species_count, NA_integer_),
-    activity_count = rlang::`%||%`(user_data$activity_count, NA_integer_),
-    journal_posts_count = rlang::`%||%`(user_data$journal_posts_count, NA_integer_),
-    orcid = rlang::`%||%`(user_data$orcid, NA_character_),
-    icon_url = rlang::`%||%`(user_data$icon_url, NA_character_),
-    site_id = rlang::`%||%`(user_data$site_id, NA_integer_),
-    roles = list(rlang::`%||%`(user_data$roles, list())),
-    spam = rlang::`%||%`(user_data$spam, NA),
-    suspended = rlang::`%||%`(user_data$suspended, NA),
-    universal_search_rank = rlang::`%||%`(
-      user_data$universal_search_rank, NA_integer_
-    )
+    id = user_data$id %||% NA_integer_,
+    login = user_data$login %||% NA_character_,
+    name = user_data$name %||% NA_character_,
+    created_at = lubridate::ymd_hms(user_data$created_at %||% NA_character_, quiet = TRUE),
+    observations_count = user_data$observations_count %||% NA_integer_,
+    identifications_count = user_data$identifications_count %||% NA_integer_,
+    species_count = user_data$species_count %||% NA_integer_,
+    activity_count = user_data$activity_count %||% NA_integer_,
+    journal_posts_count = user_data$journal_posts_count %||% NA_integer_,
+    orcid = user_data$orcid %||% NA_character_,
+    icon_url = user_data$icon_url %||% NA_character_,
+    site_id = user_data$site_id %||% NA_integer_,
+    roles = list(user_data$roles %||% list()),
+    spam = user_data$spam %||% NA,
+    suspended = user_data$suspended %||% NA,
+    universal_search_rank = user_data$universal_search_rank %||% NA_integer_
   )
+
 
   return(output)
 }

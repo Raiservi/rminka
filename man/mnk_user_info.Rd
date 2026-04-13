@@ -7,7 +7,7 @@
 mnk_user_info(id_user)
 }
 \arguments{
-\item{id_user}{a single atomic value, numeric or character, representing the
+\item{id_user}{A single atomic value, numeric or character, representing the
 user identifier.}
 }
 \value{

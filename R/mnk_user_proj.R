@@ -72,13 +72,13 @@ mnk_user_proj <- function(id_user) {
 
   if (is.list(content) && !is.null(content$results)) {
     purrr::map_dfr(content$results, function(x) tibble::tibble(
-      id = rlang::`%||%`(x$id, NA_integer_),
-      title = rlang::`%||%`(x$title, NA_character_),
-      description = rlang::`%||%`(x$description, NA_character_),
-      slug = rlang::`%||%`(x$slug, NA_character_),
-      icon = rlang::`%||%`(x$icon, NA_character_),
-      place_id = rlang::`%||%`(x$place_id, NA_integer_),
-      created_at = rlang::`%||%`(x$created_at, NA_character_)
+      id = x$id %||% NA_integer_,
+      title = x$title %||% NA_character_,
+      description = x$description %||% NA_character_,
+      slug = x$slug %||% NA_character_,
+      icon = x$icon %||% NA_character_,
+      place_id = x$place_id %||% NA_integer_,
+      created_at = x$created_at %||% NA_character_
     ))
   } else {
     message("API response was not in the expected format (missing a 'results' list).")
