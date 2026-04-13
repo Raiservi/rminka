@@ -35,6 +35,7 @@ reference:
     contents:
       - mnk_proj_byname
       - mnk_proj_info
+      - mnk_proj_user
       - mnk_proj_obs
   - title: User Queries
     desc: >

@@ -69,6 +69,8 @@ projects and their associated observations.
   approximate project name.
 - `mnk_proj_info()`: Retrieves detailed project information using its
   known ID (project_id).
+- `mnk_proj_user()`: Find the users, and associated metadata, explicitly
+  subscribed to a given project by the project_id.
 - `mnk_proj_obs()`: Fetches all observations for a specific year within
   that project.
 

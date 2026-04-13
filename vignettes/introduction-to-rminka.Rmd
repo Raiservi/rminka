@@ -72,11 +72,9 @@ prj_info
 It´s posible to known the users subscribed in this projects changing de parameter 
 'user = TRUE'  and the function gives a list of the id users.
 
-```{r project_info_proj, include = TRUE , echo=TRUE}
+```{r project_info_user, include = TRUE , echo=TRUE}
 
-prj_info_us <- mnk_proj_info(419, users = TRUE)
 
-prj_info_us
 
 ```
 
