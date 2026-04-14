@@ -8,9 +8,10 @@ vignette: >
 ---
 
 
-```{r setup}
+```{r setup, include=FALSE}
 library(rminka)
 ```
+
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -20,11 +21,11 @@ knitr::opts_chunk$set(
 
 ```{r carga, include=FALSE}
 library(dplyr)
+library(rminka)
 library(jsonlite)
 library(httr)
 library(leaflet)
 #library(magick)
-library(rminka)
 library(tibble)
 library(knitr)
 ```
@@ -128,7 +129,8 @@ user_obs
 
  - **<u>mnk_place_byname</u>**
 
-```{r place_byname, include = TRUE , echo=TRUE}
+```{r place_name, include = TRUE , echo=TRUE}
+library(rminka)
 
 places <- mnk_place_byname("Forum")
 places[,1:6]
