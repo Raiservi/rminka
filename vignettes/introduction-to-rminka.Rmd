@@ -208,16 +208,21 @@ place <- mnk_place_sf(253)
 
 obs_place <- mnk_place_obs(place_id = 253, year = 2025, month = 2)
 
+obs_place
+
+#Turning the dataframe into an sf object with the mnk_obs_sf() function
+
 obs_sf <- mnk_obs_sf(obs_place,"id","taxon_name","observed_on", "url_picture", "uri", "user_login")
 
-obs_sf
+# Preparing the obtained data for later display in the marker popup
 
 popup_final <-  paste0( "ID: <a href='", obs_sf$uri, "' target='_blank'>",obs_sf$id , "</a><br>",
                         "Specie:", obs_sf$taxon_name, "<br>",
                         "Observer: ", obs_sf$user_login,"<br>",
                         "Date:", obs_sf$observed_on, "<br>",
-                        "<a href '", obs_sf$url_picture, "' target='_blank'>, <img src='", 
+                        "<a href= '", obs_sf$url_picture, "' target='_blank'><img src='", 
                         obs_sf$url_picture, "' style='margin-top:2px;border-radius:4px;'> </a> ")
+#finally plotins
 
 leaflet(obs_sf) %>%
   addTiles() %>%
