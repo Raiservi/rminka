@@ -7,35 +7,53 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-
 ```{r setup, include=FALSE}
-library(rminka)
-```
-
-```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  # para CRAN pon eval=FALSE en los chunks que llaman a la API
+  # de momento lo dejamos TRUE para que veas que funciona
+  eval = TRUE
 )
+
+library(dplyr)
+library(tibble)
+library(rminka)
+library(sf)
+library(leaflet)
+library(htmltools)
+#library(magick)
+
 ```
 
-```{r carga, include=FALSE}
-library(dplyr)
-library(rminka)
-library(jsonlite)
-library(httr)
-library(leaflet)
-#library(magick)
-library(tibble)
-library(knitr)
+```{r leaflet-css, echo=FALSE, results='asis'}
+# solve CSS errors
+cat('
+<style>
+.leaflet-container img.leaflet-marker-icon,
+.leaflet-container img.leaflet-marker-shadow {
+  max-width: none !important;
+  max-height: none !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+.leaflet-popup-content img {
+  max-width: 250px !important;
+  height: auto !important;
+  display: block;
+  margin: 0 auto;
+}
+</style>
+')
 ```
 
 This document introduces you to rminka basic set of tools, and shows you how to 
 apply them to obtain your desired information.
 Once you’ve installed, read vignette("rminka") to learn more.
 
-We will develop an example based on a project: Biomarato Tarragona. 
-The example will focus on this project and one of its participants, Ramon Servitje. 
+We will develop an example based on a project: Biomarato Tarragona 2025. 
+The example will focus on this project and one of its participants, Xavier Salvador. 
 As the example progresses, we will use the different types of functions from the package.
 
 
@@ -69,13 +87,16 @@ prj_info <- mnk_proj_info(419)
 prj_info
 
 ```
+- **<u>mnk_proj_user</u>**
 
-It´s posible to known the users subscribed in this projects changing de parameter 
-'user = TRUE'  and the function gives a list of the id users.
+It´s posible to known the users explicited subscribed in this projects using 
+this function
 
 ```{r project_info_user, include = TRUE , echo=TRUE}
 
+prj_user <- mnk_proj_user(419)
 
+prj_user
 
 ```
 
@@ -98,27 +119,42 @@ prj_obs[2:14]
 
 ```{r user_name, include = TRUE , echo=TRUE}
 
-user_name <- mnk_user_byname("ramon")
+user_name <- mnk_user_byname("xavi")
 
 user_name
 
 ```
 
+
+- **<u>mnk_proj_info</u>**
+ 
+   Retrieves detailed project information using its known ID.
+   
+```{r user_info, include = TRUE , echo=TRUE}
+
+user_info <- mnk_user_info(4)
+
+user_info
+
+```
+
+
  - **<u>mnk_user_proj</u>**
  
 ```{r user_project, include = TRUE , echo=TRUE}
 
-user_project <- mnk_user_proj(6)
+user_project <- mnk_user_proj(4)
 
 user_project
 
 ```
 
+
  - **<u> mnk_user_obs</u>**
 
 ```{r user_obs, include = TRUE , echo=TRUE}
 
-user_obs <- mnk_user_obs(user_id=6, year = 2025, month = 8)
+user_obs <- mnk_user_obs(user_id= 4, year = 2025, month = 8)
 
 user_obs
 
@@ -138,6 +174,7 @@ places[,1:6]
 ```
 
  - **<u>mnk_place_sf</u>**
+ 
 
 ```{r place_sf, include = TRUE , echo=TRUE}
 
@@ -148,13 +185,7 @@ library(leaflet)
 # 1. Downloading the geometry 
 place <- mnk_place_sf(253)
 
-# 2. Adding information to the layer  from previous function
-place <- place |>
-  mutate(
-    name = places[2,3],
-  )
-
-# 3. Drawing the map
+# 2. Drawing the map
  forum_sf <-leaflet(place) |>
                 addProviderTiles("OpenStreetMap", group = "OSM") |>
                 addProviderTiles("Esri.WorldImagery", group = "Satélite") |>
@@ -175,40 +206,28 @@ place <- place |>
  
 ```{r places_obs, include = TRUE , echo=TRUE}
 
-library(sf)
-library(leaflet)
+obs_place <- mnk_place_obs(place_id = 253, year = 2025, month = 2)
 
-obs_place <- mnk_place_obs(place_id= 253, year = 2025, month = 2)
+obs_sf <- mnk_obs_sf(obs_place,"id","taxon_name","observed_on", "url_picture", "uri", "user_login")
 
-obs_place
+obs_sf
+
+popup_final <-  paste0( "ID: <a href='", obs_sf$uri, "' target='_blank'>",obs_sf$id , "</a><br>",
+                        "Specie:", obs_sf$taxon_name, "<br>",
+                        "Observer: ", obs_sf$user_login,"<br>",
+                        "Date:", obs_sf$observed_on, "<br>",
+                        "<a href '", obs_sf$url_picture, "' target='_blank'>, <img src='", 
+                        obs_sf$url_picture, "' style='margin-top:2px;border-radius:4px;'> </a> ")
+
+leaflet(obs_sf) %>%
+  addTiles() %>%
+  addMarkers(lng = ~longitude,
+             lat = ~latitude,
+             popup = popup_final)
 
 
-obs_sf <- obs_place |>
-  # 1. Selecting 
-  transmute(
-    id,
-    taxon_name,                    # si no existe, créala antes con mutate(taxon_name = "...")
-    observed_on = as.Date(observed_on),
-    latitude,
-    longitude,
-    positional_accuracy
-  ) |>
-  # 2. elimina filas sin coordenadas
-  filter(!is.na(latitude), !is.na(longitude)) |>
-  # 3. convierte a puntos WGS84. remove = FALSE mantiene lat/lon como columnas
-  st_as_sf(coords = c("longitude", "latitude"), crs = 4326, remove = FALSE)
-
-forum_sf |>
-  addMarkers(
-    data = obs_sf,
-    popup = ~paste0(
-      "<b>", taxon_name, "</b><br>",
-      "ID: ", id, "<br>",
-      "Fecha: ", observed_on
-    ),
-    clusterOptions = markerClusterOptions()
-  ) |>
-  addLayersControl(baseGroups = c("Satélite", "OSM"))
+ forum_sf |>
+  addMarkers(data = obs_sf, popup = ~popup_final)
 
 ```
 
@@ -237,53 +256,6 @@ obs[,c(1,21,2,10,11,16,27)]
 
 obs
 
-obs_sf_pl <- obs |>
-  
-  # Selecting the interesting fields
-  
-  transmute(
-    id,
-    taxon_name,                     
-    observed_on = as.Date(observed_on),
-    latitude,
-    longitude,
-    url_picture,
-    uri,
-    user_login
-  ) |>
-  
-  # 2. Deleting rows without spatial coordinates
-  
-  filter(!is.na(latitude), !is.na(longitude)) |>
-  
-  # 3. Convert fiels to spatial points  WGS84. 
-  
-  st_as_sf(coords = c("longitude", "latitude"), crs = 4326, remove = FALSE)
-
-  # 4. Drawing map with leaflet
-
-leaflet() |>
-  addProviderTiles("Esri.WorldImagery", group = "Satélite") |>
-  addProviderTiles("OpenStreetMap", group = "OSM") |>
-  addCircleMarkers(
-    data = obs_sf_pl,
-    radius = 6,
-    stroke = FALSE,          # sin borde
-    fillOpacity = 0.9,
-    fillColor = "red",
-    popup = ~paste0(
-      "<b>", taxon_name, "</b><br>",
-      "Obs ID: ", id, "<br>",
-      "User name: ", user_login, "<br>",
-      "Date: ", observed_on, "<br>",
-      "Specie: ", taxon_name, "<br>",
-      "<img src='",url_picture, "' width='100' style='border-radius:5px; margin:1px 0;'>","<br>", # To show the picture
-      "<a href='", uri, "' target='_blank'>View in Minka-sdg.com</a>"
-
-
-    )
-  ) |>
-  addLayersControl(baseGroups = c("Satélite", "OSM"))
 
 ```
 

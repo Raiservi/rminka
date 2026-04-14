@@ -15,36 +15,41 @@ process_minka_results <- function(all_results) {
   if (length(all_results) == 0) {
     return(tibble::tibble())
   }
-  processed_list <- purrr::map(all_results, ~tibble::tibble(
-    id = rlang::`%||%`(.x$id, NA_integer_),
-    observed_on = rlang::`%||%`(.x$observed_on, NA),
-    year = rlang::`%||%`(.x$observed_on_details$year, NA_integer_),
-    month = rlang::`%||%`(.x$observed_on_details$month, NA_integer_),
-    week = rlang::`%||%`(.x$observed_on_details$week, NA_integer_),
-    day = rlang::`%||%`(.x$observed_on_details$day, NA_integer_),
-    hour = rlang::`%||%`(.x$observed_on_details$hour, NA_integer_),
-    created_at = rlang::`%||%`(.x$created_at, NA),
-    updated_at = rlang::`%||%`(.x$updated_at, NA),
-    latitude = rlang::`%||%`(.x$geojson$coordinates[[2]], NA_real_),
-    longitude = rlang::`%||%`(.x$geojson$coordinates[[1]], NA_real_),
-    positional_accuracy = rlang::`%||%`(.x$positional_accuracy, NA_integer_),
-    geoprivacy = rlang::`%||%`(.x$taxon_geoprivacy, NA),
-    obscured = rlang::`%||%`(.x$obscured, NA),
-    uri = rlang::`%||%`(.x$uri, NA),
-    url_picture = rlang::`%||%`(.x$observation_photos[[1]]$photo$url, NA_character_),
-    quality_grade = rlang::`%||%`(.x$quality_grade, NA),
-    taxon_id = rlang::`%||%`(.x$taxon$id, NA_integer_),
-    taxon_name = rlang::`%||%`(.x$taxon$name, NA),
-    taxon_rank = rlang::`%||%`(.x$taxon$rank, NA),
-    taxon_min_ancestry = rlang::`%||%`(.x$taxon$min_species_ancestry, NA),
-    taxon_endemic = rlang::`%||%`(.x$taxon$endemic, NA),
-    taxon_threatened = rlang::`%||%`(.x$taxon$threatened, NA),
-    taxon_introduced = rlang::`%||%`(.x$taxon$introduced, NA),
-    taxon_native = rlang::`%||%`(.x$taxon$native, NA),
-    user_id = rlang::`%||%`(.x$user$id, NA_integer_),
-    user_login = rlang::`%||%`(.x$user$login, NA)
-  ))
-  dplyr::bind_rows(processed_list)
+
+  purrr::map_dfr(all_results, function(.x) {
+    tibble::tibble(
+      id =.x$id %||% NA_integer_,
+      observed_on =.x$observed_on %||% NA_character_,
+      year = purrr::pluck(.x, "observed_on_details", "year",.default = NA_integer_),
+      month = purrr::pluck(.x, "observed_on_details", "month",.default = NA_integer_),
+      week = purrr::pluck(.x, "observed_on_details", "week",.default = NA_integer_),
+      day = purrr::pluck(.x, "observed_on_details", "day",.default = NA_integer_),
+      hour = purrr::pluck(.x, "observed_on_details", "hour",.default = NA_integer_),
+      created_at =.x$created_at %||% NA_character_,
+      updated_at =.x$updated_at %||% NA_character_,
+      # coordenadas - pluck evita [[2]] sobre NULL
+      latitude = purrr::pluck(.x, "geojson", "coordinates", 2,.default = NA_real_),
+      longitude = purrr::pluck(.x, "geojson", "coordinates", 1,.default = NA_real_),
+      positional_accuracy =.x$positional_accuracy %||% NA_integer_,
+      geoprivacy =.x$taxon_geoprivacy %||% NA_character_,
+      obscured =.x$obscured %||% NA,
+      uri =.x$uri %||% NA_character_,
+      # AQUÍ ESTABA EL ERROR - ahora devuelve NA si no hay fotos
+      url_picture = purrr::pluck(.x, "observation_photos", 1, "photo", "url",.default = NA_character_),
+      quality_grade =.x$quality_grade %||% NA_character_,
+      # taxon puede ser NULL en observaciones casuales
+      taxon_id = purrr::pluck(.x, "taxon", "id",.default = NA_integer_),
+      taxon_name = purrr::pluck(.x, "taxon", "name",.default = NA_character_),
+      taxon_rank = purrr::pluck(.x, "taxon", "rank",.default = NA_character_),
+      taxon_min_ancestry = purrr::pluck(.x, "taxon", "min_species_ancestry",.default = NA_character_),
+      taxon_endemic = purrr::pluck(.x, "taxon", "endemic",.default = NA),
+      taxon_threatened = purrr::pluck(.x, "taxon", "threatened",.default = NA),
+      taxon_introduced = purrr::pluck(.x, "taxon", "introduced",.default = NA),
+      taxon_native = purrr::pluck(.x, "taxon", "native",.default = NA),
+      user_id = purrr::pluck(.x, "user", "id",.default = NA_integer_),
+      user_login = purrr::pluck(.x, "user", "login",.default = NA_character_)
+    )
+  })
 }
 
 #' Download Paginated Data from Minka API
